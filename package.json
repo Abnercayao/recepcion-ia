@@ -16,6 +16,10 @@
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",
     "test:adversarial": "vitest run tests/adversarial",
+    "kg": "tsx kg/cli.ts",
+    "kg:extraer": "tsx kg/extraer.ts",
+    "kg:verificar": "tsx kg/cli.ts verificar",
+    "kg:mcp": "tsx kg/mcp.ts",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "demo": "tsx scripts/demo.ts",
@@ -35,6 +39,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@types/node": "^26.1.1",
     "@types/pg": "^8.20.0",
     "tsx": "^4.23.1",

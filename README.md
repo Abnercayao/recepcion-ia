@@ -52,6 +52,24 @@ La batería adversarial corre en dos modos. El modo por defecto usa dobles y ver
 
 **Importante:** el modo dobles no prueba que el modelo obedezca el prompt; prueba que los controles atrapan lo que el modelo pueda decir. Son cosas distintas y conviene no confundirlas al leer los resultados.
 
+## Grafo de conocimiento
+
+El repositorio tiene un mapa consultable de sí mismo: qué existe, dónde vive y
+cómo se conecta.
+
+```bash
+npm run kg -- panorama       # capas, puertos, herramientas, líneas rojas, tablas
+npm run kg -- ver crear_cita
+npm run kg -- control C9     # dónde se toca un control y qué lo prueba
+npm run kg:verificar         # ¿está al día? ¿se cumple la regla de dependencias?
+```
+
+`.mcp.json` lo expone además como servidor MCP, así que un agente abierto sobre
+este repositorio lo tiene disponible sin configurar nada. Detalles, límites del
+extractor y cómo extenderlo, en [`kg/README.md`](kg/README.md).
+
+Si cambias código, `npm run kg:extraer`. Si se olvida, `npm test` lo detecta.
+
 ## Estructura
 
 ```
@@ -73,6 +91,7 @@ db/seed/         clínica de demostración (ficticia)
 prompts/         prompt maestro y bloques de estilo
 tests/           unit · integration · adversarial
 docs/            decisiones, contratos verificados, estado
+kg/              grafo de conocimiento del propio repositorio
 ```
 
 **Regla de dependencias:** `channels/` importa de `core/`. **`core/` nunca importa de `channels/` ni de `infra/`** — depende de los puertos de `core/types/ports.ts`, y las implementaciones se inyectan en `server.ts`.
