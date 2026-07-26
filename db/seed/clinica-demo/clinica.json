@@ -1,0 +1,30 @@
+{
+  "_aviso": "DATOS FICTICIOS DE DEMOSTRACION. Esta clinica no existe. No usar en produccion.",
+  "id": "00000000-0000-4000-8000-000000000001",
+  "nombre": "Clinica Dental Aurora",
+  "timezone": "America/Lima",
+  "retencion_transcripcion_dias": 365,
+  "retencion_audio_dias": 0,
+  "transfer_whitelist": ["+51999000001", "+51999000002"],
+  "config": {
+    "_limitacion_v1": "CalendarPort no lleva parametro de sede: v1 agenda contra UN solo calendario. Las dos sedes existen en la base de conocimiento (informativo) pero el agendamiento real usa googleCalendarId. Ver docs/decisiones.md, vacio 6.",
+    "googleCalendarId": "aurora-miraflores@group.calendar.google.com",
+    "googleImpersonateSubject": "agenda@clinica-aurora-demo.pe",
+    "sedes_informativas": {
+      "miraflores": "Av. Larco 1234, Miraflores",
+      "san-isidro": "Calle Las Begonias 456, San Isidro"
+    },
+    "sede_por_defecto": "miraflores",
+    "duracion_cita_min": 40,
+    "horarios": {
+      "lunes_viernes": [["09:00", "13:00"], ["15:00", "20:00"]],
+      "sabado": [["09:00", "14:00"]],
+      "domingo": []
+    },
+    "sabado_solo_sede": "miraflores",
+    "cancelacion_horas_min": 4,
+    "ventana_agendamiento_dias": 60,
+    "contacto_urgencias": "+51999000001",
+    "moneda": "PEN"
+  }
+}
