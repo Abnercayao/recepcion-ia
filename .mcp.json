@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "recepcion-ia-kg": {
+      "command": "npx",
+      "args": ["tsx", "kg/mcp.ts"]
+    }
+  }
+}
