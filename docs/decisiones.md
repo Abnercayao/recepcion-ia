@@ -60,6 +60,36 @@ Al cargar la semilla de la clínica de demostración con `npm run db:seed -- --d
 
 Se detectó solo porque se ejecutó el cargador contra contenido real. Los 15 tests de la rama que escribió el chunker pasaban: ninguno probaba el valor cero.
 
+## D14 · Los flujos de n8n interpolan SQL — no importar en producción tal cual
+
+Los cinco workflows construyen sus consultas **interpolando expresiones dentro del SQL** en vez de usar parámetros nativos del nodo de Postgres. La rama lo hizo así porque no pudo verificar el nombre exacto del campo de parámetros en la versión instalada de n8n, y lo declaró.
+
+Es una vía de inyección SQL. En estos flujos los valores vienen de la propia base y de Google Calendar, no del paciente, así que el riesgo inmediato es bajo — pero **uno de ellos parsea el teléfono desde el texto libre de la descripción del evento de calendario**, que sí es un campo que alguien puede editar.
+
+**Antes de poner los flujos en producción hay que convertirlos a parámetros nativos.** Están marcados como no aptos tal cual en `n8n/README.md`. Ningún flujo se ha importado ni ejecutado nunca: no hay instancia de n8n en este entorno.
+
+Relacionado: F3 depende de parsear el teléfono desde `description` porque **no existe tabla de citas en Postgres** — la agenda vive solo en Google Calendar y `CalendarPort` no expone listado con datos de paciente. Es frágil por diseño del esquema, no por la implementación del flujo.
+
+## D13 · El contador de fallos de comprensión no cubre el fallo más peligroso
+
+El control C5 exige que, **tras dos fallos de comprensión consecutivos**, el agente ofrezca continuar por WhatsApp o transferir a una persona sin que el paciente lo pida. Está implementado: `comprehensionFailures` se reconstruye del historial buscando en lo que dijo el asistente patrones de no-comprensión («no le entendí», «¿puede repetir?»).
+
+**Pero eso solo detecta el fallo que el sistema reconoce como tal.** El modo de fallo más peligroso del reconocimiento de voz es el contrario: el ASR transcribe mal **de forma verosímil**, el modelo no tiene motivo para dudar, y responde con confianza a algo que el paciente nunca dijo. Ahí no hay «no le entendí» que detectar, el contador no se mueve, y la salida alternativa nunca se ofrece.
+
+Es exactamente el escenario del riesgo A.1 —sesgo por variedad dialectal— y afecta más a quien peor transcribe el modelo: hablantes de castellano andino o amazónico, o con quechua o aimara como lengua materna. El control existente los protege menos justo donde más lo necesitan.
+
+**No es corregible desde el texto**: requiere la señal de confianza del ASR, que hoy no llega al núcleo, o medirlo con audio real en la Fase 7. Queda documentado como hueco conocido del control C5, no como algo resuelto.
+
+## D12 · Vulnerabilidad encontrada y corregida: verificación de firma que no verificaba
+
+`verifyElevenLabsWebhookSignature` **no fallaba cerrado con el secreto vacío**. `createHmac('sha256', '')` es un HMAC perfectamente válido, así que un despliegue que olvidara `ELEVENLABS_WEBHOOK_SECRET` aceptaba webhooks firmados por cualquiera que conociese esa condición.
+
+Con un webhook falsificado se podía consolidar transcripción, cerrar llamadas y —lo más grave— marcar `calls.disclosure_ejecutada`, que es **la evidencia auditable de una obligación contractual y regulatoria**. Es decir: se podía fabricar la prueba de cumplimiento de la revelación sin que la revelación hubiera ocurrido.
+
+**Corregido en el origen** con una guarda previa a todo lo demás, más seis tests de regresión. Además, `ELEVENLABS_WEBHOOK_SECRET` pasa a ser **obligatorio** cuando `VOICE_ENABLED=true`: antes el servidor arrancaba y el webhook rechazaba todo con 401 en silencio, perdiendo la consolidación de cada llamada sin que nadie se enterara.
+
+Lo destapó un test que esperaba 401 y recibió 200. Una verificación que no verifica es peor que ninguna, porque aparenta proteger.
+
 ## D11 · Falta una herramienta de cancelación, y las fuentes se contradicen
 
 La batería adversarial destapó que **no existe `cancelar_cita` ni `reprogramar_cita`**. `CalendarPort.cancelEvent` está implementado, pero ninguna herramienta de negocio lo expone al modelo: el agente no puede cancelar ni reprogramar aunque el sistema técnicamente sepa hacerlo.

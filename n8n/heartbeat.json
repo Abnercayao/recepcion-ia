@@ -1,0 +1,196 @@
+{
+  "name": "heartbeat",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "*/5 * * * *"
+            }
+          ]
+        }
+      },
+      "name": "Cada 5 minutos",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ],
+      "id": "6a8c4698-0921-4b74-8536-c77f40f1f906"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.NUCLEO_BASE_URL }}/health",
+        "options": {
+          "timeout": 5000,
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "name": "GET /health del nucleo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        300
+      ],
+      "id": "660f7b3f-0a20-48dc-af95-719763bcd087",
+      "continueOnFail": true,
+      "notes": "/health no exige el secreto de ningun gateway (src/server.ts lo registra sin autenticacion): el heartbeat no necesita credencial para este nodo."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "12ccf43e-45e2-42c9-bf5c-0fc29d78f284",
+              "leftValue": "={{ !$json.error && $json.estado === \"ok\" }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Nucleo responde \"ok\"?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        300
+      ],
+      "id": "6eb14355-4941-45b1-bccc-52a101848926"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "select": "channel",
+        "channelId": {
+          "mode": "name",
+          "value": "urgencias-recepcion",
+          "__rl": true
+        },
+        "text": "=:red_circle: El nucleo de Recepcion-IA no respondio 'ok' en /health.\nDetalle: {{ $json.error ? JSON.stringify($json.error).slice(0, 500) : JSON.stringify($json) }}\nHora: {{ $now.toISO() }}\n\nMientras el nucleo este caido, NINGUN canal (WhatsApp ni voz) puede atender: es la peor forma de silencio (control O5). Verificar el proceso cuanto antes.",
+        "otherOptions": {}
+      },
+      "name": "Alertar canal urgencias (Slack)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        780,
+        180
+      ],
+      "id": "50808bce-09bc-4e4b-a013-2f5596cf0226",
+      "credentials": {
+        "slackApi": {
+          "name": "Slack - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO audit_log (evento, detalle_enmascarado)\nVALUES (\n  'heartbeat_fallo',\n  '{{ JSON.stringify({ detalle: ($json.error ? JSON.stringify($json.error) : JSON.stringify($json)).slice(0, 500) }).replace(/'/g, \"''\") }}'::jsonb\n);\n-- Se registra CADA fallo (no solo el primero): en la practica, si el\n-- nucleo esta caido varios ciclos de 5 minutos seguidos, este flujo lo deja\n-- ver como una racha de filas, util para medir cuanto duro la caida.",
+        "options": {}
+      },
+      "name": "Registrar fallo de heartbeat",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1040,
+        180
+      ],
+      "id": "6ba11124-0189-4c30-a763-11a668c77726",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "Nucleo saludable (sin accion)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        780,
+        420
+      ],
+      "id": "230441e4-a92d-4b08-99a7-d421d72d6346"
+    }
+  ],
+  "connections": {
+    "Cada 5 minutos": {
+      "main": [
+        [
+          {
+            "node": "GET /health del nucleo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET /health del nucleo": {
+      "main": [
+        [
+          {
+            "node": "Nucleo responde \"ok\"?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nucleo responde \"ok\"?": {
+      "main": [
+        [
+          {
+            "node": "Nucleo saludable (sin accion)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alertar canal urgencias (Slack)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alertar canal urgencias (Slack)": {
+      "main": [
+        [
+          {
+            "node": "Registrar fallo de heartbeat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

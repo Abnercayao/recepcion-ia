@@ -113,6 +113,22 @@ export function verifyElevenLabsWebhookSignature(
   webhookSecret: string,
   options: WebhookVerificationOptions = {},
 ): WebhookVerificationResult {
+  // FALLA CERRADO ANTE SECRETO VACIO.
+  //
+  // `createHmac('sha256', '')` es un HMAC perfectamente valido: sin esta
+  // guarda, un despliegue con ELEVENLABS_WEBHOOK_SECRET sin definir aceptaria
+  // webhooks firmados por cualquiera que conociese esa condicion, y con ellos
+  // se puede consolidar transcripcion, cerrar llamadas y marcar
+  // `disclosure_ejecutada` —la evidencia auditable de una obligacion
+  // contractual—. Una verificacion que no verifica es peor que ninguna,
+  // porque aparenta proteger.
+  if (webhookSecret.length === 0) {
+    return {
+      valid: false,
+      reason: 'secreto de webhook vacio: la firma no puede verificarse y se rechaza',
+    };
+  }
+
   if (!signatureHeader) {
     return { valid: false, reason: 'falta el header ElevenLabs-Signature' };
   }

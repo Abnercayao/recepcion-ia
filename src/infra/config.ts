@@ -126,6 +126,10 @@ const envSchema = z
         'ELEVENLABS_API_KEY',
         'ELEVENLABS_AGENT_ID',
         'VOICE_GATEWAY_SECRET',
+        // Sin el, el webhook post-llamada no puede verificar nada y rechaza
+        // todo con 401: la transcripcion, la duracion y la evidencia de
+        // revelacion no se consolidarian nunca, en silencio.
+        'ELEVENLABS_WEBHOOK_SECRET',
       ] as const;
       for (const clave of requeridas) {
         if (!env[clave]) {
