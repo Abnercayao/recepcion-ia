@@ -15,6 +15,56 @@ Los **7 saltados** son la batería contra el modelo real, que requiere `ANTHROPI
 
 ---
 
+## Verificado contra proveedores reales · 26-07-2026
+
+Primera sesión con credenciales de verdad. Hasta aquí todo se había comprobado
+con dobles. Se ejecuta con `npm run diagnostico` (solo lectura, repetible).
+
+| Comprobación | Resultado |
+|---|---|
+| Anthropic · modelo de conversación | `claude-sonnet-5` responde · **1511 ms** |
+| Anthropic · modelo de clasificación | `claude-haiku-4-5` responde · **963 ms** |
+| Voyage · embeddings | `voyage-3` responde · **1024 dimensiones**, coinciden con `EMBEDDING_DIMENSIONS` |
+| Supabase · migraciones 001–003 | aplicadas · las 3 registradas en `_migrations` con checksum coincidente |
+| Supabase · esquema | 11 tablas del proyecto, accesibles por PostgREST |
+| Siembra de la clínica de demostración | 39 fragmentos · faq 27, formulario 7, protocolo 5 · **todos inactivos** |
+| **Control O2** — nada se recupera sin aprobación | ✅ con 0 aprobados, `match_knowledge` devuelve 0; al activar uno, devuelve 1 |
+| **Control C9** — aislamiento entre clínicas | ✅ mismo vector, misma base: la clínica sembrada ve 1, una clínica ajena ve 0 |
+
+Sobre las dos últimas: la prueba se hizo **falsable a propósito**. Con todos los
+fragmentos inactivos, ambas clínicas devuelven cero aunque el filtro por
+`clinic_id` estuviera roto, así que ese resultado no prueba nada. Se activó un
+fragmento temporalmente, se repitió la consulta y se revirtió. Sin ese paso, el
+«pasa» habría sido un artefacto.
+
+### Bloqueantes descubiertos
+
+1. **Voyage en plan gratuito: 3 peticiones/minuto y 10 000 tokens/minuto.** Cada
+   consulta de paciente necesita un embedding, así que el sistema atiende una
+   consulta cada veinte segundos y con dos pacientes simultáneos empieza a
+   devolver vacío. `RagService` degrada como debe —lista vacía y el prompt
+   declara que no dispone del dato—, pero es un bloqueante de producción. Hace
+   falta método de pago en la cuenta.
+2. **`SUPABASE_DB_URL` apunta a `db.<proyecto>.supabase.co`, que no resuelve**
+   (sin registro A ni AAAA). Es la conexión directa heredada, que ya no se
+   provisiona en proyectos nuevos. Bloquea `npm run db:migrate`. Mientras tanto,
+   `npm run db:sql` genera las migraciones en un solo archivo para el editor SQL
+   del panel, con el registro de `_migrations` coherente.
+
+### Defectos corregidos en el camino
+
+- **`migrate.ts`, `seed.ts` y `demo.ts` no cargaban `.env`.** Solo `server.ts`
+  importaba `dotenv/config`, así que el flujo del README (`cp .env.example .env`
+  y luego `npm run db:migrate`) fallaba enumerando como ausentes variables que sí
+  estaban en el archivo.
+- **El diagnóstico daba un falso positivo sobre Supabase.** Comprobaba la
+  existencia de las tablas con `head: true`, y PostgREST responde 204 sin error a
+  una petición HEAD aunque la tabla no exista. Informó «11 tablas, 0 filas» sobre
+  una base sin una sola tabla. Ahora consulta la raíz de PostgREST y confirma con
+  un GET real.
+
+---
+
 ## Qué está construido
 
 **Núcleo** (`src/core/`) — no conoce ningún canal.
@@ -50,8 +100,10 @@ Config con validación Zod · logger con enmascarado obligatorio de PII · 8 rep
 
 ## Lo que NO se ha verificado, y no puede verificarse aquí
 
-- **Ninguna llamada real** a Anthropic, Supabase, Voyage, Google Calendar, Meta ni ElevenLabs. Todo con dobles. El sistema compila, arranca y sus controles funcionan; que los proveedores respondan como se asume está sin comprobar.
-- **El modelo obedeciendo el prompt.** El modo dobles prueba que *los controles atrapan* lo que el modelo pueda decir, no que el modelo se porte bien. Eso exige la clave de API.
+- **Google Calendar, Meta y ElevenLabs**: sin credenciales, todo con dobles. *(Anthropic, Supabase y Voyage sí quedaron verificados el 26-07-2026; ver la sección de arriba.)*
+- **La agenda de la clínica de demostración no existe.** `clinic.config.googleCalendarId` apunta a `aurora-miraflores@group.calendar.google.com`, que es ficticio, igual que `googleImpersonateSubject`. Aunque las credenciales de la cuenta de servicio sean válidas, no habrá agenda real hasta cambiar esos dos valores.
+- **El modelo obedeciendo el prompt.** El modo dobles prueba que *los controles atrapan* lo que el modelo pueda decir, no que el modelo se porte bien. La clave de API ya existe, así que los 7 tests saltados **ya se pueden ejecutar**; no se han ejecutado todavía.
+- **El RAG de extremo a extremo con contenido aprobado.** Los 39 fragmentos están sembrados pero inactivos: falta la aprobación nominal (control O2), que es un acto humano y no un paso del script.
 - **Todo el canal de voz con audio real**: latencia por turno, gestión de turnos, barge-in y la brecha de comprensión por segmento de hablante.
 - **Las asunciones sobre ElevenLabs** que su documentación no cubre: formato de streaming de `tool_calls`, header de autenticación entrante, composición del HMAC del webhook. Ver `contrato-elevenlabs.md`.
 
@@ -62,7 +114,7 @@ Detalle completo en `decisiones.md`. Los principales:
 1. **RLS vs `SUPABASE_SERVICE_KEY`** — decidido para v1 con deuda reconocida; el `audit_log` inalterable sí queda resuelto de verdad.
 2. **`CalendarPort` sin sede ni profesional** — la clínica tiene dos sedes y especialistas que no atienden en ambas.
 3. **Falta herramienta de cancelación** — y las fuentes se contradicen: la Tabla 13 la exige, el anti-patrón 10 fija cinco herramientas.
-4. **Umbral del RAG en 0.75, sin calibrar** — no hay clave de Voyage.
+4. **Umbral del RAG en 0.75, sin calibrar** — ya hay clave de Voyage y embeddings reales, así que **ahora sí se puede calibrar**; sigue sin hacerse. Requiere fragmentos aprobados y un conjunto de consultas de referencia.
 5. **Riesgo de doble locución al escalar por voz** — solo detectable con telefonía real.
 6. **Revelación en WhatsApp sobre memoria de proceso** — frágil para un criterio bloqueante.
 

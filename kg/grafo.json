@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "0ee17e2ea733122e",
+  "huella": "759660f68f94c0e9",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -345,7 +345,7 @@
       "id": "control:O2",
       "tipo": "control",
       "nombre": "O2",
-      "resumen": "La base real exige el formulario maestro de una clínica y la **aprobación escrita del profesional responsable** (control O2), que es un acto humano, no técnico.",
+      "resumen": "squema | 11 tablas del proyecto, accesibles por PostgREST | | Siembra de la clínica de demostración | 39 fragmentos · faq 27, formulario 7, protocolo 5 · **todos inactivos** | | *…",
       "meta": {
         "clase": "operativo",
         "definicionInferida": true
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 75,
+        "lineas": 127,
         "capa": "documentacion"
       }
     },
@@ -7056,7 +7056,19 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:73"
+      "origen": "docs/ESTADO.md:125"
+    },
+    {
+      "desde": "modulo:docs/ESTADO.md",
+      "relacion": "menciona",
+      "hacia": "control:C9",
+      "origen": "docs/ESTADO.md:32"
+    },
+    {
+      "desde": "modulo:docs/ESTADO.md",
+      "relacion": "menciona",
+      "hacia": "control:O2",
+      "origen": "docs/ESTADO.md:31"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
