@@ -51,6 +51,7 @@ import { whatsappWebhookPlugin } from './channels/whatsapp/whatsapp.controller.j
 import { WhatsappAdapter } from './channels/whatsapp/whatsapp.adapter.js';
 import type { WhatsappClinicRouting } from './channels/whatsapp/whatsapp.types.js';
 import { voiceGatewayPlugin } from './channels/voice/voice-gateway.controller.js';
+import { postCallWebhookPlugin } from './channels/voice/post-call.controller.js';
 import { VoiceSessionService } from './channels/voice/voice-session.service.js';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
@@ -175,11 +176,10 @@ export async function construirServidor(config: Config) {
   }
 
   if (config.VOICE_ENABLED) {
-    const sessions = new VoiceSessionService({
-      calls: new SupabaseCallRepository(supabase),
-      transcripts: new SupabaseTranscriptRepository(supabase),
-      logger,
-    });
+    const calls = new SupabaseCallRepository(supabase);
+    const transcripts = new SupabaseTranscriptRepository(supabase);
+
+    const sessions = new VoiceSessionService({ calls, transcripts, logger });
 
     await app.register(voiceGatewayPlugin, {
       conversationService,
@@ -188,6 +188,17 @@ export async function construirServidor(config: Config) {
       logger,
       gatewaySecret: config.VOICE_GATEWAY_SECRET ?? '',
       bufferWordMs: config.VOICE_BUFFER_WORD_MS,
+    });
+
+    // Webhook post-llamada. Secreto DISTINTO del del gateway (contrato §2 vs §7):
+    // ELEVENLABS_WEBHOOK_SECRET es con el que el proveedor FIRMA el webhook.
+    await app.register(postCallWebhookPlugin, {
+      calls,
+      transcripts,
+      audit,
+      logger,
+      webhookSecret: config.ELEVENLABS_WEBHOOK_SECRET ?? '',
+      retencionAudioDias: config.RETENCION_AUDIO_DIAS,
     });
   }
 

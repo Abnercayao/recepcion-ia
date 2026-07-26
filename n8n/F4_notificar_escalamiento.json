@@ -1,0 +1,306 @@
+{
+  "name": "F4_notificar_escalamiento",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "escalamiento",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook escalamiento",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "id": "58785ec0-63b5-49a7-a63d-a27cdea1a74c",
+      "webhookId": "c982515c-a86e-4339-85c5-4a8f6b2586fe"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT nombre, transfer_whitelist\nFROM clinics\nWHERE id = '{{ $json.body.clinicId }}'::uuid;",
+        "options": {}
+      },
+      "name": "Buscar clinica y whitelist",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        260,
+        300
+      ],
+      "id": "01c4e484-7cbc-4ff3-8707-f8b00e30162f",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "20904cde-fe18-4efd-9c34-09702d5399a0",
+              "leftValue": "={{ $('Webhook escalamiento').item.json.body.prioridad }}",
+              "rightValue": "urgente",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Es urgente?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        300
+      ],
+      "id": "4899384c-56cb-497b-9c52-29b3808714ca"
+    },
+    {
+      "parameters": {
+        "resource": "sms",
+        "operation": "send",
+        "from": "={{ $env.TWILIO_PHONE_NUMBER }}",
+        "to": "={{ $('Buscar clinica y whitelist').item.json.transfer_whitelist[0] }}",
+        "message": "=URGENTE - {{ $('Webhook escalamiento').item.json.body.clinicaNombre }}\nMotivo: {{ $('Webhook escalamiento').item.json.body.motivo }}\nPaciente: {{ $('Webhook escalamiento').item.json.body.pacienteNombre || 'sin nombre registrado' }} ({{ $('Webhook escalamiento').item.json.body.telefonoPaciente }})\nResumen: {{ $('Webhook escalamiento').item.json.body.resumenParaRecepcion }}\nCanal: {{ $('Webhook escalamiento').item.json.body.canal }} | Ocurrido: {{ $('Webhook escalamiento').item.json.body.ocurridoEn }}"
+      },
+      "name": "SMS urgente a recepcion (Twilio)",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        780,
+        120
+      ],
+      "id": "c9899f7d-078b-4908-b320-03b744f2ea62",
+      "credentials": {
+        "twilioApi": {
+          "name": "Twilio - Recepcion IA"
+        }
+      },
+      "notes": "El numero \"from\" no es secreto pero SI depende del entorno: se lee de $env.TWILIO_PHONE_NUMBER (igual que config.ts) en vez de fijarlo en el JSON. Requiere que n8n tenga acceso a variables de entorno en expresiones (ver README)."
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "select": "channel",
+        "channelId": {
+          "mode": "name",
+          "value": "urgencias-recepcion",
+          "__rl": true
+        },
+        "text": "=:rotating_light: *URGENTE* - {{ $('Webhook escalamiento').item.json.body.clinicaNombre }}\n*Motivo:* {{ $('Webhook escalamiento').item.json.body.motivo }}\n*Paciente:* {{ $('Webhook escalamiento').item.json.body.pacienteNombre || 'sin nombre' }} ({{ $('Webhook escalamiento').item.json.body.telefonoPaciente }})\n*Resumen:* {{ $('Webhook escalamiento').item.json.body.resumenParaRecepcion }}\n*Canal de origen:* {{ $('Webhook escalamiento').item.json.body.canal }}\n\nEsta urgencia NO se coloca en la misma cola que reclamos o peticiones normales: atender de inmediato.",
+        "otherOptions": {}
+      },
+      "name": "Alerta canal urgencias (Slack)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        120
+      ],
+      "id": "1f69473b-dcde-4319-b896-5986690aca5f",
+      "credentials": {
+        "slackApi": {
+          "name": "Slack - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO audit_log (clinic_id, conversation_id, evento, detalle_enmascarado)\nVALUES (\n  '{{ $('Webhook escalamiento').item.json.body.clinicId }}'::uuid,\n  {{ $('Webhook escalamiento').item.json.body.conversationId ? \"'\" + $('Webhook escalamiento').item.json.body.conversationId + \"'::uuid\" : 'NULL' }},\n  'escalamiento_notificado',\n  '{{ JSON.stringify({\n      motivo: $('Webhook escalamiento').item.json.body.motivo,\n      prioridad: 'urgente',\n      canal: $('Webhook escalamiento').item.json.body.canal,\n      telefonoEnmascarado: String($('Webhook escalamiento').item.json.body.telefonoPaciente).replace(/\\d(?=\\d{2})/g, '*'),\n      viaSms: true,\n      viaSlack: true,\n      notificadoPor: 'F4_notificar_escalamiento'\n    }).replace(/'/g, \"''\") }}'::jsonb\n);",
+        "options": {}
+      },
+      "name": "Registrar notificacion urgente",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1300,
+        120
+      ],
+      "id": "1e0c9738-0e86-4b6c-be9c-8a4ff0bb15f8",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "select": "channel",
+        "channelId": {
+          "mode": "name",
+          "value": "recepcion-general",
+          "__rl": true
+        },
+        "text": "=Caso para recepcion - {{ $('Webhook escalamiento').item.json.body.clinicaNombre }}\nMotivo: {{ $('Webhook escalamiento').item.json.body.motivo }}\nPaciente: {{ $('Webhook escalamiento').item.json.body.pacienteNombre || 'sin nombre' }} ({{ $('Webhook escalamiento').item.json.body.telefonoPaciente }})\nResumen: {{ $('Webhook escalamiento').item.json.body.resumenParaRecepcion }}\nCanal de origen: {{ $('Webhook escalamiento').item.json.body.canal }}\n\nPrioridad normal: atender en el orden habitual de la cola, sin la urgencia del canal anterior.",
+        "otherOptions": {}
+      },
+      "name": "Mensaje canal recepcion (cola normal)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        780,
+        480
+      ],
+      "id": "25481f81-4dd1-49ad-af8e-c0ab6778dfee",
+      "credentials": {
+        "slackApi": {
+          "name": "Slack - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO audit_log (clinic_id, conversation_id, evento, detalle_enmascarado)\nVALUES (\n  '{{ $('Webhook escalamiento').item.json.body.clinicId }}'::uuid,\n  {{ $('Webhook escalamiento').item.json.body.conversationId ? \"'\" + $('Webhook escalamiento').item.json.body.conversationId + \"'::uuid\" : 'NULL' }},\n  'escalamiento_notificado',\n  '{{ JSON.stringify({\n      motivo: $('Webhook escalamiento').item.json.body.motivo,\n      prioridad: 'normal',\n      canal: $('Webhook escalamiento').item.json.body.canal,\n      telefonoEnmascarado: String($('Webhook escalamiento').item.json.body.telefonoPaciente).replace(/\\d(?=\\d{2})/g, '*'),\n      viaSms: false,\n      viaSlack: true,\n      notificadoPor: 'F4_notificar_escalamiento'\n    }).replace(/'/g, \"''\") }}'::jsonb\n);",
+        "options": {}
+      },
+      "name": "Registrar notificacion normal",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1040,
+        480
+      ],
+      "id": "78026390-8b52-4065-89fc-76cacbe53ade",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"recibido\": true } }}",
+        "options": {}
+      },
+      "name": "Responder 200 al nucleo",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1560,
+        300
+      ],
+      "id": "7146f4c9-d322-4917-aebc-f40c03d3fd95"
+    }
+  ],
+  "connections": {
+    "Webhook escalamiento": {
+      "main": [
+        [
+          {
+            "node": "Buscar clinica y whitelist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar clinica y whitelist": {
+      "main": [
+        [
+          {
+            "node": "Es urgente?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es urgente?": {
+      "main": [
+        [
+          {
+            "node": "SMS urgente a recepcion (Twilio)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mensaje canal recepcion (cola normal)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SMS urgente a recepcion (Twilio)": {
+      "main": [
+        [
+          {
+            "node": "Alerta canal urgencias (Slack)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alerta canal urgencias (Slack)": {
+      "main": [
+        [
+          {
+            "node": "Registrar notificacion urgente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar notificacion urgente": {
+      "main": [
+        [
+          {
+            "node": "Responder 200 al nucleo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensaje canal recepcion (cola normal)": {
+      "main": [
+        [
+          {
+            "node": "Registrar notificacion normal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar notificacion normal": {
+      "main": [
+        [
+          {
+            "node": "Responder 200 al nucleo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

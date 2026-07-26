@@ -1,0 +1,632 @@
+{
+  "name": "F3_recordatorios",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 * * * *"
+            }
+          ]
+        }
+      },
+      "name": "Cada hora",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -200,
+        460
+      ],
+      "id": "c47b6e7d-8f41-4e32-9715-d006b2fa42ab"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id AS clinic_id, nombre, timezone, config->>'googleCalendarId' AS google_calendar_id\nFROM clinics\nWHERE config->>'googleCalendarId' IS NOT NULL;",
+        "options": {}
+      },
+      "name": "Clinicas con calendario configurado",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        40,
+        460
+      ],
+      "id": "2ef401b6-94b0-4c0d-aced-2d83c6a5b666",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "Por clinica",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        300,
+        460
+      ],
+      "id": "ffca54ca-84c4-4912-a025-aa11ba758833"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.google_calendar_id }}"
+        },
+        "returnAll": true,
+        "options": {
+          "timeMin": "={{ $now.toISO() }}",
+          "timeMax": "={{ $now.plus({ hours: 73 }).toISO() }}",
+          "singleEvents": true,
+          "orderBy": "startTime"
+        }
+      },
+      "name": "Eventos proximos (72h)",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        460
+      ],
+      "id": "4df1a16e-ecfb-4e7e-b8bf-f6107f5f4643",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "name": "Google Calendar - Recepcion IA (cuenta de servicio)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Traduce un evento de Google Calendar a la decision de recordatorio.\n// Se ejecuta una vez por evento (runOnceForEachItem).\n//\n// POR QUE se parsea el telefono del campo \"description\": el esquema de\n// CalendarEvent (src/core/types/ports.ts) no tiene un campo de telefono del\n// paciente; calendar.client.ts (createEvent) lo escribe como texto libre\n// dentro de la descripcion del evento (\"Paciente: <telefono> | ...\"). No\n// existe tabla de citas en Postgres (la agenda vive solo en Google Calendar),\n// asi que este es el UNICO lugar de donde F3 puede recuperar el telefono.\n// Es fragil (depende de un formato de texto que no es un contrato), y se\n// documenta como vacio detectado en n8n/README.md, no como decision robusta.\n\nconst evento = $json;\nconst clinica = $('Clinicas con calendario configurado').item.json;\n\nconst inicioStr = evento.start && (evento.start.dateTime || evento.start.date);\nconst inicio = inicioStr ? new Date(inicioStr) : null;\nconst ahora = new Date();\n\nlet horasHastaInicio = null;\nlet ventana = null;\nif (inicio) {\n  horasHastaInicio = (inicio.getTime() - ahora.getTime()) / 3_600_000;\n  // Tolerancia implicita: el cron corre en punto cada hora, asi que redondear\n  // al entero mas cercano hace que UN solo tick coincida con cada objetivo\n  // (72h, 24h, 3h). Decision documentada en el README (no la fija la\n  // especificacion).\n  for (const objetivo of [72, 24, 3]) {\n    if (Math.round(horasHastaInicio) === objetivo) {\n      ventana = objetivo + 'h';\n      break;\n    }\n  }\n}\n\nconst descripcion = evento.description || '';\nconst matchTelefono = descripcion.match(/Paciente:\\s*([^|]+)/);\nconst telefonoPaciente = matchTelefono ? matchTelefono[1].trim() : null;\n\nreturn {\n  json: {\n    ventana,\n    envioProcede: Boolean(ventana) && Boolean(telefonoPaciente),\n    calendarEventId: evento.id,\n    clinicId: clinica.clinic_id,\n    clinicaNombre: clinica.nombre,\n    timezone: clinica.timezone,\n    telefonoPaciente,\n    fechaCitaIso: inicio ? inicio.toISOString() : null,\n    horasHastaInicio,\n  },\n};"
+      },
+      "name": "Calcular ventana y extraer telefono",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        820,
+        460
+      ],
+      "id": "33ca2981-2a28-4ff1-8cbd-239f691d0cec"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "33178a94-44ee-43d0-b256-3ebbd5f2a755",
+              "leftValue": "={{ $json.envioProcede }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Hay ventana y telefono?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1080,
+        200
+      ],
+      "id": "46878c1d-4c7b-4f79-805c-ad49729524ca"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT NOT EXISTS (\n  SELECT 1 FROM audit_log\n  WHERE clinic_id = '{{ $json.clinicId }}'::uuid\n    AND evento = 'recordatorio_enviado_{{ $json.ventana }}'\n    AND detalle_enmascarado->>'calendarEventId' = '{{ $json.calendarEventId }}'\n) AS no_enviado_aun;\n-- Nota de diseno (idempotencia, ver README): la consulta SIEMPRE devuelve\n-- exactamente una fila (NOT EXISTS sobre una subconsulta, no un FROM sobre\n-- audit_log), para que el nodo IF que sigue pueda decidir por valor y no por\n-- ausencia/presencia de filas.",
+        "options": {}
+      },
+      "name": "Recordatorio ya enviado? (idempotencia)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1340,
+        200
+      ],
+      "id": "793e8368-e545-4176-b6b9-54489b29919f",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "3d31329d-4944-4a82-86de-27962df28038",
+              "leftValue": "={{ $json.no_enviado_aun }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "No enviado aun?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1600,
+        200
+      ],
+      "id": "571d82ae-323b-4f29-a535-8fd2ad8d150a"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{ $env.WHATSAPP_PHONE_ID }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  messaging_product: 'whatsapp',\n  to: $('Calcular ventana y extraer telefono').item.json.telefonoPaciente,\n  type: 'template',\n  template: {\n    name: 'recordatorio_cita_' + $('Calcular ventana y extraer telefono').item.json.ventana,\n    language: { code: 'es_PE' },\n    components: [\n      { type: 'body', parameters: [ { type: 'text', text: $('Calcular ventana y extraer telefono').item.json.fechaCitaIso } ] }\n    ]\n  }\n}) }}",
+        "options": {}
+      },
+      "name": "Enviar plantilla WhatsApp (recordatorio)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1860,
+        100
+      ],
+      "id": "f2c533a8-45e7-4c86-a371-8ec93378c789",
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "WhatsApp Cloud API - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO audit_log (clinic_id, evento, detalle_enmascarado)\nVALUES (\n  '{{ $('Calcular ventana y extraer telefono').item.json.clinicId }}'::uuid,\n  'recordatorio_enviado_{{ $('Calcular ventana y extraer telefono').item.json.ventana }}',\n  '{{ JSON.stringify({\n      calendarEventId: $('Calcular ventana y extraer telefono').item.json.calendarEventId,\n      ventana: $('Calcular ventana y extraer telefono').item.json.ventana,\n      fechaCitaIso: $('Calcular ventana y extraer telefono').item.json.fechaCitaIso,\n      telefonoEnmascarado: String($('Calcular ventana y extraer telefono').item.json.telefonoPaciente).replace(/\\d(?=\\d{2})/g, '*')\n    }).replace(/'/g, \"''\") }}'::jsonb\n);",
+        "options": {}
+      },
+      "name": "Registrar envio (idempotencia)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        2120,
+        100
+      ],
+      "id": "94815c38-467c-40e8-a6b5-9c429a3c3c11",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT r.creado_en AS recordatorio_enviado_en,\n       c.ultima_actividad AS ultima_actividad,\n       (c.ultima_actividad IS NULL OR c.ultima_actividad <= r.creado_en) AS sin_respuesta\nFROM (\n  SELECT creado_en FROM audit_log\n  WHERE clinic_id = '{{ $json.clinicId }}'::uuid\n    AND evento = 'recordatorio_enviado_24h'\n    AND detalle_enmascarado->>'calendarEventId' = '{{ $json.calendarEventId }}'\n    AND creado_en <= now() - interval '6 hours'\n  ORDER BY creado_en DESC LIMIT 1\n) r\nLEFT JOIN patients p ON p.clinic_id = '{{ $json.clinicId }}'::uuid AND p.telefono_e164 = '{{ $json.telefonoPaciente }}'\nLEFT JOIN conversations c ON c.patient_id = p.id\nORDER BY c.ultima_actividad DESC NULLS LAST\nLIMIT 1;\n-- Si el recordatorio de 24h no existe todavia, o existe pero aun no paso el\n-- periodo de gracia (6h, ver README), esta consulta devuelve CERO filas y la\n-- rama B se detiene aqui sola para este evento: no hace falta un IF aparte\n-- para ese caso.",
+        "options": {}
+      },
+      "name": "24h enviado + grace period + actividad paciente",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1080,
+        720
+      ],
+      "id": "25931bce-fcb5-4a90-ba18-776d931d0700",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "5c6ae615-a36a-42e0-824b-42e071a782eb",
+              "leftValue": "={{ $json.sin_respuesta }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Sin respuesta del paciente?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1340,
+        720
+      ],
+      "id": "115e85e9-cb80-4176-a9a5-a9cfda304505"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT NOT EXISTS (\n  SELECT 1 FROM audit_log\n  WHERE clinic_id = '{{ $('Calcular ventana y extraer telefono').item.json.clinicId }}'::uuid\n    AND evento = 'recordatorio_sin_respuesta_escalado'\n    AND detalle_enmascarado->>'calendarEventId' = '{{ $('Calcular ventana y extraer telefono').item.json.calendarEventId }}'\n) AS no_escalado_aun;",
+        "options": {}
+      },
+      "name": "Ya se aviso esta falta de respuesta?",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1600,
+        720
+      ],
+      "id": "e4a6dfd5-9ec7-47bb-b38f-bd3d9a1547be",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "00ca56a3-9410-4462-877b-b486f47cb550",
+              "leftValue": "={{ $json.no_escalado_aun }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "No escalado aun?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1860,
+        720
+      ],
+      "id": "e984f51c-a55b-494a-af81-a14e4973bd3e"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.N8N_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  conversationId: '',\n  clinicId: $('Calcular ventana y extraer telefono').item.json.clinicId,\n  clinicaNombre: $('Calcular ventana y extraer telefono').item.json.clinicaNombre,\n  motivo: 'peticion_humano',\n  prioridad: 'normal',\n  resumenParaRecepcion: 'Recordatorio de 24h sin respuesta para la cita del ' + $('Calcular ventana y extraer telefono').item.json.fechaCitaIso + '. Verificar con el paciente antes de la hora de la cita (recordatorio de 3h aun se envia por separado).',\n  telefonoPaciente: $('Calcular ventana y extraer telefono').item.json.telefonoPaciente,\n  canal: 'whatsapp',\n  ocurridoEn: new Date().toISOString(),\n}) }}",
+        "options": {}
+      },
+      "name": "Alertar a recepcion (webhook de F4)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2120,
+        620
+      ],
+      "id": "6f688d54-8f6a-4624-acea-d91da321fd54"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO audit_log (clinic_id, evento, detalle_enmascarado)\nVALUES (\n  '{{ $('Calcular ventana y extraer telefono').item.json.clinicId }}'::uuid,\n  'recordatorio_sin_respuesta_escalado',\n  '{{ JSON.stringify({\n      calendarEventId: $('Calcular ventana y extraer telefono').item.json.calendarEventId,\n      fechaCitaIso: $('Calcular ventana y extraer telefono').item.json.fechaCitaIso,\n      telefonoEnmascarado: String($('Calcular ventana y extraer telefono').item.json.telefonoPaciente).replace(/\\d(?=\\d{2})/g, '*')\n    }).replace(/'/g, \"''\") }}'::jsonb\n);",
+        "options": {}
+      },
+      "name": "Registrar escalamiento por falta de respuesta",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        2380,
+        620
+      ],
+      "id": "be03b2fe-958d-48bb-b449-0a0764fb1b8f",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "Fin de este evento (continuar con la clinica)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        460
+      ],
+      "id": "8fa425a8-f5c8-4b68-9de8-0143e6d78f83"
+    },
+    {
+      "parameters": {},
+      "name": "Fin de la ejecucion",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        300,
+        900
+      ],
+      "id": "7ff920b3-9eb0-4d53-ae2b-f1417485a10e"
+    }
+  ],
+  "connections": {
+    "Cada hora": {
+      "main": [
+        [
+          {
+            "node": "Clinicas con calendario configurado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clinicas con calendario configurado": {
+      "main": [
+        [
+          {
+            "node": "Por clinica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Por clinica": {
+      "main": [
+        [
+          {
+            "node": "Eventos proximos (72h)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fin de la ejecucion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Eventos proximos (72h)": {
+      "main": [
+        [
+          {
+            "node": "Calcular ventana y extraer telefono",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular ventana y extraer telefono": {
+      "main": [
+        [
+          {
+            "node": "Hay ventana y telefono?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "24h enviado + grace period + actividad paciente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hay ventana y telefono?": {
+      "main": [
+        [
+          {
+            "node": "Recordatorio ya enviado? (idempotencia)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fin de este evento (continuar con la clinica)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recordatorio ya enviado? (idempotencia)": {
+      "main": [
+        [
+          {
+            "node": "No enviado aun?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No enviado aun?": {
+      "main": [
+        [
+          {
+            "node": "Enviar plantilla WhatsApp (recordatorio)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fin de este evento (continuar con la clinica)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar plantilla WhatsApp (recordatorio)": {
+      "main": [
+        [
+          {
+            "node": "Registrar envio (idempotencia)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar envio (idempotencia)": {
+      "main": [
+        [
+          {
+            "node": "Fin de este evento (continuar con la clinica)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "24h enviado + grace period + actividad paciente": {
+      "main": [
+        [
+          {
+            "node": "Sin respuesta del paciente?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sin respuesta del paciente?": {
+      "main": [
+        [
+          {
+            "node": "Ya se aviso esta falta de respuesta?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fin de este evento (continuar con la clinica)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ya se aviso esta falta de respuesta?": {
+      "main": [
+        [
+          {
+            "node": "No escalado aun?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No escalado aun?": {
+      "main": [
+        [
+          {
+            "node": "Alertar a recepcion (webhook de F4)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fin de este evento (continuar con la clinica)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alertar a recepcion (webhook de F4)": {
+      "main": [
+        [
+          {
+            "node": "Registrar escalamiento por falta de respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar escalamiento por falta de respuesta": {
+      "main": [
+        [
+          {
+            "node": "Fin de este evento (continuar con la clinica)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fin de este evento (continuar con la clinica)": {
+      "main": [
+        [
+          {
+            "node": "Por clinica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "name": "F6_reporte_mensual",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6 1 * *"
+            }
+          ]
+        }
+      },
+      "name": "Dia 1 del mes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ],
+      "id": "c8badf71-0f62-418d-99d0-0a5dba124d5a"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH periodo AS (\n  SELECT date_trunc('month', now()) - interval '1 month' AS inicio,\n         date_trunc('month', now()) AS fin\n)\nSELECT\n  (SELECT count(*) FROM conversations c, periodo\n     WHERE c.iniciada_en >= periodo.inicio AND c.iniciada_en < periodo.fin) AS total_conversaciones,\n  (SELECT count(*) FROM conversations c, periodo\n     WHERE c.iniciada_en >= periodo.inicio AND c.iniciada_en < periodo.fin\n       AND c.canal_origen = 'whatsapp') AS conversaciones_whatsapp,\n  (SELECT count(*) FROM conversations c, periodo\n     WHERE c.iniciada_en >= periodo.inicio AND c.iniciada_en < periodo.fin\n       AND c.canal_origen = 'voice') AS conversaciones_voz,\n  (SELECT count(*) FROM conversations c, periodo\n     WHERE c.iniciada_en >= periodo.inicio AND c.iniciada_en < periodo.fin\n       AND c.estado = 'escalada') AS conversaciones_escaladas,\n  (SELECT json_object_agg(motivo, cnt) FROM (\n     SELECT coalesce(escalada_motivo, 'sin_motivo_registrado') AS motivo, count(*) AS cnt\n     FROM conversations c, periodo\n     WHERE c.iniciada_en >= periodo.inicio AND c.iniciada_en < periodo.fin AND c.estado = 'escalada'\n     GROUP BY 1\n   ) t) AS escalamientos_por_motivo,\n  (SELECT json_object_agg(herramienta, cnt) FROM (\n     SELECT tc.herramienta, count(*) AS cnt\n     FROM tool_calls tc JOIN conversations c ON c.id = tc.conversation_id, periodo\n     WHERE c.iniciada_en >= periodo.inicio AND c.iniciada_en < periodo.fin\n     GROUP BY 1\n   ) t) AS llamadas_por_herramienta,\n  (SELECT count(*) FROM tool_calls tc JOIN conversations c ON c.id = tc.conversation_id, periodo\n     WHERE c.iniciada_en >= periodo.inicio AND c.iniciada_en < periodo.fin\n       AND tc.herramienta = 'crear_cita' AND tc.estado = 'ok') AS citas_creadas,\n  (SELECT round(avg(m.latencia_ms)) FROM messages m JOIN conversations c ON c.id = m.conversation_id, periodo\n     WHERE c.iniciada_en >= periodo.inicio AND c.iniciada_en < periodo.fin\n       AND m.rol = 'assistant' AND m.latencia_ms IS NOT NULL) AS latencia_prom_ms,\n  (SELECT count(*) FROM calls ca JOIN conversations c ON c.id = ca.conversation_id, periodo\n     WHERE c.iniciada_en >= periodo.inicio AND c.iniciada_en < periodo.fin) AS llamadas_voz_totales,\n  (SELECT round(avg(ca.voice_duration_s)) FROM calls ca JOIN conversations c ON c.id = ca.conversation_id, periodo\n     WHERE c.iniciada_en >= periodo.inicio AND c.iniciada_en < periodo.fin\n       AND ca.voice_duration_s IS NOT NULL) AS duracion_prom_llamada_s;\n-- LIMITACION DELIBERADA (ver README): esta consulta agrega TODAS las\n-- clinicas, sin filtrar por clinic_id. Coherente con que el resto del\n-- sistema (WHATSAPP_PHONE_ID, CLINIC_ID) hoy solo soporta una clinica en\n-- produccion (ver decisiones.md, vacio 5). Multi-clinica exigiria repetir\n-- este bloque por clinic_id, que no se implemento aqui para no fingir una\n-- capacidad multi-tenant que el resto del nucleo tampoco tiene todavia.",
+        "options": {}
+      },
+      "name": "Metricas del mes anterior",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        260,
+        300
+      ],
+      "id": "617ce90c-1930-47e2-bb35-af457c111cb7",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const metricas = $input.first().json;\n\nconst mesAnterior = new Date();\nmesAnterior.setMonth(mesAnterior.getMonth() - 1);\nconst nombreMes = mesAnterior.toLocaleString('es-PE', { month: 'long', year: 'numeric' });\n\nreturn [{\n  json: {\n    mes: nombreMes,\n    metricas,\n    resumenParaPrompt: JSON.stringify(metricas, null, 2),\n  },\n}];"
+      },
+      "name": "Formatear metricas para el prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        520,
+        300
+      ],
+      "id": "f9a7bc7a-e60b-4131-9f4f-a0f8707937bb"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  model: 'claude-sonnet-5',\n  max_tokens: 1024,\n  messages: [\n    {\n      role: 'user',\n      content: 'Redacta en espanol, para la direccion de una clinica dental/estetica, una narrativa breve (200-300 palabras) del reporte mensual de Recepcion-IA a partir de ESTAS metricas reales. No inventes ningun dato que no este en el JSON; si falta un dato, dilo explicitamente en vez de estimarlo.\\n\\n' + $json.resumenParaPrompt + '\\n\\nEstructura pedida: 1) resumen ejecutivo, 2) volumen de conversaciones por canal, 3) citas agendadas, 4) escalamientos y sus motivos, 5) una recomendacion operativa solo si los datos la sugieren claramente.'\n    }\n  ]\n}) }}",
+        "options": {}
+      },
+      "name": "Generar narrativa con Claude",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        300
+      ],
+      "id": "b9697d3d-f9bf-4699-b51c-6c14e0b2c877",
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Anthropic API - Recepcion IA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// La API de Anthropic (Messages) devuelve el texto en content[0].text.\nconst respuesta = $input.first().json;\nconst narrativa =\n  (respuesta && respuesta.content && respuesta.content[0] && respuesta.content[0].text) ||\n  '(no se pudo generar la narrativa: la respuesta de Claude no trajo contenido de texto)';\n\nconst contexto = $('Formatear metricas para el prompt').item.json;\n\nreturn [{\n  json: {\n    mes: contexto.mes,\n    metricas: contexto.metricas,\n    narrativa,\n    estado: 'listo_para_envio',\n    generadoEn: new Date().toISOString(),\n  },\n}];\n// NOTA (ver README): la especificacion (seccion 11) describe este flujo como\n// \"narrativa -> PDF -> envio\". Este nodo se detiene en \"narrativa lista\":\n// no genera PDF (ningun nodo de la lista de nodos estandar autorizada para\n// esta rama lo hace) ni lo envia (no hay canal de envio ni credencial\n// definidos para el reporte mensual en config.ts ni en la especificacion).\n// Se documenta como contradiccion/vacio en el informe final, no se inventa\n// un canal de entrega que nadie pidio."
+      },
+      "name": "Ensamblar reporte final",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        300
+      ],
+      "id": "65083dec-a629-4931-b8d7-ea7dd41a0ec4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO audit_log (evento, detalle_enmascarado)\nVALUES (\n  'reporte_mensual_generado',\n  '{{ JSON.stringify({ mes: $json.mes, longitudNarrativa: ($json.narrativa || '').length, estado: $json.estado }).replace(/'/g, \"''\") }}'::jsonb\n);",
+        "options": {}
+      },
+      "name": "Registrar generacion de reporte",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1300,
+        300
+      ],
+      "id": "72e795d2-4a2e-4f7a-a348-dec3331f5d3e",
+      "credentials": {
+        "postgres": {
+          "name": "Postgres - Recepcion IA"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Dia 1 del mes": {
+      "main": [
+        [
+          {
+            "node": "Metricas del mes anterior",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metricas del mes anterior": {
+      "main": [
+        [
+          {
+            "node": "Formatear metricas para el prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear metricas para el prompt": {
+      "main": [
+        [
+          {
+            "node": "Generar narrativa con Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar narrativa con Claude": {
+      "main": [
+        [
+          {
+            "node": "Ensamblar reporte final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ensamblar reporte final": {
+      "main": [
+        [
+          {
+            "node": "Registrar generacion de reporte",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
