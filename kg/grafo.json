@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "def6ff492d7c21f1",
+  "huella": "5d67cdb3b3f169e4",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -884,6 +884,21 @@
           "node:readline/promises"
         ],
         "lineas": 291,
+        "capa": "scripts"
+      }
+    },
+    {
+      "id": "modulo:scripts/diagnostico.ts",
+      "tipo": "modulo",
+      "nombre": "diagnostico.ts",
+      "ruta": "scripts/diagnostico.ts",
+      "resumen": "DIAGNOSTICO DE INTEGRACIONES.",
+      "meta": {
+        "externas": [
+          "dotenv/config",
+          "pg"
+        ],
+        "lineas": 392,
         "capa": "scripts"
       }
     },
@@ -7346,6 +7361,138 @@
       "relacion": "pertenece_a",
       "hacia": "capa:scripts",
       "origen": "scripts/demo.ts"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/claude.service.ts",
+      "origen": "scripts/diagnostico.ts:29"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/embedding.service.ts",
+      "origen": "scripts/diagnostico.ts:30"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/calendar.client.ts",
+      "origen": "scripts/diagnostico.ts:28"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/config.ts",
+      "origen": "scripts/diagnostico.ts:24"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/logger.ts",
+      "origen": "scripts/diagnostico.ts:26"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/supabase.client.ts",
+      "origen": "scripts/diagnostico.ts:27"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:ANTHROPIC_API_KEY",
+      "origen": "scripts/diagnostico.ts:100"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
+      "origen": "scripts/diagnostico.ts:111"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
+      "origen": "scripts/diagnostico.ts:101"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:ELEVENLABS_API_KEY",
+      "origen": "scripts/diagnostico.ts:308"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:EMBEDDING_DIMENSIONS",
+      "origen": "scripts/diagnostico.ts:141"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:EMBEDDING_MODEL",
+      "origen": "scripts/diagnostico.ts:140"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:GOOGLE_CALENDAR_CREDENTIALS",
+      "origen": "scripts/diagnostico.ts:263"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:SUPABASE_DB_URL",
+      "origen": "scripts/diagnostico.ts:205"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:SUPABASE_SERVICE_KEY",
+      "origen": "scripts/diagnostico.ts:352"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:VOICE_ENABLED",
+      "origen": "scripts/diagnostico.ts:300"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:VOYAGE_API_KEY",
+      "origen": "scripts/diagnostico.ts:135"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:WHATSAPP_BSP_TOKEN",
+      "origen": "scripts/diagnostico.ts:283"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:WHATSAPP_ENABLED",
+      "origen": "scripts/diagnostico.ts:278"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:WHATSAPP_PHONE_ID",
+      "origen": "scripts/diagnostico.ts:282"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "menciona",
+      "hacia": "control:C9",
+      "origen": "scripts/diagnostico.ts:221"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:scripts",
+      "origen": "scripts/diagnostico.ts"
     },
     {
       "desde": "modulo:scripts/migrate.ts",
