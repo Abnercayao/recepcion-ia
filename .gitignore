@@ -12,3 +12,6 @@ tmp/
 
 # vista derivada de kg/grafo.json, se regenera con `npm run kg:visor`
 kg/grafo.html
+
+# SQL generado desde db/migrations por `npm run db:sql`
+migraciones.sql

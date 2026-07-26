@@ -170,29 +170,47 @@ const ETAPAS: Etapa[] = [
     nombre: 'supabase-api',
     titulo: 'Supabase — acceso por API REST y presencia de las 11 tablas',
     async ejecutar(config) {
-      const supabase = createSupabaseClient(config);
-      const detalle: string[] = [];
-      const ausentes: string[] = [];
+      // NO USAR `head: true` PARA COMPROBAR QUE UNA TABLA EXISTE.
+      //
+      // PostgREST responde 204 sin error a una peticion HEAD aunque la tabla
+      // no exista: `count` llega como null y el SDK no marca error. Esta
+      // comprobacion daba por buenas once tablas inexistentes. Se pregunta a
+      // la raiz de PostgREST, que enumera lo que hay expuesto de verdad, y se
+      // confirma con un GET real (`limit=0`), que si devuelve 404.
+      const raiz = await conLimiteDeTiempo(
+        fetch(`${config.SUPABASE_URL}/rest/v1/`, {
+          headers: { apikey: config.SUPABASE_SERVICE_KEY, Authorization: `Bearer ${config.SUPABASE_SERVICE_KEY}` },
+        }),
+        TIEMPO_MAXIMO_MS,
+        'raiz de PostgREST',
+      );
+      if (!raiz.ok) return fallo(`PostgREST respondio ${raiz.status}: revisa SUPABASE_URL y la clave`);
 
+      const spec = (await raiz.json()) as { definitions?: Record<string, unknown> };
+      const expuestas = new Set(Object.keys(spec.definitions ?? {}));
+      const ausentes = TABLAS.filter((t) => !expuestas.has(t));
+      const detalle = [`PostgREST expone ${expuestas.size} tablas`];
+
+      if (ausentes.length === TABLAS.length) {
+        return fallo(
+          ...detalle,
+          'NINGUNA de las 11 tablas del proyecto existe: las migraciones no se han aplicado',
+          'aplica db/migrations/001..003 antes de sembrar o arrancar',
+        );
+      }
+      if (ausentes.length > 0) {
+        return fallo(...detalle, `faltan: ${ausentes.join(', ')}`, 'migraciones aplicadas a medias');
+      }
+
+      const supabase = createSupabaseClient(config);
       for (const tabla of TABLAS) {
-        // `head: true` con `count` no descarga ni una fila: solo pregunta
-        // cuantas hay. Es la comprobacion mas barata de que la tabla existe y
-        // de que la clave tiene permiso para leerla.
         const { count, error } = await conLimiteDeTiempo(
-          Promise.resolve(supabase.from(tabla).select('*', { count: 'exact', head: true })),
+          Promise.resolve(supabase.from(tabla).select('*', { count: 'exact' }).limit(0)),
           TIEMPO_MAXIMO_MS,
           `tabla ${tabla}`,
         );
-        if (error) ausentes.push(`${tabla} (${error.message})`);
-        else detalle.push(`${tabla}: ${count ?? 0} filas`);
-      }
-
-      if (ausentes.length > 0) {
-        return fallo(
-          ...detalle,
-          `NO accesibles: ${ausentes.join(', ')}`,
-          'si la base esta vacia, faltan las migraciones: `npm run db:migrate`',
-        );
+        if (error) return fallo(...detalle, `${tabla}: ${error.message}`);
+        detalle.push(`${tabla}: ${count ?? 0} filas`);
       }
       return ok(...detalle);
     },

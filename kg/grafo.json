@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "5d67cdb3b3f169e4",
+  "huella": "0ee17e2ea733122e",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -878,12 +878,13 @@
       "resumen": "Demo conversacional en la terminal.",
       "meta": {
         "externas": [
+          "dotenv/config",
           "node:fs/promises",
           "node:path",
           "node:process",
           "node:readline/promises"
         ],
-        "lineas": 291,
+        "lineas": 298,
         "capa": "scripts"
       }
     },
@@ -898,7 +899,7 @@
           "dotenv/config",
           "pg"
         ],
-        "lineas": 392,
+        "lineas": 410,
         "capa": "scripts"
       }
     },
@@ -910,12 +911,13 @@
       "resumen": "migrate.ts",
       "meta": {
         "externas": [
+          "dotenv/config",
           "node:crypto",
           "node:fs",
           "node:path",
           "node:url"
         ],
-        "lineas": 311,
+        "lineas": 318,
         "capa": "scripts"
       }
     },
@@ -928,11 +930,29 @@
       "meta": {
         "externas": [
           "@supabase/supabase-js",
+          "dotenv/config",
           "node:fs/promises",
           "node:path",
           "zod"
         ],
-        "lineas": 229,
+        "lineas": 236,
+        "capa": "scripts"
+      }
+    },
+    {
+      "id": "modulo:scripts/sql-para-pegar.ts",
+      "tipo": "modulo",
+      "nombre": "sql-para-pegar.ts",
+      "ruta": "scripts/sql-para-pegar.ts",
+      "resumen": "Genera UN solo archivo SQL con todas las migraciones pendientes, listo para",
+      "meta": {
+        "externas": [
+          "node:crypto",
+          "node:fs",
+          "node:path",
+          "node:url"
+        ],
+        "lineas": 96,
         "capa": "scripts"
       }
     },
@@ -2205,7 +2225,7 @@
       "tipo": "simbolo",
       "nombre": "planPending",
       "ruta": "scripts/migrate.ts",
-      "linea": 128,
+      "linea": 135,
       "resumen": "Decide que migraciones faltan por aplicar. Funcion pura (sin I/O): facil de",
       "meta": {
         "clase": "function"
@@ -7306,55 +7326,55 @@
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/claude/claude.service.ts",
-      "origen": "scripts/demo.ts:26"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/claude/guardrails.ts",
-      "origen": "scripts/demo.ts:28"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/claude/prompt.builder.ts",
-      "origen": "scripts/demo.ts:29"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/conversation/conversation.service.ts",
-      "origen": "scripts/demo.ts:32"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/conversation/message.router.ts",
-      "origen": "scripts/demo.ts:31"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/chunker.ts",
       "origen": "scripts/demo.ts:33"
     },
     {
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/core/claude/guardrails.ts",
+      "origen": "scripts/demo.ts:35"
+    },
+    {
+      "desde": "modulo:scripts/demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/prompt.builder.ts",
+      "origen": "scripts/demo.ts:36"
+    },
+    {
+      "desde": "modulo:scripts/demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/conversation.service.ts",
+      "origen": "scripts/demo.ts:39"
+    },
+    {
+      "desde": "modulo:scripts/demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/message.router.ts",
+      "origen": "scripts/demo.ts:38"
+    },
+    {
+      "desde": "modulo:scripts/demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/chunker.ts",
+      "origen": "scripts/demo.ts:40"
+    },
+    {
+      "desde": "modulo:scripts/demo.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/core/types/index.ts",
-      "origen": "scripts/demo.ts:34"
+      "origen": "scripts/demo.ts:41"
     },
     {
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/urgency/urgency.detector.ts",
-      "origen": "scripts/demo.ts:30"
+      "origen": "scripts/demo.ts:37"
     },
     {
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
       "hacia": "modulo:tests/helpers/dobles.ts",
-      "origen": "scripts/demo.ts:35"
+      "origen": "scripts/demo.ts:42"
     },
     {
       "desde": "modulo:scripts/demo.ts",
@@ -7420,7 +7440,7 @@
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ELEVENLABS_API_KEY",
-      "origen": "scripts/diagnostico.ts:308"
+      "origen": "scripts/diagnostico.ts:326"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
@@ -7438,25 +7458,31 @@
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:GOOGLE_CALENDAR_CREDENTIALS",
-      "origen": "scripts/diagnostico.ts:263"
+      "origen": "scripts/diagnostico.ts:281"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:SUPABASE_DB_URL",
-      "origen": "scripts/diagnostico.ts:205"
+      "origen": "scripts/diagnostico.ts:223"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:SUPABASE_SERVICE_KEY",
-      "origen": "scripts/diagnostico.ts:352"
+      "origen": "scripts/diagnostico.ts:182"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:SUPABASE_URL",
+      "origen": "scripts/diagnostico.ts:181"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_ENABLED",
-      "origen": "scripts/diagnostico.ts:300"
+      "origen": "scripts/diagnostico.ts:318"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
@@ -7468,25 +7494,25 @@
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_BSP_TOKEN",
-      "origen": "scripts/diagnostico.ts:283"
+      "origen": "scripts/diagnostico.ts:301"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_ENABLED",
-      "origen": "scripts/diagnostico.ts:278"
+      "origen": "scripts/diagnostico.ts:296"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_PHONE_ID",
-      "origen": "scripts/diagnostico.ts:282"
+      "origen": "scripts/diagnostico.ts:300"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "menciona",
       "hacia": "control:C9",
-      "origen": "scripts/diagnostico.ts:221"
+      "origen": "scripts/diagnostico.ts:239"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
@@ -7498,25 +7524,25 @@
       "desde": "modulo:scripts/migrate.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/migrate.ts#planPending",
-      "origen": "scripts/migrate.ts:128"
+      "origen": "scripts/migrate.ts:135"
     },
     {
       "desde": "modulo:scripts/migrate.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/types/index.ts",
-      "origen": "scripts/migrate.ts:56"
+      "origen": "scripts/migrate.ts:63"
     },
     {
       "desde": "modulo:scripts/migrate.ts",
       "relacion": "importa",
       "hacia": "modulo:src/infra/config.ts",
-      "origen": "scripts/migrate.ts:53"
+      "origen": "scripts/migrate.ts:60"
     },
     {
       "desde": "modulo:scripts/migrate.ts",
       "relacion": "importa",
       "hacia": "modulo:src/infra/logger.ts",
-      "origen": "scripts/migrate.ts:55"
+      "origen": "scripts/migrate.ts:62"
     },
     {
       "desde": "modulo:scripts/migrate.ts",
@@ -7528,61 +7554,61 @@
       "desde": "modulo:scripts/seed.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/rag/chunker.ts",
-      "origen": "scripts/seed.ts:21"
+      "origen": "scripts/seed.ts:28"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/rag/embedding.service.ts",
-      "origen": "scripts/seed.ts:22"
+      "origen": "scripts/seed.ts:29"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/rag/knowledge.repository.ts",
-      "origen": "scripts/seed.ts:23"
+      "origen": "scripts/seed.ts:30"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/types/index.ts",
-      "origen": "scripts/seed.ts:25"
+      "origen": "scripts/seed.ts:32"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "importa",
       "hacia": "modulo:src/infra/config.ts",
-      "origen": "scripts/seed.ts:24"
+      "origen": "scripts/seed.ts:31"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:EMBEDDING_DIMENSIONS",
-      "origen": "scripts/seed.ts:172"
+      "origen": "scripts/seed.ts:179"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:EMBEDDING_MODEL",
-      "origen": "scripts/seed.ts:171"
+      "origen": "scripts/seed.ts:178"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:SUPABASE_SERVICE_KEY",
-      "origen": "scripts/seed.ts:146"
+      "origen": "scripts/seed.ts:153"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:SUPABASE_URL",
-      "origen": "scripts/seed.ts:146"
+      "origen": "scripts/seed.ts:153"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOYAGE_API_KEY",
-      "origen": "scripts/seed.ts:136"
+      "origen": "scripts/seed.ts:143"
     },
     {
       "desde": "modulo:scripts/seed.ts",
@@ -7600,7 +7626,13 @@
       "desde": "modulo:scripts/seed.ts",
       "relacion": "usa_tabla",
       "hacia": "tabla:clinics",
-      "origen": "scripts/seed.ts:149"
+      "origen": "scripts/seed.ts:156"
+    },
+    {
+      "desde": "modulo:scripts/sql-para-pegar.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:scripts",
+      "origen": "scripts/sql-para-pegar.ts"
     },
     {
       "desde": "modulo:scripts/wer.ts",

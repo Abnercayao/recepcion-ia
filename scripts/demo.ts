@@ -20,6 +20,13 @@
  *
  * Uso:  npm run demo
  */
+// Carga `.env` antes que nada: `loadConfig()` y las lecturas directas de
+// `process.env` de este archivo ocurren al importar, y sin esto un `.env`
+// presente se ignoraria en silencio. `src/server.ts` ya lo hacia; los
+// scripts no, y por eso el flujo del README (`cp .env.example .env` y luego
+// `npm run db:migrate`) fallaba enumerando variables «ausentes» que si estaban.
+import 'dotenv/config';
+
 import { createInterface } from 'node:readline/promises';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';

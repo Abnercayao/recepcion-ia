@@ -25,7 +25,8 @@
     "db:seed": "tsx scripts/seed.ts",
     "demo": "tsx scripts/demo.ts",
     "wer": "tsx scripts/wer.ts",
-    "diagnostico": "tsx scripts/diagnostico.ts"
+    "diagnostico": "tsx scripts/diagnostico.ts",
+    "db:sql": "tsx scripts/sql-para-pegar.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",

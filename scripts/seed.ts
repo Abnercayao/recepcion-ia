@@ -15,6 +15,13 @@
  *   npm run db:seed -- --dir db/seed/clinica-demo
  *   npm run db:seed -- --dir db/seed/clinica-demo --aprobar-como "Dra. Carmen Rios"
  */
+// Carga `.env` antes que nada: `loadConfig()` y las lecturas directas de
+// `process.env` de este archivo ocurren al importar, y sin esto un `.env`
+// presente se ignoraria en silencio. `src/server.ts` ya lo hacia; los
+// scripts no, y por eso el flujo del README (`cp .env.example .env` y luego
+// `npm run db:migrate`) fallaba enumerando variables «ausentes» que si estaban.
+import 'dotenv/config';
+
 import { readFile, readdir } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import { createClient } from '@supabase/supabase-js';
