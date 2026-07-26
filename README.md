@@ -62,6 +62,7 @@ npm run kg -- panorama       # capas, puertos, herramientas, líneas rojas, tabl
 npm run kg -- ver crear_cita
 npm run kg -- control C9     # dónde se toca un control y qué lo prueba
 npm run kg:verificar         # ¿está al día? ¿se cumple la regla de dependencias?
+npm run kg:visor             # escribe kg/grafo.html: el grafo, para verlo
 ```
 
 `.mcp.json` lo expone además como servidor MCP, así que un agente abierto sobre

@@ -26,6 +26,9 @@ extractor en `kg/README.md`.
 **Si cambias código, regenera el grafo**: `npm run kg:extraer`. Si se olvida,
 `npm test` falla — hay una prueba que compara el artefacto con las fuentes.
 
+Para verlo gráficamente: `npm run kg:visor` escribe `kg/grafo.html`, una página
+autocontenida con dos disposiciones (fuerza y capas).
+
 ## Arquitectura
 
 ```

@@ -1,0 +1,1448 @@
+<style>
+  /* ---------------------------------------------------------------------
+     Visor del grafo de Recepcion-IA.
+
+     Registro visual: un panel de instrumental clinico. En claro es la ficha
+     de papel; en oscuro, el negatoscopio. Nada decorativo: la forma de cada
+     nodo y su anillo codifican informacion, no adornan.
+
+     Tipografia: monoespaciada para todo lo que es dato o etiqueta (la voz del
+     instrumento) y humanista para la prosa. Sin fuentes remotas: la CSP las
+     bloquea y una fuente que no carga degrada en silencio.
+     --------------------------------------------------------------------- */
+
+  :root {
+    color-scheme: light dark;
+
+    --fondo: #eef1f0;
+    --fondo-panel: #f8faf9;
+    --fondo-lienzo: #e5eae9;
+    --fondo-realce: #dfe6e4;
+    --tinta: #101719;
+    --tinta-media: #465358;
+    --tinta-suave: #6d7b80;
+    --borde: #ccd6d4;
+    --borde-fuerte: #b3c0bd;
+    --acento: #0d6f78;
+    --acento-tenue: #0d6f7818;
+    --alerta: #9e4a1c;
+    --alerta-tenue: #9e4a1c18;
+    --sombra: 0 1px 2px #0f1c1f14, 0 8px 24px #0f1c1f0f;
+
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --texto: ui-sans-serif, system-ui, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+
+    --paso: 0.75rem;
+    --radio: 3px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fondo: #0a1013;
+      --fondo-panel: #101a1e;
+      --fondo-lienzo: #070d10;
+      --fondo-realce: #17242a;
+      --tinta: #dbe6e7;
+      --tinta-media: #9aabb0;
+      --tinta-suave: #71858b;
+      --borde: #1d2c32;
+      --borde-fuerte: #2b3f47;
+      --acento: #37aab1;
+      --acento-tenue: #37aab122;
+      --alerta: #d4813f;
+      --alerta-tenue: #d4813f22;
+      --sombra: 0 1px 2px #0006, 0 10px 30px #0008;
+    }
+  }
+
+  /* El conmutador del visor debe ganar a la preferencia del sistema en ambos
+     sentidos, asi que se redeclaran los tokens completos en las dos ramas. */
+  :root[data-theme="dark"] {
+    --fondo: #0a1013;
+    --fondo-panel: #101a1e;
+    --fondo-lienzo: #070d10;
+    --fondo-realce: #17242a;
+    --tinta: #dbe6e7;
+    --tinta-media: #9aabb0;
+    --tinta-suave: #71858b;
+    --borde: #1d2c32;
+    --borde-fuerte: #2b3f47;
+    --acento: #37aab1;
+    --acento-tenue: #37aab122;
+    --alerta: #d4813f;
+    --alerta-tenue: #d4813f22;
+    --sombra: 0 1px 2px #0006, 0 10px 30px #0008;
+  }
+
+  :root[data-theme="light"] {
+    --fondo: #eef1f0;
+    --fondo-panel: #f8faf9;
+    --fondo-lienzo: #e5eae9;
+    --fondo-realce: #dfe6e4;
+    --tinta: #101719;
+    --tinta-media: #465358;
+    --tinta-suave: #6d7b80;
+    --borde: #ccd6d4;
+    --borde-fuerte: #b3c0bd;
+    --acento: #0d6f78;
+    --acento-tenue: #0d6f7818;
+    --alerta: #9e4a1c;
+    --alerta-tenue: #9e4a1c18;
+    --sombra: 0 1px 2px #0f1c1f14, 0 8px 24px #0f1c1f0f;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--tinta);
+    font-family: var(--texto);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: 244px minmax(0, 1fr) 330px;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  /* --- barra superior ------------------------------------------------- */
+
+  .barra {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: calc(var(--paso) * 2);
+    padding: 0 var(--paso);
+    min-height: 52px;
+    background: var(--fondo-panel);
+    border-bottom: 1px solid var(--borde);
+    flex-wrap: wrap;
+  }
+
+  .marca { display: flex; align-items: baseline; gap: 0.6rem; }
+
+  .marca__nombre {
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .marca__sub { font-size: 0.78rem; color: var(--tinta-suave); }
+
+  .metricas {
+    display: flex;
+    gap: calc(var(--paso) * 1.4);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--tinta-media);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .metricas b {
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--tinta);
+  }
+
+  .metricas span {
+    display: block;
+    font-size: 0.62rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--tinta-suave);
+  }
+
+  .barra__cola { margin-left: auto; display: flex; gap: 0.4rem; align-items: center; }
+
+  /* --- controles ------------------------------------------------------ */
+
+  .conmutador { display: flex; border: 1px solid var(--borde-fuerte); border-radius: var(--radio); overflow: hidden; }
+
+  .conmutador button {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.7rem;
+    border: 0;
+    background: transparent;
+    color: var(--tinta-media);
+    cursor: pointer;
+  }
+
+  .conmutador button + button { border-left: 1px solid var(--borde-fuerte); }
+  .conmutador button:hover { background: var(--fondo-realce); color: var(--tinta); }
+  .conmutador button[aria-pressed="true"] { background: var(--acento); color: #fff; }
+
+  :root[data-theme="dark"] .conmutador button[aria-pressed="true"],
+  .conmutador button[aria-pressed="true"] { color: #f4fbfb; }
+
+  .boton {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--borde-fuerte);
+    border-radius: var(--radio);
+    background: transparent;
+    color: var(--tinta-media);
+    cursor: pointer;
+  }
+
+  .boton:hover { background: var(--fondo-realce); color: var(--tinta); }
+
+  button:focus-visible,
+  input:focus-visible,
+  .tipo:focus-within { outline: 2px solid var(--acento); outline-offset: 2px; }
+
+  /* --- paneles laterales ---------------------------------------------- */
+
+  .panel {
+    background: var(--fondo-panel);
+    overflow-y: auto;
+    padding: var(--paso);
+    display: flex;
+    flex-direction: column;
+    gap: var(--paso);
+  }
+
+  .panel--izq { border-right: 1px solid var(--borde); }
+  .panel--der { border-left: 1px solid var(--borde); }
+
+  .rotulo {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tinta-suave);
+    margin: 0 0 0.45rem;
+  }
+
+  .buscador {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--borde-fuerte);
+    border-radius: var(--radio);
+    background: var(--fondo);
+    color: var(--tinta);
+  }
+
+  .buscador::placeholder { color: var(--tinta-suave); }
+
+  .tipos { display: flex; flex-direction: column; gap: 1px; }
+
+  .tipo {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.35rem;
+    border-radius: var(--radio);
+    cursor: pointer;
+    font-size: 0.78rem;
+    user-select: none;
+  }
+
+  .tipo:hover { background: var(--fondo-realce); }
+  .tipo input { margin: 0; accent-color: var(--acento); cursor: pointer; }
+  .tipo[data-apagado="si"] { color: var(--tinta-suave); }
+
+  .tipo__nombre { display: flex; align-items: center; gap: 0.4rem; min-width: 0; }
+  .tipo__nombre span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .muestra { width: 11px; height: 11px; flex: none; }
+
+  .tipo__cuenta {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--tinta-suave);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .acciones { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+  .nota {
+    font-size: 0.74rem;
+    line-height: 1.45;
+    color: var(--tinta-media);
+    border-left: 2px solid var(--alerta);
+    background: var(--alerta-tenue);
+    padding: 0.5rem 0.6rem;
+    border-radius: 0 var(--radio) var(--radio) 0;
+  }
+
+  .nota b { color: var(--tinta); font-weight: 600; }
+
+  /* --- lienzo ---------------------------------------------------------- */
+
+  .lienzo-caja { position: relative; background: var(--fondo-lienzo); overflow: hidden; }
+  canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+  canvas.arrastrando { cursor: grabbing; }
+
+  .pista {
+    position: absolute;
+    right: var(--paso);
+    top: var(--paso);
+    transition: opacity 0.3s;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--tinta-suave);
+    background: color-mix(in srgb, var(--fondo-panel) 82%, transparent);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    padding: 0.3rem 0.5rem;
+    pointer-events: none;
+  }
+
+  .globo {
+    position: absolute;
+    pointer-events: none;
+    background: var(--fondo-panel);
+    border: 1px solid var(--borde-fuerte);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+    padding: 0.4rem 0.55rem;
+    max-width: 280px;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.12s;
+  }
+
+  .globo[data-visible="si"] { opacity: 1; }
+  .globo strong { font-family: var(--mono); font-size: 0.76rem; display: block; }
+  .globo em { font-style: normal; color: var(--tinta-suave); font-size: 0.68rem; font-family: var(--mono); }
+
+  /* --- ficha ----------------------------------------------------------- */
+
+  .ficha__vacia { color: var(--tinta-suave); font-size: 0.8rem; line-height: 1.55; }
+
+  .ficha__titulo {
+    font-family: var(--mono);
+    font-size: 0.98rem;
+    font-weight: 600;
+    margin: 0 0 0.2rem;
+    word-break: break-word;
+    text-wrap: balance;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.14rem 0.4rem;
+    border-radius: 2px;
+    border: 1px solid currentColor;
+  }
+
+  .ficha__donde {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--tinta-media);
+    word-break: break-all;
+    margin: 0.5rem 0 0;
+  }
+
+  .ficha__resumen { font-size: 0.82rem; line-height: 1.55; margin: 0.55rem 0 0; color: var(--tinta-media); }
+
+  .ficha__aviso {
+    font-size: 0.74rem;
+    margin: 0.55rem 0 0;
+    padding: 0.45rem 0.55rem;
+    border-left: 2px solid var(--alerta);
+    background: var(--alerta-tenue);
+    color: var(--tinta-media);
+    border-radius: 0 var(--radio) var(--radio) 0;
+  }
+
+  .meta { display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 0.6rem; font-size: 0.74rem; margin: 0.6rem 0 0; }
+  .meta dt { font-family: var(--mono); color: var(--tinta-suave); }
+  .meta dd { margin: 0; word-break: break-word; }
+
+  .relacion { margin-top: 0.85rem; }
+
+  .relacion__cabecera {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tinta-suave);
+    display: flex;
+    gap: 0.35rem;
+    align-items: baseline;
+    margin-bottom: 0.25rem;
+  }
+
+  .relacion__cabecera b { color: var(--acento); font-weight: 600; }
+
+  .enlace {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 0.73rem;
+    padding: 0.2rem 0.35rem;
+    border: 0;
+    border-radius: var(--radio);
+    background: transparent;
+    color: var(--tinta);
+    cursor: pointer;
+    word-break: break-word;
+  }
+
+  .enlace:hover { background: var(--fondo-realce); }
+  .enlace i { font-style: normal; color: var(--tinta-suave); }
+
+  /* --- adaptacion a pantallas estrechas -------------------------------- */
+
+  @media (max-width: 980px) {
+    .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(320px, 1fr) auto; }
+    .panel { max-height: 34vh; border: 0; border-bottom: 1px solid var(--borde); }
+    .panel--der { border-top: 1px solid var(--borde); border-bottom: 0; }
+    .metricas { gap: var(--paso); }
+  }
+
+  .pista[data-oculta="si"] { opacity: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .globo, .pista { transition: none; }
+  }
+</style>
+
+<div class="app">
+  <header class="barra">
+    <div class="marca">
+      <span class="marca__nombre">Recepción-IA</span>
+      <span class="marca__sub">grafo de conocimiento</span>
+    </div>
+
+    <div class="metricas">
+      <div><b id="m-nodos">—</b><span>nodos</span></div>
+      <div><b id="m-aristas">—</b><span>aristas</span></div>
+      <div><b id="m-huella">—</b><span>huella</span></div>
+    </div>
+
+    <div class="barra__cola">
+      <div class="conmutador" role="group" aria-label="Disposición">
+        <button type="button" id="b-fuerza" aria-pressed="true">Fuerza</button>
+        <button type="button" id="b-capas" aria-pressed="false">Capas</button>
+      </div>
+      <button type="button" class="boton" id="b-tema">Tema</button>
+    </div>
+  </header>
+
+  <aside class="panel panel--izq">
+    <div>
+      <p class="rotulo">Buscar</p>
+      <input type="search" class="buscador" id="buscador" placeholder="cita, guardrail, RLS…" aria-label="Buscar en el grafo" />
+    </div>
+
+    <div>
+      <p class="rotulo">Qué se muestra</p>
+      <div class="tipos" id="tipos"></div>
+    </div>
+
+    <div class="acciones">
+      <button type="button" class="boton" id="b-arquitectura">Arquitectura</button>
+      <button type="button" class="boton" id="b-todo">Todo</button>
+      <button type="button" class="boton" id="b-recolocar">Recolocar</button>
+    </div>
+
+    <p class="nota" id="nota-hallazgo"></p>
+  </aside>
+
+  <main class="lienzo-caja">
+    <canvas id="lienzo"></canvas>
+    <div class="globo" id="globo" role="status"></div>
+    <p class="pista" id="pista">Clic para abrir la ficha · arrastra para mover · rueda para acercar</p>
+  </main>
+
+  <aside class="panel panel--der" id="ficha">
+    <div class="ficha__vacia">
+      <p class="rotulo">Ficha</p>
+      <p>Selecciona un nodo para ver qué es, dónde vive y con qué se conecta.</p>
+      <p>La disposición <b>Capas</b> ordena el grafo por estrato arquitectónico: los contratos a la izquierda, la infraestructura a la derecha. La regla del proyecto —<b>core/</b> nunca importa de <b>channels/</b> ni de <b>infra/</b>— se lee en la dirección de las aristas.</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+  (() => {
+    'use strict';
+
+    const DATOS = /*__DATOS__*/ null;
+
+    // -----------------------------------------------------------------
+    // Vocabulario visual
+    //
+    // La FORMA codifica el papel del nodo, no solo su color: con diecisiete
+    // tipos, el color solo ya no distingue. Un puerto es un hexagono porque
+    // es una frontera; una linea roja, un triangulo de aviso; una tabla, un
+    // cuadrado; una herramienta, un rombo.
+    // -----------------------------------------------------------------
+    const TIPOS = {
+      capa:                  { etiqueta: 'Capa',              color: '#5b7a99', forma: 'anillo',    peso: 3 },
+      modulo:                { etiqueta: 'Módulo',            color: '#0e7c86', forma: 'circulo',   peso: 1 },
+      simbolo:               { etiqueta: 'Símbolo',           color: '#7d8b93', forma: 'circulo',   peso: 0 },
+      puerto:                { etiqueta: 'Puerto',            color: '#6b5ca5', forma: 'hexagono',  peso: 3 },
+      herramienta:           { etiqueta: 'Herramienta',       color: '#3f7a4e', forma: 'rombo',     peso: 3 },
+      control:               { etiqueta: 'Control',           color: '#a9762b', forma: 'diana',     peso: 2 },
+      categoria_adversarial: { etiqueta: 'Categoría advers.', color: '#a8503c', forma: 'diana',     peso: 2 },
+      linea_roja:            { etiqueta: 'Línea roja',        color: '#9b2f3f', forma: 'triangulo', peso: 3 },
+      canal:                 { etiqueta: 'Canal',             color: '#8e4a78', forma: 'anillo',    peso: 3 },
+      tabla:                 { etiqueta: 'Tabla',             color: '#2f5fa8', forma: 'cuadrado',  peso: 2 },
+      politica_rls:          { etiqueta: 'Política RLS',      color: '#4e6ba8', forma: 'cuadrado',  peso: 1 },
+      documento:             { etiqueta: 'Documento',         color: '#7a6f63', forma: 'circulo',   peso: 1 },
+      prompt:                { etiqueta: 'Prompt',            color: '#8a7448', forma: 'circulo',   peso: 2 },
+      flujo:                 { etiqueta: 'Flujo n8n',         color: '#6e7b5f', forma: 'circulo',   peso: 1 },
+      prueba:                { etiqueta: 'Prueba',            color: '#4a7c74', forma: 'circulo',   peso: 1 },
+      variable_entorno:      { etiqueta: 'Variable entorno',  color: '#8b8071', forma: 'circulo',   peso: 0 },
+      fase:                  { etiqueta: 'Fase',              color: '#606a73', forma: 'anillo',    peso: 1 },
+    };
+
+    /** Vista inicial: el esqueleto del sistema. Los simbolos y las variables
+     *  de entorno son casi el 70 % de los nodos y convierten el grafo en
+     *  maleza; se activan a mano cuando de verdad hacen falta. */
+    const VISTA_ARQUITECTURA = new Set([
+      'capa', 'modulo', 'puerto', 'herramienta', 'control', 'categoria_adversarial',
+      'linea_roja', 'canal', 'tabla', 'prompt', 'prueba', 'documento', 'flujo', 'fase',
+    ]);
+
+    /** Orden de columnas en la disposición por capas: de contrato a concreto. */
+    const COLUMNAS = [
+      'capa:contratos', 'capa:nucleo', 'capa:canales', 'capa:composicion',
+      'capa:infraestructura', 'capa:datos', 'capa:scripts', 'capa:prompts',
+      'capa:pruebas', 'capa:documentacion', 'capa:flujos',
+    ];
+
+    const COLUMNA_POR_TIPO = {
+      puerto: 'capa:contratos',
+      herramienta: 'capa:nucleo',
+      tabla: 'capa:datos',
+      politica_rls: 'capa:datos',
+      canal: 'capa:canales',
+      categoria_adversarial: 'capa:pruebas',
+      prompt: 'capa:prompts',
+    };
+
+    // -----------------------------------------------------------------
+    // Utilidades de color
+    // -----------------------------------------------------------------
+
+    const aHsl = (hex) => {
+      const n = parseInt(hex.slice(1), 16);
+      const r = ((n >> 16) & 255) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      const l = (max + min) / 2;
+      let h = 0, s = 0;
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        if (max === r) h = ((g - b) / d + (g < b ? 6 : 0));
+        else if (max === g) h = (b - r) / d + 2;
+        else h = (r - g) / d + 4;
+        h *= 60;
+      }
+      return [h, s * 100, l * 100];
+    };
+
+    /** Los colores base estan elegidos para fondo claro; sobre el negatoscopio
+     *  se aclaran y se desatura un punto, que es lo que mantiene el contraste
+     *  sin que la paleta chille. */
+    const colorDeTipo = (tipo, oscuro) => {
+      const base = (TIPOS[tipo] || { color: '#808080' }).color;
+      if (!oscuro) return base;
+      const [h, s, l] = aHsl(base);
+      return `hsl(${h.toFixed(0)} ${Math.max(0, s - 8).toFixed(0)}% ${Math.min(78, l + 20).toFixed(0)}%)`;
+    };
+
+    const esOscuro = () => {
+      const t = document.documentElement.getAttribute('data-theme');
+      if (t === 'dark') return true;
+      if (t === 'light') return false;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    };
+
+    const paleta = () => (esOscuro()
+      ? { arista: '#2a3f47', aristaViva: '#37aab1', texto: '#dbe6e7', textoSuave: '#8ea0a6', halo: '#070d10' }
+      : { arista: '#b9c6c4', aristaViva: '#0d6f78', texto: '#101719', textoSuave: '#5c6b70', halo: '#e5eae9' });
+
+    // -----------------------------------------------------------------
+    // Modelo
+    // -----------------------------------------------------------------
+
+    const nodos = DATOS.nodos.map((n) => ({
+      ...n,
+      x: 0, y: 0, vx: 0, vy: 0,
+      grado: 0,
+      visible: true,
+      atenuado: false,
+    }));
+
+    const porId = new Map(nodos.map((n) => [n.id, n]));
+
+    const aristas = [];
+    for (const a of DATOS.aristas) {
+      const desde = porId.get(a.desde);
+      const hacia = porId.get(a.hacia);
+      if (!desde || !hacia) continue;
+      aristas.push({ ...a, a: desde, b: hacia });
+      desde.grado += 1;
+      hacia.grado += 1;
+    }
+
+    const radioDe = (n) => 3.2 + Math.min(9, Math.sqrt(n.grado) * 1.5) + (TIPOS[n.tipo]?.peso || 0) * 0.9;
+    for (const n of nodos) n.radio = radioDe(n);
+
+    /** Una linea roja sin `violacion` solo la vigila el prompt: no hay control
+     *  automatico en capa 2. Es el hallazgo central del proyecto y se marca en
+     *  el propio dibujo, no solo en el texto. */
+    const sinControl = (n) => n.tipo === 'linea_roja' && !n.meta?.violacion;
+
+    const tiposActivos = new Set(VISTA_ARQUITECTURA);
+    let consulta = '';
+    let disposicion = 'fuerza';
+    let seleccionado = null;
+    let sobrevolado = null;
+
+    const cuentaPorTipo = {};
+    for (const n of nodos) cuentaPorTipo[n.tipo] = (cuentaPorTipo[n.tipo] || 0) + 1;
+
+    // -----------------------------------------------------------------
+    // Lienzo
+    // -----------------------------------------------------------------
+
+    const lienzo = document.getElementById('lienzo');
+    const ctx = lienzo.getContext('2d');
+    const globo = document.getElementById('globo');
+    let ancho = 0, alto = 0;
+    const vista = { x: 0, y: 0, k: 1 };
+
+    const redimensionar = () => {
+      const caja = lienzo.parentElement.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      ancho = Math.max(1, caja.width);
+      alto = Math.max(1, caja.height);
+      lienzo.width = Math.round(ancho * dpr);
+      lienzo.height = Math.round(alto * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      pintar();
+    };
+
+    const aMundo = (px, py) => ({ x: (px - vista.x) / vista.k, y: (py - vista.y) / vista.k });
+
+    // -----------------------------------------------------------------
+    // Visibilidad
+    // -----------------------------------------------------------------
+
+    let visibles = [];
+    let aristasVisibles = [];
+
+    const casa = (n, q) =>
+      n.nombre.toLowerCase().includes(q) ||
+      (n.ruta || '').toLowerCase().includes(q) ||
+      (n.resumen || '').toLowerCase().includes(q);
+
+    function recalcularVisibles() {
+      const q = consulta.trim().toLowerCase();
+      for (const n of nodos) {
+        n.visible = tiposActivos.has(n.tipo);
+        n.atenuado = false;
+      }
+      if (q) {
+        const directos = new Set();
+        for (const n of nodos) if (n.visible && casa(n, q)) directos.add(n.id);
+        // Se conservan los vecinos inmediatos: un resultado aislado no dice
+        // nada, lo que interesa es con que se conecta.
+        const contexto = new Set(directos);
+        for (const e of aristas) {
+          if (directos.has(e.a.id)) contexto.add(e.b.id);
+          if (directos.has(e.b.id)) contexto.add(e.a.id);
+        }
+        for (const n of nodos) {
+          // El vecindario se muestra AUNQUE su tipo este apagado. Buscar
+          // «CalendarPort» y no ver quien lo implementa —porque las clases son
+          // simbolos, ocultos por defecto— es justo lo contrario de lo que se
+          // esta preguntando.
+          if (contexto.has(n.id)) {
+            n.visible = true;
+            n.atenuado = !directos.has(n.id);
+          } else {
+            n.visible = false;
+          }
+        }
+      }
+      visibles = nodos.filter((n) => n.visible);
+      const vis = new Set(visibles.map((n) => n.id));
+      aristasVisibles = aristas.filter((e) => vis.has(e.a.id) && vis.has(e.b.id));
+      recalcularColumnas();
+      alfa = Math.max(alfa, 0.55);
+      ajustePendiente = true;
+      pintar();
+    }
+
+    // -----------------------------------------------------------------
+    // Simulacion
+    //
+    // Repulsion de todos contra todos con corte por distancia. Con los pocos
+    // cientos de nodos que se muestran a la vez el coste cuadratico es
+    // irrelevante y evita la complejidad de un arbol de Barnes-Hut.
+    // -----------------------------------------------------------------
+
+    const REPULSION = 9400;
+    const LONGITUD = 72;
+    const RIGIDEZ = 0.026;
+    const AMORTIGUACION = 0.86;
+    const CORTE2 = 380 * 380;
+    const MARGEN = 46;
+    /** Franja izquierda reservada a los nombres de banda en la vista por capas. */
+    const SANGRIA_CAPAS = 132;
+
+    let alfa = 1;
+    let arrastrado = null;
+    let ajustePendiente = false;
+    /** Columnas realmente ocupadas en la disposición por capas, de izquierda a
+     *  derecha. Se recalcula al cambiar de disposición o de filtros: dejar
+     *  huecos por capas vacías desperdicia la mitad del ancho. */
+    let columnasUsadas = [];
+
+    function colocarInicial() {
+      const centroX = ancho / 2, centroY = alto / 2;
+      nodos.forEach((n, i) => {
+        const angulo = i * 2.399963;
+        const radio = 18 * Math.sqrt(i);
+        n.x = centroX + Math.cos(angulo) * radio;
+        n.y = centroY + Math.sin(angulo) * radio;
+        n.vx = 0; n.vy = 0;
+      });
+      alfa = 1;
+    }
+
+    const columnaDe = (n) => {
+      if (n.tipo === 'capa') return n.id;
+      if (n.meta && n.meta.capa) return 'capa:' + n.meta.capa;
+      return COLUMNA_POR_TIPO[n.tipo] || null;
+    };
+
+    function simular() {
+      const n = visibles.length;
+      for (let i = 0; i < n; i++) {
+        const a = visibles[i];
+        for (let j = i + 1; j < n; j++) {
+          const b = visibles[j];
+          let dx = b.x - a.x, dy = b.y - a.y;
+          let d2 = dx * dx + dy * dy;
+          if (d2 > CORTE2) continue;
+          if (d2 < 0.01) { dx = Math.random() - 0.5; dy = Math.random() - 0.5; d2 = 0.01; }
+          const d = Math.sqrt(d2);
+          const f = (REPULSION / d2) * alfa;
+          const fx = (dx / d) * f, fy = (dy / d) * f;
+          a.vx -= fx; a.vy -= fy;
+          b.vx += fx; b.vy += fy;
+        }
+      }
+
+      for (const e of aristasVisibles) {
+        const dx = e.b.x - e.a.x, dy = e.b.y - e.a.y;
+        const d = Math.hypot(dx, dy) || 0.01;
+        const f = (d - LONGITUD) * RIGIDEZ * alfa;
+        const fx = (dx / d) * f, fy = (dy / d) * f;
+        e.a.vx += fx; e.a.vy += fy;
+        e.b.vx -= fx; e.b.vy -= fy;
+      }
+
+      const centroX = ancho / 2, centroY = alto / 2;
+      if (disposicion === 'capas') {
+        // BANDAS HORIZONTALES, no columnas: con doce estratos, doce columnas
+        // en un lienzo apaisado dejan setenta pixeles por capa y los rotulos
+        // se pisan. En bandas, el nombre de la capa se lee a la izquierda con
+        // sitio de sobra y los nodos se reparten a lo ancho. La regla de
+        // dependencias se lee de arriba abajo.
+        for (const nd of visibles) {
+          const objetivo = yDeBanda(columnaDe(nd));
+          nd.vy += (objetivo - nd.y) * 0.2 * Math.max(alfa, 0.4);
+        }
+      } else {
+        for (const nd of visibles) {
+          nd.vx += (centroX - nd.x) * 0.0035 * alfa;
+          nd.vy += (centroY - nd.y) * 0.0035 * alfa;
+        }
+      }
+
+      for (const nd of visibles) {
+        if (nd === arrastrado) { nd.vx = 0; nd.vy = 0; continue; }
+        nd.vx *= AMORTIGUACION;
+        nd.vy *= AMORTIGUACION;
+        nd.x += Math.max(-28, Math.min(28, nd.vx));
+        nd.y += Math.max(-28, Math.min(28, nd.vy));
+        // Contencion blanda: sin esto los nodos periféricos se van fuera del
+        // lienzo y sus rótulos aparecen cortados contra los paneles.
+        const izquierda = disposicion === 'capas' ? SANGRIA_CAPAS : MARGEN;
+        if (nd.x < izquierda) nd.vx += (izquierda - nd.x) * 0.18;
+        else if (nd.x > ancho - MARGEN) nd.vx += (ancho - MARGEN - nd.x) * 0.18;
+        if (disposicion === 'fuerza') {
+          if (nd.y < MARGEN) nd.vy += (MARGEN - nd.y) * 0.18;
+          else if (nd.y > alto - MARGEN) nd.vy += (alto - MARGEN - nd.y) * 0.18;
+        }
+      }
+
+      alfa *= 0.985;
+      // Se reencuadra en cuanto la disposicion es reconocible, no cuando se
+      // enfria del todo: esperar los ultimos decimales deja varios segundos de
+      // grafo minusculo en una esquina.
+      if (ajustePendiente && alfa < 0.09) {
+        ajustePendiente = false;
+        // En la vista por capas las bandas ya se calculan sobre el lienzo: no
+        // hay que reencuadrar, y hacerlo desalinearia los rotulos de banda.
+        if (disposicion === 'fuerza') ajustarVista();
+      }
+      if (alfa < 0.004) alfa = 0;
+    }
+
+    function recalcularColumnas() {
+      const usadas = new Set();
+      for (const n of visibles) {
+        const col = columnaDe(n);
+        if (col) usadas.add(col);
+      }
+      columnasUsadas = COLUMNAS.filter((c) => usadas.has(c));
+      if (!columnasUsadas.length) columnasUsadas = [COLUMNAS[1]];
+    }
+
+    function yDeBanda(col) {
+      const i = col ? columnasUsadas.indexOf(col) : -1;
+      const n = columnasUsadas.length;
+      const arriba = MARGEN;
+      // Se deja mas aire abajo que arriba: la ultima banda lleva rotulos
+      // debajo de los nodos y si no, quedan contra el borde del lienzo.
+      const util = Math.max(80, alto - MARGEN * 2.6);
+      // Lo que no pertenece a ninguna capa —controles, líneas rojas, fases— es
+      // transversal por naturaleza: se le da la banda del fondo.
+      const indice = i < 0 ? n : i;
+      return n === 0 ? alto / 2 : arriba + (util * indice) / n;
+    }
+
+    /** Encuadra todo lo visible con un margen, para que nada quede fuera. */
+    function ajustarVista() {
+      if (!visibles.length) return;
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (const n of visibles) {
+        x0 = Math.min(x0, n.x - n.radio); y0 = Math.min(y0, n.y - n.radio);
+        x1 = Math.max(x1, n.x + n.radio); y1 = Math.max(y1, n.y + n.radio);
+      }
+      const anchoContenido = Math.max(1, x1 - x0);
+      const altoContenido = Math.max(1, y1 - y0);
+      // Se limita el acercamiento: con dos nodos sueltos, encajarlos al ancho
+      // del lienzo los convierte en dos globos sin contexto.
+      const k = Math.min(2.2, Math.max(0.15, Math.min(
+        (ancho - MARGEN * 2) / anchoContenido,
+        (alto - MARGEN * 2.6) / altoContenido,
+      )));
+      vista.k = k;
+      vista.x = ancho / 2 - ((x0 + x1) / 2) * k;
+      vista.y = alto / 2 - ((y0 + y1) / 2) * k;
+      pintar();
+    }
+
+    // -----------------------------------------------------------------
+    // Dibujo
+    // -----------------------------------------------------------------
+
+    function trazarForma(forma, x, y, r) {
+      ctx.beginPath();
+      if (forma === 'cuadrado') {
+        ctx.rect(x - r, y - r, r * 2, r * 2);
+      } else if (forma === 'rombo') {
+        ctx.moveTo(x, y - r * 1.25); ctx.lineTo(x + r * 1.25, y);
+        ctx.lineTo(x, y + r * 1.25); ctx.lineTo(x - r * 1.25, y);
+        ctx.closePath();
+      } else if (forma === 'triangulo') {
+        ctx.moveTo(x, y - r * 1.3); ctx.lineTo(x + r * 1.2, y + r * 0.9);
+        ctx.lineTo(x - r * 1.2, y + r * 0.9);
+        ctx.closePath();
+      } else if (forma === 'hexagono') {
+        for (let i = 0; i < 6; i++) {
+          const a = (Math.PI / 3) * i - Math.PI / 6;
+          const px = x + Math.cos(a) * r * 1.16, py = y + Math.sin(a) * r * 1.16;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+      } else {
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+      }
+    }
+
+    /** Nombre corto para el lienzo. El titulo completo vive en el globo y en
+     *  la ficha; en el dibujo, «C12» dice lo mismo que «C12 — Audio de baja
+     *  calidad, acentos, ruido…» y deja sitio a los demas. */
+    const etiquetaDe = (n) => {
+      if (n.tipo === 'categoria_adversarial') return n.nombre.split(' —')[0];
+      return n.nombre.length > 24 ? n.nombre.slice(0, 23) + '…' : n.nombre;
+    };
+
+    const vecinosDe = (id) => {
+      const s = new Set();
+      for (const e of aristasVisibles) {
+        if (e.a.id === id) s.add(e.b.id);
+        else if (e.b.id === id) s.add(e.a.id);
+      }
+      return s;
+    };
+
+    function pintar() {
+      const p = paleta();
+      const oscuro = esOscuro();
+      ctx.clearRect(0, 0, ancho, alto);
+      if (disposicion === 'capas') pintarBandas(p);
+      ctx.save();
+      ctx.translate(vista.x, vista.y);
+      ctx.scale(vista.k, vista.k);
+
+      const foco = seleccionado || sobrevolado;
+      const cercanos = foco ? vecinosDe(foco.id) : null;
+
+      // aristas
+      ctx.lineWidth = 1 / vista.k;
+      for (const e of aristasVisibles) {
+        const implicada = foco && (e.a.id === foco.id || e.b.id === foco.id);
+        if (foco && !implicada) {
+          ctx.globalAlpha = 0.12;
+          ctx.strokeStyle = p.arista;
+        } else if (implicada) {
+          ctx.globalAlpha = 0.95;
+          ctx.strokeStyle = p.aristaViva;
+          ctx.lineWidth = 1.6 / vista.k;
+        } else {
+          ctx.globalAlpha = 0.4;
+          ctx.strokeStyle = p.arista;
+        }
+        ctx.beginPath();
+        ctx.moveTo(e.a.x, e.a.y);
+        ctx.lineTo(e.b.x, e.b.y);
+        ctx.stroke();
+        ctx.lineWidth = 1 / vista.k;
+      }
+      ctx.globalAlpha = 1;
+
+      // nodos
+      for (const n of visibles) {
+        const tipo = TIPOS[n.tipo] || { forma: 'circulo' };
+        const enfocado = !foco || n.id === foco.id || (cercanos && cercanos.has(n.id));
+        ctx.globalAlpha = n.atenuado ? 0.3 : (enfocado ? 1 : 0.18);
+
+        const color = colorDeTipo(n.tipo, oscuro);
+        const r = n.radio;
+
+        if (tipo.forma === 'anillo' || tipo.forma === 'diana') {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2 / vista.k;
+          trazarForma('circulo', n.x, n.y, r);
+          ctx.stroke();
+          if (tipo.forma === 'diana') {
+            ctx.fillStyle = color;
+            trazarForma('circulo', n.x, n.y, r * 0.42);
+            ctx.fill();
+          }
+        } else {
+          ctx.fillStyle = color;
+          trazarForma(tipo.forma, n.x, n.y, r);
+          ctx.fill();
+        }
+
+        if (sinControl(n)) {
+          ctx.strokeStyle = oscuro ? '#d4813f' : '#9e4a1c';
+          ctx.lineWidth = 1.6 / vista.k;
+          ctx.setLineDash([3 / vista.k, 2 / vista.k]);
+          trazarForma('circulo', n.x, n.y, r + 4);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        if (n === seleccionado) {
+          ctx.strokeStyle = p.aristaViva;
+          ctx.lineWidth = 2 / vista.k;
+          trazarForma('circulo', n.x, n.y, r + 6);
+          ctx.stroke();
+        }
+      }
+
+      ctx.restore();
+
+      // -------------------------------------------------------------
+      // Rotulos, en espacio de pantalla.
+      //
+      // Con doscientos nodos a la vista, dibujarlos todos produce un muro
+      // ilegible. Se ordenan por importancia y se descarta el que solaparia a
+      // uno ya puesto: mas vale perder una etiqueta que perder las dos.
+      // -------------------------------------------------------------
+      ctx.globalAlpha = 1;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.font = '11px ui-monospace, Menlo, Consolas, monospace';
+
+      const candidatos = [];
+      for (const n of visibles) {
+        const peso = TIPOS[n.tipo]?.peso || 0;
+        const enFoco = foco && (n.id === foco.id || (cercanos && cercanos.has(n.id)));
+        if (foco && !enFoco) continue;
+        if (!enFoco && peso < 2 && vista.k < 1.4) continue;
+        if (!enFoco && peso < 1 && vista.k < 2.2) continue;
+
+        const sx = n.x * vista.k + vista.x;
+        const sy = n.y * vista.k + vista.y + n.radio * vista.k + 4;
+        if (sx < -80 || sx > ancho + 80 || sy < -20 || sy > alto + 20) continue;
+        candidatos.push({ n, sx, sy, prioridad: (enFoco ? 10 : 0) + peso });
+      }
+      candidatos.sort((a, b) => b.prioridad - a.prioridad || b.n.grado - a.n.grado);
+
+      const puestas = [];
+      const libre = (x, y, w, h) => {
+        for (const c of puestas) {
+          if (x < c.x + c.w && x + w > c.x && y < c.y + c.h && y + h > c.y) return false;
+        }
+        return true;
+      };
+
+      ctx.textAlign = 'left';
+      for (const { n, sx, sy, prioridad } of candidatos) {
+        const etiqueta = etiquetaDe(n);
+        const w = ctx.measureText(etiqueta).width;
+        // Se centra bajo el nodo, pero sin salirse del lienzo: un rotulo
+        // cortado contra el panel lateral no dice nada.
+        const x = Math.max(4, Math.min(sx - w / 2, ancho - w - 4));
+        if (!libre(x - 2, sy - 1, w + 4, 14)) continue;
+        puestas.push({ x: x - 2, y: sy - 1, w: w + 4, h: 14 });
+
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = p.halo;
+        ctx.strokeText(etiqueta, x, sy);
+        ctx.fillStyle = prioridad >= 10 || (TIPOS[n.tipo]?.peso || 0) >= 2 ? p.texto : p.textoSuave;
+        ctx.fillText(etiqueta, x, sy);
+      }
+
+    }
+
+    /** Nombres de las bandas, al margen izquierdo. Es lo que convierte la
+     *  vista por capas en un diagrama de arquitectura y no en otra maraña. */
+    function pintarBandas(p) {
+      ctx.save();
+      ctx.font = '600 10px ui-monospace, Menlo, Consolas, monospace';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+
+      const bandas = [...columnasUsadas, null];
+      for (const col of bandas) {
+        const sy = yDeBanda(col) * vista.k + vista.y;
+        if (sy < -20 || sy > alto + 20) continue;
+        const nodoCapa = col ? porId.get(col) : null;
+        const titulo = col
+          ? (nodoCapa ? nodoCapa.nombre : col.replace('capa:', '')).toUpperCase()
+          : 'TRANSVERSAL';
+
+        ctx.globalAlpha = 0.5;
+        ctx.strokeStyle = p.arista;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(6, sy);
+        ctx.lineTo(ancho - 6, sy);
+        ctx.stroke();
+
+        ctx.globalAlpha = 1;
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = p.halo;
+        ctx.strokeText(titulo, 8, sy - 10);
+        ctx.fillStyle = p.textoSuave;
+        ctx.fillText(titulo, 8, sy - 10);
+      }
+      ctx.restore();
+    }
+
+    function bucle() {
+      if (alfa > 0) simular();
+      pintar();
+      requestAnimationFrame(bucle);
+    }
+
+    // -----------------------------------------------------------------
+    // Interaccion
+    // -----------------------------------------------------------------
+
+    const nodoEn = (px, py) => {
+      const m = aMundo(px, py);
+      let mejor = null, mejorD = Infinity;
+      for (const n of visibles) {
+        const d = Math.hypot(n.x - m.x, n.y - m.y);
+        const alcance = n.radio + 6 / vista.k;
+        if (d < alcance && d < mejorD) { mejor = n; mejorD = d; }
+      }
+      return mejor;
+    };
+
+    let arrastrandoVista = false;
+    let ultimo = { x: 0, y: 0 };
+    let movido = false;
+
+    const pista = document.getElementById('pista');
+    const ocultarPista = () => { pista.dataset.oculta = 'si'; };
+
+    lienzo.addEventListener('pointerdown', (ev) => {
+      ocultarPista();
+      lienzo.setPointerCapture(ev.pointerId);
+      movido = false;
+      ultimo = { x: ev.offsetX, y: ev.offsetY };
+      const n = nodoEn(ev.offsetX, ev.offsetY);
+      if (n) { arrastrado = n; alfa = Math.max(alfa, 0.3); }
+      else { arrastrandoVista = true; lienzo.classList.add('arrastrando'); }
+    });
+
+    lienzo.addEventListener('pointermove', (ev) => {
+      const dx = ev.offsetX - ultimo.x, dy = ev.offsetY - ultimo.y;
+      if (Math.abs(dx) + Math.abs(dy) > 2) movido = true;
+
+      if (arrastrado) {
+        const m = aMundo(ev.offsetX, ev.offsetY);
+        arrastrado.x = m.x; arrastrado.y = m.y;
+        ultimo = { x: ev.offsetX, y: ev.offsetY };
+        return;
+      }
+      if (arrastrandoVista) {
+        vista.x += dx; vista.y += dy;
+        ultimo = { x: ev.offsetX, y: ev.offsetY };
+        pintar();
+        return;
+      }
+
+      const n = nodoEn(ev.offsetX, ev.offsetY);
+      if (n !== sobrevolado) { sobrevolado = n; pintar(); }
+      if (n) {
+        globo.dataset.visible = 'si';
+        globo.innerHTML = '';
+        const fuerte = document.createElement('strong');
+        fuerte.textContent = n.nombre;
+        const em = document.createElement('em');
+        em.textContent = (TIPOS[n.tipo]?.etiqueta || n.tipo) + (n.ruta ? ' · ' + n.ruta : '');
+        globo.append(fuerte, em);
+        const caja = lienzo.parentElement.getBoundingClientRect();
+        const gx = Math.min(ev.offsetX + 14, caja.width - 292);
+        globo.style.left = Math.max(6, gx) + 'px';
+        globo.style.top = Math.min(ev.offsetY + 16, caja.height - 70) + 'px';
+      } else {
+        globo.dataset.visible = 'no';
+      }
+    });
+
+    const soltar = (ev) => {
+      if (arrastrado && !movido) seleccionar(arrastrado);
+      else if (arrastrandoVista && !movido) seleccionar(null);
+      arrastrado = null;
+      arrastrandoVista = false;
+      lienzo.classList.remove('arrastrando');
+      if (ev && ev.pointerId !== undefined && lienzo.hasPointerCapture(ev.pointerId)) {
+        lienzo.releasePointerCapture(ev.pointerId);
+      }
+    };
+
+    lienzo.addEventListener('pointerup', soltar);
+    lienzo.addEventListener('pointercancel', soltar);
+    lienzo.addEventListener('pointerleave', () => { globo.dataset.visible = 'no'; });
+
+    lienzo.addEventListener('wheel', (ev) => {
+      ev.preventDefault();
+      const factor = Math.exp(-ev.deltaY * 0.0016);
+      const k = Math.max(0.15, Math.min(6, vista.k * factor));
+      const real = k / vista.k;
+      vista.x = ev.offsetX - (ev.offsetX - vista.x) * real;
+      vista.y = ev.offsetY - (ev.offsetY - vista.y) * real;
+      vista.k = k;
+      pintar();
+    }, { passive: false });
+
+    // -----------------------------------------------------------------
+    // Ficha
+    // -----------------------------------------------------------------
+
+    const cajaFicha = document.getElementById('ficha');
+    const RELACIONES_LEGIBLES = {
+      pertenece_a: 'pertenece a', importa: 'importa', exporta: 'exporta',
+      implementa: 'implementa', declara_puerto: 'declara el puerto', inyecta: 'inyecta',
+      registra: 'registra', menciona: 'menciona', aplica: 'aplica', verifica: 'verifica',
+      cubre_categoria: 'cubre la categoría', usa_tabla: 'usa la tabla', protege: 'protege',
+      lee_variable: 'lee la variable', sirve_canal: 'sirve al canal', documenta: 'documenta',
+      cubre_fase: 'cubre la fase',
+    };
+
+    const ETIQUETAS_META = {
+      capa: 'capa', lineas: 'líneas', clase: 'clase', suite: 'suite', migracion: 'migración',
+      metodos: 'métodos', bloques: 'bloques', externas: 'dependencias externas',
+      obligatoria: 'obligatoria', prefijos: 'prefijos', violacion: 'violación en capa 2',
+      maxLlamadasPorConversacion: 'máx. llamadas / conversación', definicionInferida: 'definición inferida',
+    };
+
+    function seleccionar(n) {
+      seleccionado = n;
+      pintar();
+      cajaFicha.innerHTML = '';
+
+      if (!n) {
+        const vacia = document.createElement('div');
+        vacia.className = 'ficha__vacia';
+        vacia.innerHTML = '<p class="rotulo">Ficha</p><p>Selecciona un nodo para ver qué es, dónde vive y con qué se conecta.</p>';
+        cajaFicha.append(vacia);
+        return;
+      }
+
+      const oscuro = esOscuro();
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.style.color = colorDeTipo(n.tipo, oscuro);
+      chip.textContent = TIPOS[n.tipo]?.etiqueta || n.tipo;
+
+      const titulo = document.createElement('h2');
+      titulo.className = 'ficha__titulo';
+      titulo.textContent = n.nombre;
+
+      cajaFicha.append(chip, titulo);
+
+      if (n.ruta) {
+        const donde = document.createElement('p');
+        donde.className = 'ficha__donde';
+        donde.textContent = n.linea ? n.ruta + ':' + n.linea : n.ruta;
+        cajaFicha.append(donde);
+      }
+
+      if (n.resumen) {
+        const resumen = document.createElement('p');
+        resumen.className = 'ficha__resumen';
+        resumen.textContent = n.resumen;
+        cajaFicha.append(resumen);
+      }
+
+      if (sinControl(n)) {
+        const aviso = document.createElement('p');
+        aviso.className = 'ficha__aviso';
+        aviso.textContent = 'Sin control automático en capa 2: esta línea roja solo la vigila el prompt, que es una expectativa, no una garantía.';
+        cajaFicha.append(aviso);
+      }
+
+      if (n.tipo === 'control') {
+        const aviso = document.createElement('p');
+        aviso.className = 'ficha__aviso';
+        aviso.textContent = 'Definición inferida de cómo lo cita el código: el informe ético-regulatorio no está en el repositorio. Los sitios donde se toca sí son exactos.';
+        cajaFicha.append(aviso);
+      }
+
+      if (n.meta && Object.keys(n.meta).length) {
+        const lista = document.createElement('dl');
+        lista.className = 'meta';
+        for (const [clave, valor] of Object.entries(n.meta)) {
+          const texto = Array.isArray(valor) ? valor.join(', ') : String(valor);
+          if (!texto) continue;
+          const dt = document.createElement('dt');
+          dt.textContent = ETIQUETAS_META[clave] || clave;
+          const dd = document.createElement('dd');
+          dd.textContent = texto;
+          lista.append(dt, dd);
+        }
+        if (lista.childElementCount) cajaFicha.append(lista);
+      }
+
+      const grupos = new Map();
+      for (const e of aristas) {
+        let otro = null, sentido = '';
+        if (e.a.id === n.id) { otro = e.b; sentido = '→'; }
+        else if (e.b.id === n.id) { otro = e.a; sentido = '←'; }
+        if (!otro) continue;
+        const clave = sentido + ' ' + e.relacion;
+        if (!grupos.has(clave)) grupos.set(clave, []);
+        grupos.get(clave).push(otro);
+      }
+
+      for (const [clave, otros] of [...grupos.entries()].sort()) {
+        const [sentido, relacion] = clave.split(' ');
+        const bloque = document.createElement('div');
+        bloque.className = 'relacion';
+
+        const cabecera = document.createElement('p');
+        cabecera.className = 'relacion__cabecera';
+        const flecha = document.createElement('b');
+        flecha.textContent = sentido;
+        const texto = document.createElement('span');
+        texto.textContent = (sentido === '→' ? '' : 'lo ') + (RELACIONES_LEGIBLES[relacion] || relacion) + ' · ' + otros.length;
+        cabecera.append(flecha, texto);
+        bloque.append(cabecera);
+
+        for (const otro of otros.slice(0, 40)) {
+          const boton = document.createElement('button');
+          boton.type = 'button';
+          boton.className = 'enlace';
+          boton.textContent = otro.nombre;
+          if (otro.ruta) {
+            const i = document.createElement('i');
+            i.textContent = '  ' + otro.ruta;
+            boton.append(i);
+          }
+          boton.addEventListener('click', () => {
+            if (!tiposActivos.has(otro.tipo)) {
+              tiposActivos.add(otro.tipo);
+              pintarTipos();
+              recalcularVisibles();
+            }
+            centrarEn(otro);
+            seleccionar(otro);
+          });
+          bloque.append(boton);
+        }
+        cajaFicha.append(bloque);
+      }
+    }
+
+    function centrarEn(n) {
+      vista.k = Math.max(vista.k, 1.1);
+      vista.x = ancho / 2 - n.x * vista.k;
+      vista.y = alto / 2 - n.y * vista.k;
+      pintar();
+    }
+
+    // -----------------------------------------------------------------
+    // Panel de tipos
+    // -----------------------------------------------------------------
+
+    const cajaTipos = document.getElementById('tipos');
+
+    function pintarTipos() {
+      cajaTipos.innerHTML = '';
+      const oscuro = esOscuro();
+      const orden = Object.keys(TIPOS).filter((t) => cuentaPorTipo[t]);
+      orden.sort((a, b) => (TIPOS[b].peso - TIPOS[a].peso) || (cuentaPorTipo[b] - cuentaPorTipo[a]));
+
+      for (const tipo of orden) {
+        const fila = document.createElement('label');
+        fila.className = 'tipo';
+        fila.dataset.apagado = tiposActivos.has(tipo) ? 'no' : 'si';
+
+        const casilla = document.createElement('input');
+        casilla.type = 'checkbox';
+        casilla.checked = tiposActivos.has(tipo);
+        casilla.addEventListener('change', () => {
+          if (casilla.checked) tiposActivos.add(tipo); else tiposActivos.delete(tipo);
+          fila.dataset.apagado = casilla.checked ? 'no' : 'si';
+          recalcularVisibles();
+        });
+
+        const nombre = document.createElement('span');
+        nombre.className = 'tipo__nombre';
+        const muestra = document.createElement('span');
+        muestra.className = 'muestra';
+        muestra.style.background = colorDeTipo(tipo, oscuro);
+        muestra.style.borderRadius = TIPOS[tipo].forma === 'cuadrado' ? '1px' : '50%';
+        const texto = document.createElement('span');
+        texto.textContent = TIPOS[tipo].etiqueta;
+        nombre.append(muestra, texto);
+
+        const cuenta = document.createElement('span');
+        cuenta.className = 'tipo__cuenta';
+        cuenta.textContent = cuentaPorTipo[tipo];
+
+        fila.append(casilla, nombre, cuenta);
+        cajaTipos.append(fila);
+      }
+    }
+
+    // -----------------------------------------------------------------
+    // Arranque
+    // -----------------------------------------------------------------
+
+    document.getElementById('m-nodos').textContent = DATOS.nodos.length;
+    document.getElementById('m-aristas').textContent = DATOS.aristas.length;
+    document.getElementById('m-huella').textContent = DATOS.huella;
+
+    const desprotegidas = nodos.filter(sinControl);
+    const nota = document.getElementById('nota-hallazgo');
+    nota.innerHTML = '';
+    if (desprotegidas.length) {
+      const b = document.createElement('b');
+      b.textContent = desprotegidas.length + ' líneas rojas sin control automático. ';
+      nota.append(b, document.createTextNode(
+        'Solo las vigila el prompt. Se dibujan con anillo discontinuo: ' +
+        desprotegidas.map((n) => n.nombre.toLowerCase()).join('; ') + '.'
+      ));
+    }
+
+    const buscador = document.getElementById('buscador');
+    buscador.addEventListener('input', () => { consulta = buscador.value; recalcularVisibles(); });
+
+    const bFuerza = document.getElementById('b-fuerza');
+    const bCapas = document.getElementById('b-capas');
+    const fijarDisposicion = (modo) => {
+      disposicion = modo;
+      bFuerza.setAttribute('aria-pressed', String(modo === 'fuerza'));
+      bCapas.setAttribute('aria-pressed', String(modo === 'capas'));
+      recalcularColumnas();
+      if (modo === 'capas') { vista.x = 0; vista.y = 0; vista.k = 1; }
+      alfa = 1;
+      ajustePendiente = true;
+    };
+    bFuerza.addEventListener('click', () => fijarDisposicion('fuerza'));
+    bCapas.addEventListener('click', () => fijarDisposicion('capas'));
+
+    document.getElementById('b-arquitectura').addEventListener('click', () => {
+      tiposActivos.clear();
+      for (const t of VISTA_ARQUITECTURA) tiposActivos.add(t);
+      pintarTipos();
+      recalcularVisibles();
+    });
+
+    document.getElementById('b-todo').addEventListener('click', () => {
+      for (const t of Object.keys(TIPOS)) tiposActivos.add(t);
+      pintarTipos();
+      recalcularVisibles();
+    });
+
+    document.getElementById('b-recolocar').addEventListener('click', () => {
+      vista.x = 0; vista.y = 0; vista.k = 1;
+      colocarInicial();
+      recalcularVisibles();
+    });
+
+    document.getElementById('b-tema').addEventListener('click', () => {
+      const actual = esOscuro();
+      document.documentElement.setAttribute('data-theme', actual ? 'light' : 'dark');
+      pintarTipos();
+      if (seleccionado) seleccionar(seleccionado);
+      pintar();
+    });
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { pintarTipos(); pintar(); });
+    window.addEventListener('resize', redimensionar);
+
+    pintarTipos();
+    redimensionar();
+    colocarInicial();
+    recalcularVisibles();
+
+    // Con movimiento reducido, se deja asentar la simulacion de golpe en vez
+    // de animar la convergencia.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      for (let i = 0; i < 320; i++) simular();
+      alfa = 0;
+      pintar();
+    }
+
+    requestAnimationFrame(bucle);
+  })();
+</script>

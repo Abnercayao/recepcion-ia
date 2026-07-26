@@ -9,3 +9,6 @@ coverage/
 Thumbs.db
 .vitest/
 tmp/
+
+# vista derivada de kg/grafo.json, se regenera con `npm run kg:visor`
+kg/grafo.html

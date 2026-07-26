@@ -26,6 +26,32 @@ npm run kg:extraer      # reconstruye kg/grafo.json desde las fuentes
 npm run kg:verificar    # invariantes de extracción y de arquitectura
 ```
 
+## Verlo
+
+```bash
+npm run kg:visor        # escribe kg/grafo.html — ábrelo con doble clic
+```
+
+Página autocontenida: sin CDN, sin peticiones de red, funciona sin conexión.
+Dos disposiciones:
+
+- **Fuerza** — el grafo se acomoda solo. Sirve para ver vecindarios y qué está
+  cerca de qué.
+- **Capas** — una banda horizontal por estrato arquitectónico, de contratos a
+  flujos. La regla de dependencias se lee de arriba abajo.
+
+La forma codifica el papel del nodo, no solo el color: un puerto es un hexágono
+porque es una frontera; una línea roja, un triángulo; una tabla, un cuadrado;
+una herramienta, un rombo. Las líneas rojas **sin control automático en capa 2**
+llevan anillo discontinuo — se ven de un vistazo.
+
+Al buscar, el vecindario del resultado se muestra aunque su tipo esté apagado:
+buscar `CalendarPort` y no ver quién lo implementa sería lo contrario de lo que
+se está preguntando.
+
+`kg/grafo.html` **no se versiona**: es una vista derivada de `grafo.json`, que sí
+lo está. Guardar dos copias del mismo dato garantiza que una de las dos mienta.
+
 ## Conectado al agente por MCP
 
 `.mcp.json`, en la raíz, declara el servidor `recepcion-ia-kg`. Cualquier sesión

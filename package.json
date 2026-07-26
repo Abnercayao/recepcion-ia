@@ -19,6 +19,7 @@
     "kg": "tsx kg/cli.ts",
     "kg:extraer": "tsx kg/extraer.ts",
     "kg:verificar": "tsx kg/cli.ts verificar",
+    "kg:visor": "tsx kg/visor.ts",
     "kg:mcp": "tsx kg/mcp.ts",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
