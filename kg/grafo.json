@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "26f3d48e34b8caec",
+  "huella": "48769d2fb71ad364",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -454,7 +454,7 @@
       "tipo": "herramienta",
       "nombre": "consultar_agenda",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 45,
+      "linea": 46,
       "resumen": "Consulta los horarios libres de la agenda de la clinica dentro de un rango de fechas (maximo",
       "meta": {
         "clase": "ConsultarAgendaTool",
@@ -478,7 +478,7 @@
       "tipo": "herramienta",
       "nombre": "crear_cita",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 109,
+      "linea": 59,
       "resumen": "Crea una cita en la agenda de la clinica. SOLO se puede llamar despues de que el paciente confirmo",
       "meta": {
         "clase": "CrearCitaTool",
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 188,
+        "lineas": 207,
         "capa": "documentacion"
       }
     },
@@ -1241,7 +1241,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 130,
+        "lineas": 146,
         "capa": "nucleo"
       }
     },
@@ -1267,7 +1267,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 206,
+        "lineas": 160,
         "capa": "nucleo"
       }
     },
@@ -1294,6 +1294,20 @@
           "zod"
         ],
         "lineas": 120,
+        "capa": "nucleo"
+      }
+    },
+    {
+      "id": "modulo:src/core/tools/horario-clinica.ts",
+      "tipo": "modulo",
+      "nombre": "horario-clinica.ts",
+      "ruta": "src/core/tools/horario-clinica.ts",
+      "resumen": "HORARIO DE ATENCION DE LA CLINICA.",
+      "meta": {
+        "externas": [
+          "zod"
+        ],
+        "lineas": 193,
         "capa": "nucleo"
       }
     },
@@ -1802,6 +1816,21 @@
           "vitest"
         ],
         "lineas": 509,
+        "capa": "pruebas",
+        "suite": "unit"
+      }
+    },
+    {
+      "id": "modulo:tests/unit/horario-clinica.test.ts",
+      "tipo": "prueba",
+      "nombre": "horario-clinica.test.ts",
+      "ruta": "tests/unit/horario-clinica.test.ts",
+      "resumen": "Horario de atencion de la clinica.",
+      "meta": {
+        "externas": [
+          "vitest"
+        ],
+        "lineas": 144,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -4482,7 +4511,7 @@
       "tipo": "simbolo",
       "nombre": "ConsultarAgendaInput",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 29,
+      "linea": 30,
       "meta": {
         "clase": "type"
       }
@@ -4492,7 +4521,7 @@
       "tipo": "simbolo",
       "nombre": "consultarAgendaInputSchema",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 23,
+      "linea": 24,
       "meta": {
         "clase": "const"
       }
@@ -4502,7 +4531,7 @@
       "tipo": "simbolo",
       "nombre": "ConsultarAgendaOutput",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 31,
+      "linea": 32,
       "meta": {
         "clase": "interface"
       }
@@ -4512,7 +4541,7 @@
       "tipo": "simbolo",
       "nombre": "ConsultarAgendaTool",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 45,
+      "linea": 46,
       "resumen": "Consulta disponibilidad de agenda.",
       "meta": {
         "clase": "class"
@@ -4523,7 +4552,7 @@
       "tipo": "simbolo",
       "nombre": "RANGO_MAXIMO_CONSULTA_DIAS",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 19,
+      "linea": 20,
       "resumen": "Rango maximo de consulta: 30 dias.",
       "meta": {
         "clase": "const"
@@ -4586,7 +4615,7 @@
       "tipo": "simbolo",
       "nombre": "CrearCitaInput",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 103,
+      "linea": 53,
       "meta": {
         "clase": "type"
       }
@@ -4596,7 +4625,8 @@
       "tipo": "simbolo",
       "nombre": "crearCitaInputSchema",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 89,
+      "linea": 39,
+      "resumen": "El horario de atencion ya no se resuelve aqui.",
       "meta": {
         "clase": "const"
       }
@@ -4606,7 +4636,7 @@
       "tipo": "simbolo",
       "nombre": "CrearCitaOutput",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 105,
+      "linea": 55,
       "meta": {
         "clase": "interface"
       }
@@ -4616,7 +4646,7 @@
       "tipo": "simbolo",
       "nombre": "CrearCitaTool",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 109,
+      "linea": 59,
       "meta": {
         "clase": "class"
       }
@@ -4626,7 +4656,7 @@
       "tipo": "simbolo",
       "nombre": "DURACION_MAX_MINUTOS",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 8,
+      "linea": 9,
       "meta": {
         "clase": "const"
       }
@@ -4636,7 +4666,7 @@
       "tipo": "simbolo",
       "nombre": "DURACION_MIN_MINUTOS",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 7,
+      "linea": 8,
       "meta": {
         "clase": "const"
       }
@@ -4646,7 +4676,7 @@
       "tipo": "simbolo",
       "nombre": "MAXIMO_CITAS_POR_CONVERSACION",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 23,
+      "linea": 24,
       "resumen": "Maximo de citas por conversacion: 5.",
       "meta": {
         "clase": "const"
@@ -4733,6 +4763,39 @@
       "resumen": "`ports.ts` (contrato compartido, fuera de mi alcance) no define un",
       "meta": {
         "clase": "const"
+      }
+    },
+    {
+      "id": "simbolo:src/core/tools/horario-clinica.ts#citaDentroDeHorario",
+      "tipo": "simbolo",
+      "nombre": "citaDentroDeHorario",
+      "ruta": "src/core/tools/horario-clinica.ts",
+      "linea": 166,
+      "resumen": "True si la cita COMPLETA cabe dentro de una sola franja de atencion.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/tools/horario-clinica.ts#describirHorario",
+      "tipo": "simbolo",
+      "nombre": "describirHorario",
+      "ruta": "src/core/tools/horario-clinica.ts",
+      "linea": 182,
+      "resumen": "Descripcion legible del horario, para mensajes de error y para el log.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/tools/horario-clinica.ts#resolverFranjas",
+      "tipo": "simbolo",
+      "nombre": "resolverFranjas",
+      "ruta": "src/core/tools/horario-clinica.ts",
+      "linea": 102,
+      "resumen": "Franjas de atencion de cada dia de la semana, en minutos desde medianoche y",
+      "meta": {
+        "clase": "function"
       }
     },
     {
@@ -7056,7 +7119,7 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:186"
+      "origen": "docs/ESTADO.md:205"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -9432,31 +9495,37 @@
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaInput",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:29"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:30"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#consultarAgendaInputSchema",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:23"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:24"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaOutput",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:31"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:32"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:45"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:46"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#RANGO_MAXIMO_CONSULTA_DIAS",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:19"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:20"
+    },
+    {
+      "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/horario-clinica.ts",
+      "origen": "src/core/tools/consultar-agenda.tool.ts:5"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
@@ -9570,43 +9639,49 @@
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaInput",
-      "origen": "src/core/tools/crear-cita.tool.ts:103"
+      "origen": "src/core/tools/crear-cita.tool.ts:53"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#crearCitaInputSchema",
-      "origen": "src/core/tools/crear-cita.tool.ts:89"
+      "origen": "src/core/tools/crear-cita.tool.ts:39"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaOutput",
-      "origen": "src/core/tools/crear-cita.tool.ts:105"
+      "origen": "src/core/tools/crear-cita.tool.ts:55"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
-      "origen": "src/core/tools/crear-cita.tool.ts:109"
+      "origen": "src/core/tools/crear-cita.tool.ts:59"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#DURACION_MAX_MINUTOS",
-      "origen": "src/core/tools/crear-cita.tool.ts:8"
+      "origen": "src/core/tools/crear-cita.tool.ts:9"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#DURACION_MIN_MINUTOS",
-      "origen": "src/core/tools/crear-cita.tool.ts:7"
+      "origen": "src/core/tools/crear-cita.tool.ts:8"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#MAXIMO_CITAS_POR_CONVERSACION",
-      "origen": "src/core/tools/crear-cita.tool.ts:23"
+      "origen": "src/core/tools/crear-cita.tool.ts:24"
+    },
+    {
+      "desde": "modulo:src/core/tools/crear-cita.tool.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/horario-clinica.ts",
+      "origen": "src/core/tools/crear-cita.tool.ts:5"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
@@ -9775,6 +9850,36 @@
       "relacion": "pertenece_a",
       "hacia": "capa:nucleo",
       "origen": "src/core/tools/guardar-lead.tool.ts"
+    },
+    {
+      "desde": "modulo:src/core/tools/horario-clinica.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/tools/horario-clinica.ts#citaDentroDeHorario",
+      "origen": "src/core/tools/horario-clinica.ts:166"
+    },
+    {
+      "desde": "modulo:src/core/tools/horario-clinica.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/tools/horario-clinica.ts#describirHorario",
+      "origen": "src/core/tools/horario-clinica.ts:182"
+    },
+    {
+      "desde": "modulo:src/core/tools/horario-clinica.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/tools/horario-clinica.ts#resolverFranjas",
+      "origen": "src/core/tools/horario-clinica.ts:102"
+    },
+    {
+      "desde": "modulo:src/core/tools/horario-clinica.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "src/core/tools/horario-clinica.ts:41"
+    },
+    {
+      "desde": "modulo:src/core/tools/horario-clinica.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:nucleo",
+      "origen": "src/core/tools/horario-clinica.ts"
     },
     {
       "desde": "modulo:src/core/tools/tool.registry.ts",
@@ -12493,6 +12598,36 @@
       "relacion": "verifica",
       "hacia": "modulo:src/core/urgency/urgency.detector.ts",
       "origen": "tests/unit/guardrails.test.ts:19"
+    },
+    {
+      "desde": "modulo:tests/unit/horario-clinica.test.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/horario-clinica.ts",
+      "origen": "tests/unit/horario-clinica.test.ts:14"
+    },
+    {
+      "desde": "modulo:tests/unit/horario-clinica.test.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/conversation.ts",
+      "origen": "tests/unit/horario-clinica.test.ts:16"
+    },
+    {
+      "desde": "modulo:tests/unit/horario-clinica.test.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:pruebas",
+      "origen": "tests/unit/horario-clinica.test.ts"
+    },
+    {
+      "desde": "modulo:tests/unit/horario-clinica.test.ts",
+      "relacion": "verifica",
+      "hacia": "modulo:src/core/tools/horario-clinica.ts",
+      "origen": "tests/unit/horario-clinica.test.ts:14"
+    },
+    {
+      "desde": "modulo:tests/unit/horario-clinica.test.ts",
+      "relacion": "verifica",
+      "hacia": "modulo:src/core/types/conversation.ts",
+      "origen": "tests/unit/horario-clinica.test.ts:16"
     },
     {
       "desde": "modulo:tests/unit/openai-sse.mapper.test.ts",

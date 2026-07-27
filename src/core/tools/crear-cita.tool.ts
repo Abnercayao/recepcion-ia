@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import type { BusinessTool, ToolResult, ToolStatus } from '../types/tool.js';
 import type { CalendarEvent, CalendarPort, Logger, ToolCallRepository } from '../types/ports.js';
-import type { Clinic, TurnContext } from '../types/conversation.js';
+import type { TurnContext } from '../types/conversation.js';
 import { maskArgsForLog } from './tool.registry.js';
+import { citaDentroDeHorario, describirHorario } from './horario-clinica.js';
 
 export const DURACION_MIN_MINUTOS = 15;
 export const DURACION_MAX_MINUTOS = 180;
@@ -22,69 +23,18 @@ export const DURACION_MAX_MINUTOS = 180;
  */
 export const MAXIMO_CITAS_POR_CONVERSACION = 5;
 
-const horarioClinicaSchema = z
-  .object({
-    horaApertura: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
-    horaCierre: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
-    /** 0=domingo .. 6=sabado (convencion de Intl.DateTimeFormat/Date#getDay). */
-    diasLaborables: z.array(z.number().int().min(0).max(6)).min(1),
-  })
-  .partial();
-
 /**
- * Horario por defecto: lunes(1) a sabado(6), 08:00-20:00.
+ * El horario de atencion ya no se resuelve aqui.
  *
- * El tipo `Clinic` (contrato compartido, no lo puedo tocar) no fija la forma
- * del horario de atencion: `config` es `Record<string, unknown>`. Se lee
- * `clinic.config.horario` de forma defensiva con Zod y, si falta o es
- * invalido, se usa este valor por defecto en lugar de fallar o de asumir que
- * "no hay horario" (lo que dejaria crear citas a cualquier hora). Se deja
- * constancia de este vacio de la especificacion en el informe final.
+ * Vivia en este archivo, leia `clinic.config.horario` (SINGULAR) y la clinica
+ * declara `horarios` (PLURAL) con otra forma, asi que el parseo fallaba en
+ * silencio y se validaba contra el valor por defecto —lunes a sabado,
+ * 08:00-20:00— en lugar de contra el horario real. Ademas comprobaba solo el
+ * INICIO de la cita, no que cupiera entera antes del cierre.
+ *
+ * Ahora lo resuelve `horario-clinica.ts`, compartido con `consultar_agenda`
+ * para que lo que se ofrece y lo que se acepta no puedan divergir.
  */
-const HORARIO_POR_DEFECTO = {
-  horaApertura: '08:00',
-  horaCierre: '20:00',
-  diasLaborables: [1, 2, 3, 4, 5, 6],
-};
-
-function resolverHorario(clinic: Clinic, logger: Logger) {
-  const crudo = (clinic.config as Record<string, unknown> | undefined)?.['horario'];
-  const parsed = horarioClinicaSchema.safeParse(crudo);
-  if (!parsed.success) {
-    logger.warn(
-      { clinicId: clinic.id },
-      'horario de clinica ausente o invalido en clinic.config; se usa horario por defecto',
-    );
-    return HORARIO_POR_DEFECTO;
-  }
-  return { ...HORARIO_POR_DEFECTO, ...parsed.data };
-}
-
-const DIA_SEMANA_A_NUMERO: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
-
-/** Traduce el instante a hora local de la clinica con `Intl` (sin dependencias nuevas) y valida horario. */
-function dentroDeHorario(inicio: Date, clinic: Clinic, logger: Logger): boolean {
-  const horario = resolverHorario(clinic, logger);
-  const partes = new Intl.DateTimeFormat('en-US', {
-    timeZone: clinic.timezone,
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    weekday: 'short',
-  }).formatToParts(inicio);
-
-  const hora = Number(partes.find((p) => p.type === 'hour')?.value ?? '0');
-  const minuto = Number(partes.find((p) => p.type === 'minute')?.value ?? '0');
-  const dia = DIA_SEMANA_A_NUMERO[partes.find((p) => p.type === 'weekday')?.value ?? ''] ?? -1;
-
-  const minutosDelDia = hora * 60 + minuto;
-  const [horaAp, minAp] = horario.horaApertura.split(':').map(Number);
-  const [horaCi, minCi] = horario.horaCierre.split(':').map(Number);
-  const minutosApertura = horaAp * 60 + minAp;
-  const minutosCierre = horaCi * 60 + minCi;
-
-  return horario.diasLaborables.includes(dia) && minutosDelDia >= minutosApertura && minutosDelDia < minutosCierre;
-}
 
 export const crearCitaInputSchema = z.object({
   inicio: z.iso.datetime({ offset: true }),
@@ -143,9 +93,13 @@ export class CrearCitaTool implements BusinessTool<CrearCitaInput, CrearCitaOutp
         error: 'no se puede agendar una cita en el pasado',
       });
     }
-    if (!dentroDeHorario(inicioDate, ctx.clinic, this.logger)) {
+    // La cita ENTERA tiene que caber en una franja de atencion, no solo su
+    // inicio: 40 minutos a las 19:50 terminan despues del cierre.
+    if (!citaDentroDeHorario(inicioDate, duracionMin, ctx.clinic, this.logger)) {
       return this.registrar(ctx, parsed.data, 'rechazada_validacion', empezado, {
-        error: 'el horario solicitado esta fuera del horario de atencion de la clinica',
+        error:
+          'el horario solicitado esta fuera del horario de atencion de la clinica ' +
+          `(${describirHorario(ctx.clinic)})`,
       });
     }
 

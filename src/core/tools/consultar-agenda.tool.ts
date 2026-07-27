@@ -3,6 +3,7 @@ import type { BusinessTool, ToolResult, ToolStatus } from '../types/tool.js';
 import type { CalendarPort, CalendarSlot, Logger, ToolCallRepository } from '../types/ports.js';
 import type { TurnContext } from '../types/conversation.js';
 import { maskArgsForLog } from './tool.registry.js';
+import { citaDentroDeHorario, resolverFranjas } from './horario-clinica.js';
 
 /**
  * Rango maximo de consulta: 30 dias.
@@ -98,7 +99,22 @@ export class ConsultarAgendaTool implements BusinessTool<ConsultarAgendaInput, C
     }
 
     try {
-      const slots = await this.calendarPort.findAvailableSlots(clinicId, desdeDate, hastaDate, duracionMin);
+      const libres = await this.calendarPort.findAvailableSlots(clinicId, desdeDate, hastaDate, duracionMin);
+
+      // `freebusy` responde que las 23:57 estan libres, y lo estan: nadie las
+      // ha reservado. Que la clinica no atienda a esa hora es una regla suya,
+      // y filtrarla es de esta herramienta. Sin esto el agente ofrece horarios
+      // que `crear_cita` despues rechaza — ofrecer y luego negar es peor que
+      // no ofrecer.
+      const franjas = resolverFranjas(ctx.clinic, this.logger);
+      const slots = libres.filter((s) => citaDentroDeHorario(s.start, duracionMin, ctx.clinic, undefined, franjas));
+
+      if (slots.length < libres.length) {
+        this.logger.debug(
+          { clinicId, ofrecidos: slots.length, descartados: libres.length - slots.length },
+          'huecos descartados por caer fuera del horario de atencion de la clinica',
+        );
+      }
       return this.registrar(ctx, parsed.data, 'ok', empezado, { data: { slots } });
     } catch (err) {
       this.logger.error({ err: String(err), clinicId }, 'fallo consultando disponibilidad de agenda');

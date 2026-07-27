@@ -52,22 +52,41 @@ que se le comparte uno —o crea el suyo, que es lo que se hizo aquí—
 `calendarList` devuelve cero y la agenda no existe aunque las credenciales sean
 perfectas.
 
-### DEFECTO ABIERTO: no se aplican los horarios de la clínica
+### CORREGIDO: el horario de atención de la clínica
 
-`clinic.config.horarios` declara L-V 09:00–13:00 y 15:00–20:00, sábado
-09:00–14:00 y domingo cerrado. **Nadie lee ese campo.** Ni
-`consultar-agenda.tool.ts` ni `calendar.client.ts` lo mencionan siquiera: la
-disponibilidad sale de `freebusy` de Google, así que todo hueco no ocupado se
-considera ofrecible.
+Se creyó al principio que el horario no se aplicaba en ninguna parte. **No era
+exacto**, y lo que había era peor de explicar pero menos grave de efecto:
 
-Medido sobre la agenda real: de **73 horarios ofrecidos al modelo, 49 caen fuera
-del horario declarado**, incluidas las 23:57. El agente ofrecería a un paciente
-una cita a medianoche, o un domingo.
+- `consultar_agenda` **no filtraba nada**. De 73 huecos ofrecidos al modelo, 49
+  caían fuera del horario, hasta las 23:57.
+- `crear_cita` **sí** validaba, pero contra el horario equivocado. Su
+  `dentroDeHorario` local leía `clinic.config.horario` (**singular**) y la
+  clínica declara `horarios` (**plural**) con otra forma. El parseo fallaba en
+  silencio y se caía al valor por defecto: lunes a sábado, 08:00–20:00.
 
-No estaba documentado como hueco conocido. Solo aparece con un calendario real:
-con dobles, la disponibilidad se fabrica ya dentro del horario. Falta decidir
-qué capa filtra —la herramienta del núcleo o el adaptador de infraestructura— y
-que el filtro respete la zona horaria de la clínica, no la del servidor.
+Efecto combinado: el agente ofrecía las 23:57, el paciente la elegía y la
+herramienta la rechazaba. Y al revés, aceptaba citas a las 14:00 —con la clínica
+cerrada al mediodía— y a las 08:00, antes de abrir, porque el horario por
+defecto no conoce ni el cierre del mediodía ni la hora real de apertura.
+
+El formato heredado, además, **no puede expresar un cierre al mediodía**: con
+`horaApertura`/`horaCierre` la pausa de 13:00 a 15:00 es inexpresable.
+
+**Resuelto** en `src/core/tools/horario-clinica.ts`, compartido por las dos
+herramientas para que lo que se ofrece y lo que se acepta no puedan divergir.
+Vive en el núcleo y no en `infra/` porque es regla de negocio de la clínica: a
+`freebusy` de Google las 23:57 le constan libres, y lo están.
+
+| | Antes | Después |
+|---|---|---|
+| Huecos ofrecidos (3 días) | 73 | **24** |
+| Fuera de horario | 49 | **0** |
+| Rango horario ofrecido | hasta 23:57 | **09:00–19:00** |
+
+Se corrigen de paso dos cosas que el formato anterior no cubría: la cita se
+valida **entera**, no solo su inicio —40 minutos a las 19:50 terminaban veinte
+después del cierre—, y se rechaza la cita a caballo entre dos franjas. 15
+pruebas en `tests/unit/horario-clinica.test.ts`.
 
 ### RAG de extremo a extremo · 27-07-2026
 
