@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "5aae4681bbf0a334",
+  "huella": "5b77031a6a14f28b",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -749,7 +749,7 @@
       "ruta": "docs/PUESTA_EN_MARCHA.md",
       "resumen": "Puesta en marcha — de cero a demo funcional",
       "meta": {
-        "lineas": 213,
+        "lineas": 345,
         "capa": "documentacion"
       }
     },
@@ -7261,6 +7261,12 @@
       "relacion": "pertenece_a",
       "hacia": "capa:documentacion",
       "origen": "docs/plantillas/consentimiento-informado.md"
+    },
+    {
+      "desde": "modulo:docs/PUESTA_EN_MARCHA.md",
+      "relacion": "menciona",
+      "hacia": "control:C8",
+      "origen": "docs/PUESTA_EN_MARCHA.md:297"
     },
     {
       "desde": "modulo:docs/PUESTA_EN_MARCHA.md",

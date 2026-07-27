@@ -12,11 +12,9 @@ El razonamiento es siempre de Claude. ElevenLabs aporta reconocimiento de voz, g
 npm install
 ```
 
-```bash
-cp .env.example .env
-```
-
-Rellena `.env`. El sistema **no arranca** si falta algo obligatorio, y te dirá exactamente qué. Es deliberado.
+Crea tu `.env` con las variables que enumera
+[`docs/PUESTA_EN_MARCHA.md`](docs/PUESTA_EN_MARCHA.md). El sistema **no arranca**
+si falta algo obligatorio, y te dirá exactamente qué. Es deliberado.
 
 ```bash
 npm run build
@@ -28,13 +26,15 @@ npm run dev
 
 ## Credenciales
 
-```bash
-cp .env.example .env
-```
+Los valores van en `.env`, que git ignora. La lista completa de variables está
+en [`docs/PUESTA_EN_MARCHA.md`](docs/PUESTA_EN_MARCHA.md). Los archivos de
+credenciales —JSON de cuentas de servicio, certificados— van en `credenciales/`,
+ignorada entera salvo su README.
 
-Los valores reales van en `.env`, que git ignora. **Nunca en `.env.example`**,
-que sí está versionado. Los archivos de credenciales —JSON de cuentas de
-servicio, certificados— van en `credenciales/`, ignorada entera salvo su README.
+**No hay ningún archivo de plantilla versionado.** Hubo uno, `.env.example`, y
+acabó con cinco credenciales reales dentro; se eliminó del repositorio y de su
+historial. Un archivo con forma de `.env` a mano de todos es una invitación a
+rellenarlo.
 
 Un hook de pre-commit revisa lo que está a punto de entrar y rechaza el commit
 si detecta una credencial. Se instala solo con `npm install`; para pasarlo a

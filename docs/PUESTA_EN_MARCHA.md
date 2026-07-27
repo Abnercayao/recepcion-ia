@@ -11,7 +11,8 @@ Guía ordenada de todo lo que hay que contratar y conectar. Cada etapa deja algo
 - Si una clave se te escapa a un commit, no basta con borrarla en el siguiente: queda en el historial. Hay que rotarla en el proveedor.
 
 ```bash
-cp .env.example .env
+# crea .env con las variables de la referencia de abajo
+touch .env
 ```
 
 El sistema valida el entorno al arrancar y **falla si falta algo obligatorio**, diciéndote exactamente qué. Eso es deliberado.
@@ -210,3 +211,134 @@ Requiere **personas reales leyendo un guion, con consentimiento informado firmad
 ## Qué no puedo hacer yo
 
 Crear cuentas, aceptar términos de servicio, introducir credenciales o datos de pago, y verificar tu empresa ante Meta. Todo eso lo tienes que hacer tú. Lo que sí puedo es dejar el código listo, decirte exactamente dónde va cada dato, y ayudarte a diagnosticar cuando algo no conecte.
+
+---
+
+## Variables de entorno
+
+Referencia completa. Los valores reales van en `.env`, que git ignora; los
+archivos de credenciales, en `credenciales/`. **Ninguna credencial debe entrar
+en un archivo versionado**: el hook de pre-commit lo comprueba y aborta el
+commit si lo detecta.
+
+El sistema **no arranca** si falta una obligatoria, y enumera cuáles.
+
+### Modelo (cerebro, comun a ambos canales)
+
+Configuracion de dos niveles exigida por §3.1.2.B del informe: un modelo
+
+rapido para clasificacion y deteccion de urgencia (alto volumen, baja
+
+complejidad) y uno de mayor capacidad para la generacion conversacional.
+
+- `ANTHROPIC_API_KEY`
+- `CLAUDE_MODEL_CONVERSACION` — por defecto `claude-sonnet-5`
+- `CLAUDE_MODEL_CLASIFICACION` — por defecto `claude-haiku-4-5-20251001`
+- `CLAUDE_TEMPERATURE` — por defecto `0.3`
+- `CLAUDE_MAX_TOKENS` — por defecto `1024`
+
+### Embeddings
+
+Anthropic no ofrece API de embeddings. El esquema declara vector(1024),
+
+que es la dimension nativa de voyage-3. Ver docs/decisiones.md.
+
+- `VOYAGE_API_KEY`
+- `EMBEDDING_MODEL` — por defecto `voyage-3`
+- `EMBEDDING_DIMENSIONS` — por defecto `1024`
+
+Similitud coseno minima del RAG (0..1). 0.5 por defecto, calibrado con voyage-3.
+
+- `RAG_UMBRAL_SIMILITUD` — por defecto `0.5`
+
+### Datos
+
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_KEY`
+
+Cadena de conexion real de Postgres, SOLO para migraciones. Las dos de
+
+arriba son credenciales de PostgREST y no ejecutan DDL.
+
+postgresql://postgres:<password>@db.<proyecto>.supabase.co:5432/postgres
+
+- `SUPABASE_DB_URL`
+- `RETENCION_TRANSCRIPCION_DIAS` — por defecto `365`
+- `RETENCION_AUDIO_DIAS` — por defecto `0`
+
+### Canal de voz (ElevenLabs)
+
+Con VOICE_ENABLED=true se vuelven obligatorias ELEVENLABS_API_KEY,
+
+ELEVENLABS_AGENT_ID, VOICE_GATEWAY_SECRET y TRANSFER_WHITELIST.
+
+- `VOICE_ENABLED` — por defecto `false`
+- `ELEVENLABS_API_KEY` — por defecto `sk_...`
+- `ELEVENLABS_AGENT_ID`
+- `ELEVENLABS_VOICE_ID`
+- `ELEVENLABS_MODEL`
+- `ELEVENLABS_WS_URL`
+- `VOICE_GATEWAY_URL`
+
+Protege nuestro endpoint Custom LLM.
+
+- `VOICE_GATEWAY_SECRET`
+
+Distinto del anterior: secreto con el que ElevenLabs firma el webhook
+
+post-llamada. Confundirlos deja el webhook sin verificar.
+
+- `ELEVENLABS_WEBHOOK_SECRET`
+- `VOICE_LATENCIA_OBJETIVO_MS` — por defecto `1200`
+- `VOICE_BUFFER_WORD_MS` — por defecto `700`
+
+El audio es dato biometrico asociado a dato de salud. Se retiene solo por
+
+decision explicita y documentada (control C8).
+
+- `AUDIO_RETENTION` — por defecto `false`
+
+### Telefonia
+
+- `SIP_PROVIDER`
+- `TWILIO_ACCOUNT_SID`
+- `TWILIO_AUTH_TOKEN`
+- `TWILIO_PHONE_NUMBER`
+
+Lista blanca de transferencia, separada por comas, en E.164.
+
+Sin esto no se puede escalar una urgencia por telefono.
+
+- `TRANSFER_WHITELIST` — por defecto `+51999000001,+51999000002`
+
+### Canal de texto
+
+- `WHATSAPP_ENABLED` — por defecto `false`
+- `WHATSAPP_BSP_TOKEN`
+- `WHATSAPP_PHONE_ID`
+
+Token del challenge GET de verificacion (hub.verify_token).
+
+- `WHATSAPP_WEBHOOK_SECRET`
+
+App Secret de Meta: clave del HMAC de X-Hub-Signature-256. Es una credencial
+
+DISTINTA de la anterior. Confundirlas deja el webhook sin verificar.
+
+- `WHATSAPP_APP_SECRET`
+
+### Integraciones
+
+JSON de la service account, en claro o en base64.
+
+- `GOOGLE_CALENDAR_CREDENTIALS`
+- `N8N_WEBHOOK_URL`
+
+### Continuidad
+
+Ventana dentro de la cual un paciente que llamo por telefono y luego escribe
+
+por WhatsApp conserva el MISMO conversation_id.
+
+- `VENTANA_CONTINUIDAD_HORAS` — por defecto `72`
+- `DEFAULT_PHONE_REGION` — por defecto `PE`

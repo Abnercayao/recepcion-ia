@@ -134,7 +134,7 @@ aprobación de esta sesión se hizo sobre los fragmentos existentes, por el mism
 ### Defectos corregidos en el camino
 
 - **`migrate.ts`, `seed.ts` y `demo.ts` no cargaban `.env`.** Solo `server.ts`
-  importaba `dotenv/config`, así que el flujo del README (`cp .env.example .env`
+  importaba `dotenv/config`, así que el flujo del README (crear `.env`
   y luego `npm run db:migrate`) fallaba enumerando como ausentes variables que sí
   estaban en el archivo.
 - **El diagnóstico daba un falso positivo sobre Supabase.** Comprobaba la

@@ -1,8 +1,8 @@
 /**
  * DETECTOR DE CREDENCIALES antes de que entren en el repositorio.
  *
- * Existe porque ya paso: `.env.example` esta versionado, alguien escribio ahi
- * las claves reales y viajaron a GitHub dentro de un commit. Un commit
+ * Existe porque ya paso: habia un `.env.example` versionado, alguien escribio
+ * ahi las claves reales y viajaron a GitHub dentro de un commit. Un commit
  * posterior no las borra —el valor se queda en el historial y sigue siendo
  * valido hasta que se rota—, asi que la unica defensa util es la que actua
  * ANTES de confirmar.
@@ -144,7 +144,7 @@ process.stdout.write(
   '\nUna credencial confirmada NO se borra con un commit posterior: se queda en\n' +
     'el historial y sigue siendo valida hasta que se rota.\n\n' +
     'Los valores reales van en `.env` (que git ignora) o en `credenciales/`.\n' +
-    'En `.env.example` solo marcadores.\n\n' +
+    'Ningun archivo versionado debe llevar una credencial.\n\n' +
     'Si de verdad es un falso positivo, confirma con `git commit --no-verify`.\n',
 );
 process.exit(1);
