@@ -37,6 +37,38 @@ fragmentos inactivos, ambas clínicas devuelven cero aunque el filtro por
 fragmento temporalmente, se repitió la consulta y se revirtió. Sin ese paso, el
 «pasa» habría sido un artefacto.
 
+### Google Calendar · 27-07-2026
+
+| Comprobación | Resultado |
+|---|---|
+| Autenticación de la cuenta de servicio | ✅ token obtenido · Calendar API habilitada en el proyecto |
+| Calendario de la clínica | creado por la propia cuenta de servicio, zona `America/Lima` |
+| `clinic.config` | `googleCalendarId` real · `googleImpersonateSubject` **eliminado** (exigía Workspace con delegación) |
+| `CalendarPort.findAvailableSlots` | ✅ 108 huecos de 40 min en 3 días |
+| Herramienta `consultar_agenda` | ✅ `ok` en **834 ms**, sobre conversación y paciente reales |
+
+Una cuenta de servicio no tiene calendarios propios y no hereda ninguno: hasta
+que se le comparte uno —o crea el suyo, que es lo que se hizo aquí—
+`calendarList` devuelve cero y la agenda no existe aunque las credenciales sean
+perfectas.
+
+### DEFECTO ABIERTO: no se aplican los horarios de la clínica
+
+`clinic.config.horarios` declara L-V 09:00–13:00 y 15:00–20:00, sábado
+09:00–14:00 y domingo cerrado. **Nadie lee ese campo.** Ni
+`consultar-agenda.tool.ts` ni `calendar.client.ts` lo mencionan siquiera: la
+disponibilidad sale de `freebusy` de Google, así que todo hueco no ocupado se
+considera ofrecible.
+
+Medido sobre la agenda real: de **73 horarios ofrecidos al modelo, 49 caen fuera
+del horario declarado**, incluidas las 23:57. El agente ofrecería a un paciente
+una cita a medianoche, o un domingo.
+
+No estaba documentado como hueco conocido. Solo aparece con un calendario real:
+con dobles, la disponibilidad se fabrica ya dentro del horario. Falta decidir
+qué capa filtra —la herramienta del núcleo o el adaptador de infraestructura— y
+que el filtro respete la zona horaria de la clínica, no la del servidor.
+
 ### Bloqueantes descubiertos
 
 1. **Voyage en plan gratuito: 3 peticiones/minuto y 10 000 tokens/minuto.** Cada
