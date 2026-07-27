@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "5b77031a6a14f28b",
+  "huella": "1012a0709ef79f08",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 207,
+        "lineas": 264,
         "capa": "documentacion"
       }
     },
@@ -882,6 +882,23 @@
           "node:fs"
         ],
         "lineas": 151,
+        "capa": "scripts"
+      }
+    },
+    {
+      "id": "modulo:scripts/demo-real.ts",
+      "tipo": "modulo",
+      "nombre": "demo-real.ts",
+      "ruta": "scripts/demo-real.ts",
+      "resumen": "DEMO CONVERSACIONAL CONTRA LA INFRAESTRUCTURA REAL.",
+      "meta": {
+        "externas": [
+          "dotenv/config",
+          "node:path",
+          "node:readline/promises",
+          "node:url"
+        ],
+        "lineas": 217,
         "capa": "scripts"
       }
     },
@@ -7134,7 +7151,7 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:205"
+      "origen": "docs/ESTADO.md:262"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -7423,6 +7440,210 @@
       "relacion": "pertenece_a",
       "hacia": "capa:scripts",
       "origen": "scripts/comprobar-secretos.ts"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/claude.service.ts",
+      "origen": "scripts/demo-real.ts:46"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/guardrails.ts",
+      "origen": "scripts/demo-real.ts:48"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/prompt.builder.ts",
+      "origen": "scripts/demo-real.ts:49"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/conversation.service.ts",
+      "origen": "scripts/demo-real.ts:61"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/message.router.ts",
+      "origen": "scripts/demo-real.ts:60"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/embedding.service.ts",
+      "origen": "scripts/demo-real.ts:51"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/knowledge.repository.ts",
+      "origen": "scripts/demo-real.ts:52"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/rag.service.ts",
+      "origen": "scripts/demo-real.ts:53"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/consultar-agenda.tool.ts",
+      "origen": "scripts/demo-real.ts:55"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/consultar-rag.tool.ts",
+      "origen": "scripts/demo-real.ts:57"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/crear-cita.tool.ts",
+      "origen": "scripts/demo-real.ts:56"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
+      "origen": "scripts/demo-real.ts:59"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/guardar-lead.tool.ts",
+      "origen": "scripts/demo-real.ts:58"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/tool.registry.ts",
+      "origen": "scripts/demo-real.ts:54"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/channel.ts",
+      "origen": "scripts/demo-real.ts:62"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/urgency/urgency.detector.ts",
+      "origen": "scripts/demo-real.ts:50"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/calendar.client.ts",
+      "origen": "scripts/demo-real.ts:36"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/config.ts",
+      "origen": "scripts/demo-real.ts:32"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/logger.ts",
+      "origen": "scripts/demo-real.ts:34"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/notification.client.ts",
+      "origen": "scripts/demo-real.ts:37"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/repositories/index.ts",
+      "origen": "scripts/demo-real.ts:38"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/supabase.client.ts",
+      "origen": "scripts/demo-real.ts:35"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:ANTHROPIC_API_KEY",
+      "origen": "scripts/demo-real.ts:119"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
+      "origen": "scripts/demo-real.ts:121"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
+      "origen": "scripts/demo-real.ts:133"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
+      "origen": "scripts/demo-real.ts:120"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:DEFAULT_PHONE_REGION",
+      "origen": "scripts/demo-real.ts:150"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:EMBEDDING_DIMENSIONS",
+      "origen": "scripts/demo-real.ts:111"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:EMBEDDING_MODEL",
+      "origen": "scripts/demo-real.ts:110"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:N8N_WEBHOOK_URL",
+      "origen": "scripts/demo-real.ts:104"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:VENTANA_CONTINUIDAD_HORAS",
+      "origen": "scripts/demo-real.ts:150"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:VOYAGE_API_KEY",
+      "origen": "scripts/demo-real.ts:109"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:scripts",
+      "origen": "scripts/demo-real.ts"
+    },
+    {
+      "desde": "modulo:scripts/demo-real.ts",
+      "relacion": "usa_tabla",
+      "hacia": "tabla:tool_calls",
+      "origen": "scripts/demo-real.ts:181"
     },
     {
       "desde": "modulo:scripts/demo.ts",

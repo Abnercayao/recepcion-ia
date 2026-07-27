@@ -117,6 +117,63 @@ deja 78 fragmentos, con los 39 originales huérfanos e inactivos. Por eso la
 aprobación de esta sesión se hizo sobre los fragmentos existentes, por el mismo
 `KnowledgeRepository.aprobar` que usa el script.
 
+### BLOQUEANTE CRÍTICO: el detector de urgencia escala el 100 % de los turnos
+
+Descubierto el 27-07-2026 al correr la primera conversación completa contra la
+infraestructura real (`npm run demo:real`). **Los tres turnos escalaron**,
+incluida «¿cuánto cuesta una limpieza dental?». El agente no respondió nada, no
+consultó el RAG y no miró la agenda.
+
+La causa es un desacuerdo entre el prompt y el modelo sobre qué significa un
+campo. `prompts/urgencia.clasificador.md` lo define así:
+
+> `"confianza"` es cuán seguro estás de que HAY urgencia (no de tu clasificación).
+
+Y `urgency.detector.ts` lo consume en consecuencia:
+
+```ts
+const isUrgent = parseada.urgente || parseada.confianza >= UMBRAL_DE_URGENCIA; // 0.3
+```
+
+Pero el modelo real responde, para una pregunta de precio:
+
+```json
+{"urgente": false, "confianza": 0.95, "senales": []}
+```
+
+Es decir, interpreta `confianza` como seguridad en su propia clasificación —
+justo lo que el prompt le prohíbe—. Como `0.95 >= 0.3`, escala. **Cuanto más
+seguro está el modelo de que NO hay urgencia, más seguro escala el sistema.**
+
+Medido con el clasificador aislado:
+
+| Mensaje | `urgente` | `confianza` | Resultado |
+|---|---|---|---|
+| ¿cuánto cuesta una limpieza dental? | `false` | 0.95 | ❌ escala |
+| ¿tienen espacio esta semana? | `false` | 0.95 | ❌ escala |
+| se me cayó un diente y no para de sangrar | — | 1.0 | ✅ escala (prefiltro léxico) |
+
+El prefiltro léxico funciona bien y es el que salva el único caso que sí es una
+urgencia. El clasificador es el que está roto.
+
+**Ninguna prueba lo detectaba**, y no es un descuido: la batería en modo dobles
+verifica que los controles atrapen lo que el modelo *pueda* decir, no que el
+modelo obedezca el prompt. Este documento ya lo advertía. Es exactamente el
+fallo que ese aviso anticipaba, y solo aparece con `ANTHROPIC_API_KEY`.
+
+Quedan dos formas de arreglarlo, y la elección tiene consecuencias de seguridad:
+
+1. **Confiar solo en `urgente`**, y usar `confianza` únicamente para escalar
+   cuando el modelo se declara *inseguro* (`isUrgent = urgente || confianza <
+   umbral_de_certeza`). Preserva el sesgo «ante la duda, urgente» y encaja con
+   lo que los modelos producen de verdad.
+2. **Renombrar el campo** a algo que no se pueda malinterpretar
+   (`probabilidad_urgencia`) y mantener el consumo actual. Depende de que el
+   modelo obedezca, que es lo que acaba de fallar.
+
+Mientras no se resuelva, **ningún canal puede demostrarse**: ni voz ni WhatsApp,
+porque el fallo está en el núcleo que comparten.
+
 ### Bloqueantes descubiertos
 
 1. **Voyage en plan gratuito: 3 peticiones/minuto y 10 000 tokens/minuto.** Cada
