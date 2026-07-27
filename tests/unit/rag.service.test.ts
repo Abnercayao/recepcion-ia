@@ -95,14 +95,22 @@ describe('RagService.retrieve', () => {
     expect(resultado).toBe(esperado);
   });
 
-  it('usa los valores por defecto: 5 fragmentos y umbral de similitud 0.75', async () => {
+  // El umbral estuvo en 0.75, elegido sin medir porque no habia clave de Voyage.
+  // Con embeddings reales sobre la base aprobada resulto que a 0.75 no pasaba NI
+  // UN fragmento: la consulta «cuanto cuesta una limpieza dental» puntua 0.7316
+  // contra el fragmento que la responde literalmente. El RAG devolvia cero para
+  // todo. Se bajo a 0.50 midiendo (ver cabecera de rag.service.ts y ESTADO.md).
+  //
+  // Esta prueba fija el valor a proposito: si alguien lo vuelve a mover, que sea
+  // una decision consciente y con datos, no un ajuste al tanteo.
+  it('usa los valores por defecto: 5 fragmentos y umbral de similitud 0.5', async () => {
     const embeddings = new FakeEmbeddingPort(async () => [[0, 0, 0]]);
     const repo = new FakeKnowledgeRepository(async () => []);
     const service = new RagService(embeddings, repo, new FakeLogger());
 
     await service.retrieve(CLINIC_A, 'consulta cualquiera');
 
-    expect(repo.calls[0]).toMatchObject({ limit: 5, minSimilarity: 0.75 });
+    expect(repo.calls[0]).toMatchObject({ limit: 5, minSimilarity: 0.5 });
   });
 
   it('permite sobreescribir el limite de fragmentos por llamada', async () => {

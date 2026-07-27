@@ -58,6 +58,14 @@ const envSchema = z
     EMBEDDING_MODEL: z.string().default('voyage-3'),
     EMBEDDING_DIMENSIONS: intFromEnv(1024),
 
+    /** Similitud coseno minima del RAG. Calibrado a 0.5 midiendo con
+     *  voyage-3 sobre la base aprobada; 0.75 apagaba la recuperacion entera. */
+    RAG_UMBRAL_SIMILITUD: z
+      .string()
+      .optional()
+      .transform((v) => (v === undefined || v.trim() === '' ? 0.5 : Number(v)))
+      .pipe(z.number().min(0).max(1)),
+
     // --- Datos ---
     SUPABASE_URL: z.string().url(),
     SUPABASE_SERVICE_KEY: z.string().min(1),

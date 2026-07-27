@@ -69,6 +69,35 @@ con dobles, la disponibilidad se fabrica ya dentro del horario. Falta decidir
 qué capa filtra —la herramienta del núcleo o el adaptador de infraestructura— y
 que el filtro respete la zona horaria de la clínica, no la del servidor.
 
+### RAG de extremo a extremo · 27-07-2026
+
+Los 39 fragmentos quedaron **aprobados por «Abner Cayao»** (aprobación ficticia
+sobre datos ficticios; no sustituye la de un profesional sanitario real).
+
+Y con eso apareció el defecto que el contenido inactivo tapaba: **el umbral de
+similitud estaba en 0.75 y no dejaba pasar nada**. La consulta «¿cuánto cuesta
+una limpieza dental?» puntúa 0.7316 contra el fragmento que la responde
+literalmente —«Profilaxis y limpieza dental: S/ 90 a S/ 150»— y quedaba fuera.
+El RAG devolvía cero para todo.
+
+| Umbral | Fragmentos que pasan |
+|---|---|
+| 0.75 (anterior) | **0** |
+| 0.60 | 2 |
+| **0.50 (actual)** | **5, todos del tema** |
+| 0.40 | 15, ya con ruido |
+
+Corregido a 0.50 y expuesto como `RAG_UMBRAL_SIMILITUD` para poder ajustarlo sin
+tocar código. **Es una calibración de un solo punto**: sirve para que el sistema
+funcione, no para dar el asunto por cerrado.
+
+### Otro defecto: `npm run db:seed` no es idempotente
+
+Siempre inserta y después aprueba lo que acaba de insertar. Ejecutarlo dos veces
+deja 78 fragmentos, con los 39 originales huérfanos e inactivos. Por eso la
+aprobación de esta sesión se hizo sobre los fragmentos existentes, por el mismo
+`KnowledgeRepository.aprobar` que usa el script.
+
 ### Bloqueantes descubiertos
 
 1. **Voyage en plan gratuito: 3 peticiones/minuto y 10 000 tokens/minuto.** Cada
@@ -146,7 +175,7 @@ Detalle completo en `decisiones.md`. Los principales:
 1. **RLS vs `SUPABASE_SERVICE_KEY`** — decidido para v1 con deuda reconocida; el `audit_log` inalterable sí queda resuelto de verdad.
 2. **`CalendarPort` sin sede ni profesional** — la clínica tiene dos sedes y especialistas que no atienden en ambas.
 3. **Falta herramienta de cancelación** — y las fuentes se contradicen: la Tabla 13 la exige, el anti-patrón 10 fija cinco herramientas.
-4. **Umbral del RAG en 0.75, sin calibrar** — ya hay clave de Voyage y embeddings reales, así que **ahora sí se puede calibrar**; sigue sin hacerse. Requiere fragmentos aprobados y un conjunto de consultas de referencia.
+4. ~~**Umbral del RAG en 0.75, sin calibrar**~~ — **corregido el 27-07-2026**: medido con embeddings reales, 0.75 no pasaba ni un fragmento. Ahora 0.50, ajustable por `RAG_UMBRAL_SIMILITUD`. Sigue siendo una calibración de un solo punto: falta un conjunto de consultas de referencia.
 5. **Riesgo de doble locución al escalar por voz** — solo detectable con telefonía real.
 6. **Revelación en WhatsApp sobre memoria de proceso** — frágil para un criterio bloqueante.
 

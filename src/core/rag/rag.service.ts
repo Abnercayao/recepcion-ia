@@ -6,14 +6,32 @@
  * Decisiones de diseno tomadas en esta rama (no fijadas por la especificacion,
  * documentadas tambien en el informe final):
  *
- * 1. UMBRAL DE SIMILITUD (0.75, no el 0.5 de match_knowledge). La funcion SQL
- *    trae 0.5 como fallback generico de la firma, pero este es un dominio
- *    donde una recuperacion equivocada con total confianza es peor que un
- *    "no dispongo del dato" de mas. Con similitud coseno y embeddings de
- *    voyage-3, 0.5 deja pasar fragmentos de tema apenas relacionado; 0.75
- *    prioriza precision sobre recall a proposito (sesgo hacia el silencio
- *    seguro, igual que el clasificador de urgencia sesga hacia el falso
- *    positivo por la razon inversa).
+ * 1. UMBRAL DE SIMILITUD. El razonamiento original —precision antes que
+ *    recall, porque recuperar mal con confianza es peor que un "no dispongo
+ *    del dato" de mas— sigue siendo correcto. El NUMERO no lo era.
+ *
+ *    Estaba en 0.75, elegido sin medir porque no habia clave de Voyage. Con
+ *    embeddings reales de voyage-3 sobre la base aprobada (39 fragmentos en
+ *    espanol, 27-07-2026), la consulta «¿cuanto cuesta una limpieza dental?»
+ *    da esta distribucion:
+ *
+ *      0.7316  «Profilaxis y limpieza dental: S/ 90 a S/ 150»  <- LA respuesta
+ *      0.6025  tratamientos que se ofrecen
+ *      0.5727  ortodoncia invisible, rango de referencia
+ *      0.5420  los importes son rangos, no precios finales
+ *      0.5412  cuanto cuesta un implante
+ *      ...     cola larga hasta 0.1730
+ *
+ *    Con 0.75 pasan CERO fragmentos: ni siquiera el que responde la pregunta
+ *    literalmente. El umbral no priorizaba la precision, apagaba el RAG
+ *    entero. A 0.50 pasan 5, y los cinco son del tema; a 0.40 pasan 15 y ya
+ *    entra ruido. De ahi el 0.50.
+ *
+ *    ESTO ES UNA CALIBRACION DE UN SOLO PUNTO. Sirve para que el sistema
+ *    funcione, no para dar por cerrado el asunto: una calibracion de verdad
+ *    necesita un conjunto de consultas de referencia con sus fragmentos
+ *    esperados. Por eso el valor se puede cambiar por entorno
+ *    (`RAG_UMBRAL_SIMILITUD`) sin tocar codigo.
  *
  * 2. NUMERO DE FRAGMENTOS (5 por defecto, igual que el default de
  *    match_knowledge). Suficiente para cubrir una pregunta compuesta
@@ -53,7 +71,7 @@ export interface RagServiceOptions {
 }
 
 const DEFAULT_LIMITE_FRAGMENTOS = 5;
-const DEFAULT_UMBRAL_SIMILITUD = 0.75;
+const DEFAULT_UMBRAL_SIMILITUD = 0.5;
 
 export class RagService implements RagPort {
   private readonly logger: Logger;

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "42fb8e827fde5255",
+  "huella": "26f3d48e34b8caec",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 159,
+        "lineas": 188,
         "capa": "documentacion"
       }
     },
@@ -1228,7 +1228,7 @@
       "ruta": "src/core/rag/rag.service.ts",
       "resumen": "Implementacion de RagPort: recupera fragmentos aprobados y activos de la",
       "meta": {
-        "lineas": 97,
+        "lineas": 115,
         "capa": "nucleo"
       }
     },
@@ -1431,7 +1431,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 217,
+        "lineas": 225,
         "capa": "infraestructura"
       }
     },
@@ -1639,7 +1639,7 @@
           "node:path",
           "node:url"
         ],
-        "lineas": 242,
+        "lineas": 244,
         "capa": "composicion"
       }
     },
@@ -1879,7 +1879,7 @@
         "externas": [
           "vitest"
         ],
-        "lineas": 193,
+        "lineas": 201,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -4462,7 +4462,7 @@
       "tipo": "simbolo",
       "nombre": "RagService",
       "ruta": "src/core/rag/rag.service.ts",
-      "linea": 58,
+      "linea": 76,
       "meta": {
         "clase": "class"
       }
@@ -4472,7 +4472,7 @@
       "tipo": "simbolo",
       "nombre": "RagServiceOptions",
       "ruta": "src/core/rag/rag.service.ts",
-      "linea": 48,
+      "linea": 66,
       "meta": {
         "clase": "interface"
       }
@@ -5420,7 +5420,7 @@
       "tipo": "simbolo",
       "nombre": "Config",
       "ruta": "src/infra/config.ts",
-      "linea": 181,
+      "linea": 189,
       "meta": {
         "clase": "type"
       }
@@ -5430,7 +5430,7 @@
       "tipo": "simbolo",
       "nombre": "ConfigError",
       "ruta": "src/infra/config.ts",
-      "linea": 183,
+      "linea": 191,
       "meta": {
         "clase": "class"
       }
@@ -5440,7 +5440,7 @@
       "tipo": "simbolo",
       "nombre": "getConfig",
       "ruta": "src/infra/config.ts",
-      "linea": 208,
+      "linea": 216,
       "resumen": "Configuracion del proceso, memoizada. Falla al primer uso si el entorno es invalido.",
       "meta": {
         "clase": "function"
@@ -5451,7 +5451,7 @@
       "tipo": "simbolo",
       "nombre": "loadConfig",
       "ruta": "src/infra/config.ts",
-      "linea": 197,
+      "linea": 205,
       "resumen": "Valida el entorno y devuelve la configuracion. Lanza ConfigError si falta algo.",
       "meta": {
         "clase": "function"
@@ -5462,7 +5462,7 @@
       "tipo": "simbolo",
       "nombre": "resetConfigCache",
       "ruta": "src/infra/config.ts",
-      "linea": 214,
+      "linea": 222,
       "resumen": "Solo para tests.",
       "meta": {
         "clase": "function"
@@ -6499,7 +6499,7 @@
       "tipo": "variable_entorno",
       "nombre": "AUDIO_RETENTION",
       "ruta": "src/infra/config.ts",
-      "linea": 92,
+      "linea": 100,
       "meta": {
         "obligatoria": true
       }
@@ -6539,7 +6539,7 @@
       "tipo": "variable_entorno",
       "nombre": "DEFAULT_PHONE_REGION",
       "ruta": "src/infra/config.ts",
-      "linea": 120,
+      "linea": 128,
       "meta": {
         "obligatoria": true
       }
@@ -6549,7 +6549,7 @@
       "tipo": "variable_entorno",
       "nombre": "ELEVENLABS_AGENT_ID",
       "ruta": "src/infra/config.ts",
-      "linea": 77,
+      "linea": 85,
       "meta": {
         "obligatoria": true
       }
@@ -6559,7 +6559,7 @@
       "tipo": "variable_entorno",
       "nombre": "ELEVENLABS_API_KEY",
       "ruta": "src/infra/config.ts",
-      "linea": 76,
+      "linea": 84,
       "meta": {
         "obligatoria": true
       }
@@ -6569,7 +6569,7 @@
       "tipo": "variable_entorno",
       "nombre": "ELEVENLABS_MODEL",
       "ruta": "src/infra/config.ts",
-      "linea": 79,
+      "linea": 87,
       "meta": {
         "obligatoria": true
       }
@@ -6579,7 +6579,7 @@
       "tipo": "variable_entorno",
       "nombre": "ELEVENLABS_VOICE_ID",
       "ruta": "src/infra/config.ts",
-      "linea": 78,
+      "linea": 86,
       "meta": {
         "obligatoria": true
       }
@@ -6589,7 +6589,7 @@
       "tipo": "variable_entorno",
       "nombre": "ELEVENLABS_WEBHOOK_SECRET",
       "ruta": "src/infra/config.ts",
-      "linea": 88,
+      "linea": 96,
       "resumen": "Distinto del anterior: es el secreto con el que ElevenLabs FIRMA el",
       "meta": {
         "obligatoria": true
@@ -6600,7 +6600,7 @@
       "tipo": "variable_entorno",
       "nombre": "ELEVENLABS_WS_URL",
       "ruta": "src/infra/config.ts",
-      "linea": 80,
+      "linea": 88,
       "meta": {
         "obligatoria": true
       }
@@ -6630,7 +6630,7 @@
       "tipo": "variable_entorno",
       "nombre": "GOOGLE_CALENDAR_CREDENTIALS",
       "ruta": "src/infra/config.ts",
-      "linea": 115,
+      "linea": 123,
       "meta": {
         "obligatoria": true
       }
@@ -6650,7 +6650,7 @@
       "tipo": "variable_entorno",
       "nombre": "N8N_WEBHOOK_URL",
       "ruta": "src/infra/config.ts",
-      "linea": 116,
+      "linea": 124,
       "meta": {
         "obligatoria": true
       }
@@ -6680,7 +6680,7 @@
       "tipo": "variable_entorno",
       "nombre": "RETENCION_AUDIO_DIAS",
       "ruta": "src/infra/config.ts",
-      "linea": 72,
+      "linea": 80,
       "meta": {
         "obligatoria": true
       }
@@ -6690,7 +6690,7 @@
       "tipo": "variable_entorno",
       "nombre": "RETENCION_TRANSCRIPCION_DIAS",
       "ruta": "src/infra/config.ts",
-      "linea": 71,
+      "linea": 79,
       "meta": {
         "obligatoria": true
       }
@@ -6700,7 +6700,7 @@
       "tipo": "variable_entorno",
       "nombre": "SIP_PROVIDER",
       "ruta": "src/infra/config.ts",
-      "linea": 95,
+      "linea": 103,
       "meta": {
         "obligatoria": true
       }
@@ -6710,7 +6710,7 @@
       "tipo": "variable_entorno",
       "nombre": "SUPABASE_DB_URL",
       "ruta": "src/infra/config.ts",
-      "linea": 70,
+      "linea": 78,
       "resumen": "Cadena de conexion REAL de Postgres. No es lo mismo que SUPABASE_URL /",
       "meta": {
         "obligatoria": true
@@ -6721,7 +6721,7 @@
       "tipo": "variable_entorno",
       "nombre": "SUPABASE_SERVICE_KEY",
       "ruta": "src/infra/config.ts",
-      "linea": 63,
+      "linea": 71,
       "meta": {
         "obligatoria": true
       }
@@ -6731,7 +6731,7 @@
       "tipo": "variable_entorno",
       "nombre": "SUPABASE_URL",
       "ruta": "src/infra/config.ts",
-      "linea": 62,
+      "linea": 70,
       "meta": {
         "obligatoria": true
       }
@@ -6741,7 +6741,7 @@
       "tipo": "variable_entorno",
       "nombre": "TRANSFER_WHITELIST",
       "ruta": "src/infra/config.ts",
-      "linea": 99,
+      "linea": 107,
       "meta": {
         "obligatoria": true
       }
@@ -6751,7 +6751,7 @@
       "tipo": "variable_entorno",
       "nombre": "TWILIO_ACCOUNT_SID",
       "ruta": "src/infra/config.ts",
-      "linea": 96,
+      "linea": 104,
       "meta": {
         "obligatoria": true
       }
@@ -6761,7 +6761,7 @@
       "tipo": "variable_entorno",
       "nombre": "TWILIO_AUTH_TOKEN",
       "ruta": "src/infra/config.ts",
-      "linea": 97,
+      "linea": 105,
       "meta": {
         "obligatoria": true
       }
@@ -6771,7 +6771,7 @@
       "tipo": "variable_entorno",
       "nombre": "TWILIO_PHONE_NUMBER",
       "ruta": "src/infra/config.ts",
-      "linea": 98,
+      "linea": 106,
       "meta": {
         "obligatoria": true
       }
@@ -6781,7 +6781,7 @@
       "tipo": "variable_entorno",
       "nombre": "VENTANA_CONTINUIDAD_HORAS",
       "ruta": "src/infra/config.ts",
-      "linea": 119,
+      "linea": 127,
       "meta": {
         "obligatoria": true
       }
@@ -6791,7 +6791,7 @@
       "tipo": "variable_entorno",
       "nombre": "VOICE_BUFFER_WORD_MS",
       "ruta": "src/infra/config.ts",
-      "linea": 91,
+      "linea": 99,
       "resumen": "Umbral tras el cual el gateway emite una expresion puente. Ver anti-patron 7.",
       "meta": {
         "obligatoria": true
@@ -6802,7 +6802,7 @@
       "tipo": "variable_entorno",
       "nombre": "VOICE_ENABLED",
       "ruta": "src/infra/config.ts",
-      "linea": 75,
+      "linea": 83,
       "meta": {
         "obligatoria": true
       }
@@ -6812,7 +6812,7 @@
       "tipo": "variable_entorno",
       "nombre": "VOICE_GATEWAY_SECRET",
       "ruta": "src/infra/config.ts",
-      "linea": 83,
+      "linea": 91,
       "resumen": "Protege NUESTRO endpoint Custom LLM frente a peticiones no autorizadas.",
       "meta": {
         "obligatoria": true
@@ -6823,7 +6823,7 @@
       "tipo": "variable_entorno",
       "nombre": "VOICE_GATEWAY_URL",
       "ruta": "src/infra/config.ts",
-      "linea": 81,
+      "linea": 89,
       "meta": {
         "obligatoria": true
       }
@@ -6833,7 +6833,7 @@
       "tipo": "variable_entorno",
       "nombre": "VOICE_LATENCIA_OBJETIVO_MS",
       "ruta": "src/infra/config.ts",
-      "linea": 89,
+      "linea": 97,
       "meta": {
         "obligatoria": true
       }
@@ -6853,7 +6853,7 @@
       "tipo": "variable_entorno",
       "nombre": "WHATSAPP_APP_SECRET",
       "ruta": "src/infra/config.ts",
-      "linea": 111,
+      "linea": 119,
       "resumen": "App Secret de Meta: es la clave del HMAC de X-Hub-Signature-256, y es una",
       "meta": {
         "obligatoria": true
@@ -6864,7 +6864,7 @@
       "tipo": "variable_entorno",
       "nombre": "WHATSAPP_BSP_TOKEN",
       "ruta": "src/infra/config.ts",
-      "linea": 102,
+      "linea": 110,
       "meta": {
         "obligatoria": true
       }
@@ -6874,7 +6874,7 @@
       "tipo": "variable_entorno",
       "nombre": "WHATSAPP_ENABLED",
       "ruta": "src/infra/config.ts",
-      "linea": 112,
+      "linea": 120,
       "meta": {
         "obligatoria": true
       }
@@ -6884,7 +6884,7 @@
       "tipo": "variable_entorno",
       "nombre": "WHATSAPP_PHONE_ID",
       "ruta": "src/infra/config.ts",
-      "linea": 103,
+      "linea": 111,
       "meta": {
         "obligatoria": true
       }
@@ -6894,7 +6894,7 @@
       "tipo": "variable_entorno",
       "nombre": "WHATSAPP_WEBHOOK_SECRET",
       "ruta": "src/infra/config.ts",
-      "linea": 105,
+      "linea": 113,
       "resumen": "Token del challenge GET de verificacion del webhook (hub.verify_token).",
       "meta": {
         "obligatoria": true
@@ -7056,7 +7056,7 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:157"
+      "origen": "docs/ESTADO.md:186"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -9396,25 +9396,25 @@
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/core/rag/rag.service.ts:58"
+      "origen": "src/core/rag/rag.service.ts:76"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagServiceOptions",
-      "origen": "src/core/rag/rag.service.ts:48"
+      "origen": "src/core/rag/rag.service.ts:66"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/rag/knowledge.repository.ts",
-      "origen": "src/core/rag/rag.service.ts:45"
+      "origen": "src/core/rag/rag.service.ts:63"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/types/index.ts",
-      "origen": "src/core/rag/rag.service.ts:44"
+      "origen": "src/core/rag/rag.service.ts:62"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
@@ -10554,37 +10554,37 @@
       "desde": "modulo:src/infra/config.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/config.ts#Config",
-      "origen": "src/infra/config.ts:181"
+      "origen": "src/infra/config.ts:189"
     },
     {
       "desde": "modulo:src/infra/config.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/config.ts#ConfigError",
-      "origen": "src/infra/config.ts:183"
+      "origen": "src/infra/config.ts:191"
     },
     {
       "desde": "modulo:src/infra/config.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/config.ts#getConfig",
-      "origen": "src/infra/config.ts:208"
+      "origen": "src/infra/config.ts:216"
     },
     {
       "desde": "modulo:src/infra/config.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/config.ts#loadConfig",
-      "origen": "src/infra/config.ts:197"
+      "origen": "src/infra/config.ts:205"
     },
     {
       "desde": "modulo:src/infra/config.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/config.ts#resetConfigCache",
-      "origen": "src/infra/config.ts:214"
+      "origen": "src/infra/config.ts:222"
     },
     {
       "desde": "modulo:src/infra/config.ts",
       "relacion": "menciona",
       "hacia": "control:C8",
-      "origen": "src/infra/config.ts:170"
+      "origen": "src/infra/config.ts:178"
     },
     {
       "desde": "modulo:src/infra/config.ts",
@@ -11208,37 +11208,37 @@
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ANTHROPIC_API_KEY",
-      "origen": "src/server.ts:94"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
       "origen": "src/server.ts:96"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
+      "origen": "src/server.ts:98"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
       "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
-      "origen": "src/server.ts:110"
+      "origen": "src/server.ts:112"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
-      "origen": "src/server.ts:95"
+      "origen": "src/server.ts:97"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:DEFAULT_PHONE_REGION",
-      "origen": "src/server.ts:129"
+      "origen": "src/server.ts:131"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ELEVENLABS_WEBHOOK_SECRET",
-      "origen": "src/server.ts:200"
+      "origen": "src/server.ts:202"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -11262,37 +11262,37 @@
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:PORT",
-      "origen": "src/server.ts:222"
+      "origen": "src/server.ts:224"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:RETENCION_AUDIO_DIAS",
-      "origen": "src/server.ts:201"
+      "origen": "src/server.ts:203"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VENTANA_CONTINUIDAD_HORAS",
-      "origen": "src/server.ts:128"
+      "origen": "src/server.ts:130"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_BUFFER_WORD_MS",
-      "origen": "src/server.ts:190"
+      "origen": "src/server.ts:192"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_ENABLED",
-      "origen": "src/server.ts:144"
+      "origen": "src/server.ts:146"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_GATEWAY_SECRET",
-      "origen": "src/server.ts:189"
+      "origen": "src/server.ts:191"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -11304,31 +11304,31 @@
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_APP_SECRET",
-      "origen": "src/server.ts:170"
+      "origen": "src/server.ts:172"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_BSP_TOKEN",
-      "origen": "src/server.ts:153"
+      "origen": "src/server.ts:155"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_ENABLED",
-      "origen": "src/server.ts:144"
+      "origen": "src/server.ts:146"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_PHONE_ID",
-      "origen": "src/server.ts:152"
+      "origen": "src/server.ts:154"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_WEBHOOK_SECRET",
-      "origen": "src/server.ts:168"
+      "origen": "src/server.ts:170"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -12654,7 +12654,7 @@
       "desde": "modulo:tests/unit/rag.service.test.ts",
       "relacion": "menciona",
       "hacia": "control:C9",
-      "origen": "tests/unit/rag.service.test.ts:131"
+      "origen": "tests/unit/rag.service.test.ts:139"
     },
     {
       "desde": "modulo:tests/unit/rag.service.test.ts",
@@ -12666,7 +12666,7 @@
       "desde": "modulo:tests/unit/rag.service.test.ts",
       "relacion": "verifica",
       "hacia": "control:C9",
-      "origen": "tests/unit/rag.service.test.ts:131"
+      "origen": "tests/unit/rag.service.test.ts:139"
     },
     {
       "desde": "modulo:tests/unit/rag.service.test.ts",
@@ -13068,13 +13068,13 @@
       "desde": "simbolo:src/channels/voice/voice-session.service.ts#VoiceSessionService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/call.repository.ts#SupabaseCallRepository",
-      "origen": "src/server.ts:182"
+      "origen": "src/server.ts:184"
     },
     {
       "desde": "simbolo:src/channels/voice/voice-session.service.ts#VoiceSessionService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/transcript.repository.ts#SupabaseTranscriptRepository",
-      "origen": "src/server.ts:182"
+      "origen": "src/server.ts:184"
     },
     {
       "desde": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
@@ -13122,85 +13122,85 @@
       "desde": "simbolo:src/core/claude/guardrails.ts#GuardrailService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:104"
+      "origen": "src/server.ts:106"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:136"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/guardrails.ts#GuardrailService",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:136"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:136"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:136"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:136"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:136"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:136"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:136"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/message.repository.ts#SupabaseMessageRepository",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:136"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/clinic.repository.ts#SupabaseClinicRepository",
-      "origen": "src/server.ts:125"
+      "origen": "src/server.ts:127"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/conversation.repository.ts#SupabaseConversationRepository",
-      "origen": "src/server.ts:125"
+      "origen": "src/server.ts:127"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/message.repository.ts#SupabaseMessageRepository",
-      "origen": "src/server.ts:125"
+      "origen": "src/server.ts:127"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/patient.repository.ts#SupabasePatientRepository",
-      "origen": "src/server.ts:125"
+      "origen": "src/server.ts:127"
     },
     {
       "desde": "simbolo:src/core/rag/embedding.service.ts#VoyageEmbeddingService",
@@ -13212,7 +13212,7 @@
       "desde": "simbolo:src/core/rag/rag.service.ts#RagService",
       "relacion": "implementa",
       "hacia": "puerto:RagPort",
-      "origen": "src/core/rag/rag.service.ts:58"
+      "origen": "src/core/rag/rag.service.ts:76"
     },
     {
       "desde": "simbolo:src/core/rag/rag.service.ts#RagService",
@@ -13230,13 +13230,13 @@
       "desde": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:117"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:117"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-rag.tool.ts#ConsultarRagTool",
@@ -13248,13 +13248,13 @@
       "desde": "simbolo:src/core/tools/consultar-rag.tool.ts#ConsultarRagTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/server.ts:117"
+      "origen": "src/server.ts:119"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-rag.tool.ts#ConsultarRagTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:117"
+      "origen": "src/server.ts:119"
     },
     {
       "desde": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
@@ -13266,13 +13266,13 @@
       "desde": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/server.ts:116"
+      "origen": "src/server.ts:118"
     },
     {
       "desde": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:116"
+      "origen": "src/server.ts:118"
     },
     {
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
@@ -13284,19 +13284,19 @@
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/notification.client.ts#NotificationClient",
-      "origen": "src/server.ts:119"
+      "origen": "src/server.ts:121"
     },
     {
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/conversation.repository.ts#SupabaseConversationRepository",
-      "origen": "src/server.ts:119"
+      "origen": "src/server.ts:121"
     },
     {
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:119"
+      "origen": "src/server.ts:121"
     },
     {
       "desde": "simbolo:src/core/tools/guardar-lead.tool.ts#GuardarLeadTool",
@@ -13308,61 +13308,61 @@
       "desde": "simbolo:src/core/tools/guardar-lead.tool.ts#GuardarLeadTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:118"
+      "origen": "src/server.ts:120"
     },
     {
       "desde": "simbolo:src/core/tools/guardar-lead.tool.ts#GuardarLeadTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:118"
+      "origen": "src/server.ts:120"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/server.ts:113"
+      "origen": "src/server.ts:115"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/server.ts:113"
+      "origen": "src/server.ts:115"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/notification.client.ts#NotificationClient",
-      "origen": "src/server.ts:113"
+      "origen": "src/server.ts:115"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:113"
+      "origen": "src/server.ts:115"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/conversation.repository.ts#SupabaseConversationRepository",
-      "origen": "src/server.ts:113"
+      "origen": "src/server.ts:115"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:113"
+      "origen": "src/server.ts:115"
     },
     {
       "desde": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
-      "origen": "src/server.ts:106"
+      "origen": "src/server.ts:108"
     },
     {
       "desde": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/server.ts:106"
+      "origen": "src/server.ts:108"
     },
     {
       "desde": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",

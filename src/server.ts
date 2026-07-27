@@ -86,7 +86,9 @@ export async function construirServidor(config: Config) {
     model: config.EMBEDDING_MODEL,
     dimensions: config.EMBEDDING_DIMENSIONS,
   });
-  const rag = new RagService(embeddings, new SupabaseKnowledgeRepository(supabase), logger);
+  const rag = new RagService(embeddings, new SupabaseKnowledgeRepository(supabase), logger, {
+    umbralSimilitud: config.RAG_UMBRAL_SIMILITUD,
+  });
 
   // --- Modelo -------------------------------------------------------------
   const claude = new ClaudeService({
