@@ -18,10 +18,13 @@ import {
   violacionDominante,
 } from '../../src/core/claude/guardrails.js';
 import {
-  UMBRAL_DE_URGENCIA,
+  ESQUEMA_JSON_VEREDICTO,
+  EsquemaVeredicto,
   UrgencyDetector,
+  VEREDICTOS,
   prefiltroLexico,
 } from '../../src/core/urgency/urgency.detector.js';
+import { respuestaDelClasificador } from '../helpers/dobles.js';
 import type {
   ClaudeCallOptions,
   ClaudePort,
@@ -447,7 +450,7 @@ describe('capa 3 — deteccion de urgencia', () => {
   });
 
   it('no espera al modelo cuando la senal es inequivoca', async () => {
-    const claude = claudeFalso('{"urgente": false, "confianza": 0, "senales": []}');
+    const claude = claudeFalso(respuestaDelClasificador('sin_urgencia'));
     const espia = vi.spyOn(claude, 'complete');
     const detector = new UrgencyDetector({ ...base, claude });
 
@@ -459,7 +462,7 @@ describe('capa 3 — deteccion de urgencia', () => {
   });
 
   it('usa el clasificador cuando el lexico no ve nada', async () => {
-    const claude = claudeFalso('{"urgente": true, "confianza": 0.8, "senales": ["late toda la noche"]}');
+    const claude = claudeFalso(respuestaDelClasificador('urgencia', ['late toda la noche']));
     const detector = new UrgencyDetector({ ...base, claude });
 
     const resultado = await detector.detectUrgency('me late toda la noche y no puedo dormir');
@@ -468,23 +471,82 @@ describe('capa 3 — deteccion de urgencia', () => {
     expect(resultado.signals).toContain('late toda la noche');
   });
 
+  it('exige el esquema al proveedor: la forma la impone el servidor, no el parser', async () => {
+    const claude = claudeFalso(respuestaDelClasificador('sin_urgencia'));
+    const espia = vi.spyOn(claude, 'complete');
+    const detector = new UrgencyDetector({ ...base, claude });
+
+    await detector.detectUrgency('cuanto cuesta una limpieza');
+
+    expect(espia.mock.calls[0]?.[0]?.outputSchema).toBe(ESQUEMA_JSON_VEREDICTO);
+  });
+
+  it('el esquema JSON y el esquema Zod describen el MISMO contrato', () => {
+    // Se escriben por separado (el JSON Schema tiene que cumplir la forma que
+    // exigen las salidas estructuradas); esto vigila que no se separen.
+    const propiedades = ESQUEMA_JSON_VEREDICTO['properties'] as Record<string, { enum?: string[] }>;
+    expect(propiedades['veredicto']?.enum).toEqual([...VEREDICTOS]);
+    expect(ESQUEMA_JSON_VEREDICTO['required']).toEqual(['veredicto', 'senales']);
+    expect(ESQUEMA_JSON_VEREDICTO['additionalProperties']).toBe(false);
+    for (const veredicto of VEREDICTOS) {
+      expect(EsquemaVeredicto.safeParse({ veredicto, senales: [] }).success).toBe(true);
+    }
+    expect(EsquemaVeredicto.safeParse({ veredicto: 'quiza', senales: [] }).success).toBe(false);
+  });
+
   it('tolera que el modelo envuelva el JSON en markdown', async () => {
-    const claude = claudeFalso('```json\n{"urgente": true, "confianza": 0.9, "senales": []}\n```');
+    const claude = claudeFalso(`\`\`\`json\n${respuestaDelClasificador('urgencia')}\n\`\`\``);
     const detector = new UrgencyDetector({ ...base, claude });
     expect((await detector.detectUrgency('algo raro')).isUrgent).toBe(true);
   });
 
-  it('sesga al falso positivo: dispara por encima de un umbral bajo', async () => {
-    expect(UMBRAL_DE_URGENCIA).toBeLessThanOrEqual(0.3);
-    const claude = claudeFalso(`{"urgente": false, "confianza": ${UMBRAL_DE_URGENCIA}, "senales": []}`);
+  it('la duda escala: `no_estoy_seguro` se trata igual que una urgencia', async () => {
+    const claude = claudeFalso(respuestaDelClasificador('no_estoy_seguro', ['molestia sin detalle']));
     const detector = new UrgencyDetector({ ...base, claude });
     expect((await detector.detectUrgency('me molesta algo')).isUrgent).toBe(true);
   });
 
   it('no marca urgencia en una consulta comercial', async () => {
-    const claude = claudeFalso('{"urgente": false, "confianza": 0.02, "senales": []}');
+    const claude = claudeFalso(respuestaDelClasificador('sin_urgencia'));
     const detector = new UrgencyDetector({ ...base, claude });
     expect((await detector.detectUrgency('cuanto cuesta una limpieza')).isUrgent).toBe(false);
+  });
+
+  /**
+   * REGRESION del defecto que escalaba el 100% de los turnos.
+   *
+   * Habia un `confianza: 0..1` con umbral 0.3, y el modelo real respondia
+   * `{"urgente": false, "confianza": 0.95}` a una pregunta de precios —leyendo
+   * «confianza» como la seguridad de SU CLASIFICACION—. Como 0.95 >= 0.3, se
+   * escalaba: cuanto mas seguro estaba de que NO habia urgencia, con mas
+   * certeza escalaba el sistema.
+   *
+   * El contrato de hoy no tiene ningun campo donde quepa esa segunda lectura.
+   * Si alguien vuelve a meter un numero comparable, este test lo dice.
+   */
+  it('REGRESION: una respuesta muy segura de que NO hay urgencia no escala', async () => {
+    const claude = claudeFalso(respuestaDelClasificador('sin_urgencia'));
+    const detector = new UrgencyDetector({ ...base, claude });
+
+    const resultado = await detector.detectUrgency('¿cuánto cuesta una limpieza dental?');
+
+    expect(resultado.isUrgent).toBe(false);
+    // `confidence` es descriptivo: no puede haber ningun umbral que lo lea.
+    expect(resultado.confidence).toBe(0);
+  });
+
+  it('un veredicto fuera del contrato no se interpreta: se escala', async () => {
+    for (const basura of [
+      '{"veredicto": "quiza", "senales": []}', //   valor fuera del enum
+      '{"urgente": false, "confianza": 0.95}', //   el contrato VIEJO
+      '{"senales": []}', //                         falta el veredicto
+      'no tengo ni idea', //                        ni siquiera es JSON
+    ]) {
+      const detector = new UrgencyDetector({ ...base, claude: claudeFalso(basura) });
+      const resultado = await detector.detectUrgency('cuanto cuesta una limpieza');
+      expect(resultado.isUrgent, `no escalo ante "${basura}"`).toBe(true);
+      expect(resultado.signals).toContain('veredicto_ininteligible');
+    }
   });
 
   it('si el clasificador falla, escala ante cualquier senal debil', async () => {

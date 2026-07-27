@@ -17,6 +17,7 @@ import {
   loadPromptTemplates,
   type PromptTemplates,
 } from '../../src/core/claude/prompt.builder.js';
+import { VEREDICTOS } from '../../src/core/urgency/urgency.detector.js';
 import type { Channel, Clinic, KnowledgeChunk, Patient, TurnContext } from '../../src/core/types/index.js';
 
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
@@ -75,7 +76,9 @@ describe('PromptBuilder — el prompt vive en archivos', () => {
     expect(plantillas.maestro).toContain('## ROL');
     expect(plantillas.estiloPorCanal.voice).not.toBe('');
     expect(plantillas.estiloPorCanal.whatsapp).not.toBe('');
-    expect(plantillas.urgencia).toContain('urgente');
+    // Los tres veredictos del contrato de capa 3, por su nombre exacto: si el
+    // prompt y el esquema se separan, el clasificador deja de servir.
+    for (const veredicto of VEREDICTOS) expect(plantillas.urgencia).toContain(veredicto);
   });
 
   it('el maestro tiene exactamente los 10 bloques declarados', () => {

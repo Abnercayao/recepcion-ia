@@ -14,6 +14,10 @@ import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type {
+  RespuestaDelClasificador,
+  Veredicto,
+} from '../../src/core/urgency/urgency.detector.js';
+import type {
   AuditRepository,
   CalendarEvent,
   CalendarPort,
@@ -134,7 +138,18 @@ export interface PasoDeClaude {
   tokensOut?: number;
 }
 
-const RESPUESTA_DE_CLASIFICADOR_NO_URGENTE = '{"urgente": false, "confianza": 0, "senales": []}';
+/**
+ * Respuesta del clasificador de urgencia, construida desde el tipo REAL.
+ *
+ * No se escribe el JSON a mano a proposito: un doble con el contrato viejo no
+ * falla, miente en silencio, y es exactamente asi como el defecto del umbral de
+ * confianza sobrevivio a una suite en verde. Tipada, un cambio de contrato es
+ * un error de `tsc`.
+ */
+export const respuestaDelClasificador = (
+  veredicto: Veredicto,
+  senales: string[] = [],
+): string => JSON.stringify({ veredicto, senales } satisfies RespuestaDelClasificador);
 
 /**
  * Doble del modelo. No hay aleatoriedad: emite exactamente el guion que se le
@@ -152,7 +167,7 @@ export class ClaudeDoble implements ClaudePort {
 
   /** Respuesta de `complete`. Por defecto, el clasificador dice «no urgente». */
   respuestaDeComplete: (opts: ClaudeCallOptions) => { text: string; toolUses: ClaudeToolUse[] } = () => ({
-    text: RESPUESTA_DE_CLASIFICADOR_NO_URGENTE,
+    text: respuestaDelClasificador('sin_urgencia'),
     toolUses: [],
   });
 

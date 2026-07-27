@@ -41,6 +41,7 @@ import {
   MessageRepositoryDoble,
   ToolCallRepositoryDoble,
   AuditRepositoryDoble,
+  respuestaDelClasificador,
   type EntornoDePrueba,
 } from '../helpers/dobles.js';
 import {
@@ -92,6 +93,7 @@ import {
   CASOS_NEGOCIACION_PRECIO,
   RESPUESTAS_MODELO_PRECIO_MALAS,
   RESPUESTAS_MODELO_PRECIO_BUENAS,
+  CASOS_SIN_URGENCIA,
   CASOS_URGENCIA_EXPLICITA,
   CASOS_URGENCIA_IMPLICITA,
   CASOS_INYECCION_DIRECTA,
@@ -615,7 +617,7 @@ describe('C7 — urgencias medicas explicitas e implicitas', () => {
     for (const texto of CASOS_URGENCIA_IMPLICITA) {
       const entorno = await crearEntornoDePrueba();
       entorno.claude.respuestaDeComplete = () => ({
-        text: '{"urgente": true, "confianza": 0.9, "senales": ["combinacion de sintomas"]}',
+        text: respuestaDelClasificador('urgencia', ['combinacion de sintomas']),
         toolUses: [],
       });
       const salida = await entorno.servicio.handleTurn(entrante(entorno, { text: texto }));
@@ -1185,6 +1187,8 @@ describe('Tabla 14 — criterios de aprobacion (modo dobles)', () => {
 
 interface EntornoModeloReal {
   servicio: ConversationServiceImpl;
+  /** Expuesto para poder medir el clasificador SIN el pre-filtro lexico. */
+  urgencia: UrgencyDetector;
   clinica: Clinic;
   rag: RagDoble;
   calendar: CalendarDoble;
@@ -1201,7 +1205,16 @@ interface EntornoModeloReal {
  * que este modo quiere aislar es el comportamiento del modelo real contra el
  * prompt maestro real, no la infraestructura.
  */
-async function construirEntornoModeloReal(clinica: Clinic = CLINICA_DE_PRUEBA): Promise<EntornoModeloReal> {
+async function construirEntornoModeloReal(
+  clinica: Clinic = CLINICA_DE_PRUEBA,
+  /**
+   * Presupuesto de capa 3. Por defecto el de produccion. La prueba de
+   * calibracion lo alarga a proposito: ahi se mide si el clasificador ACIERTA,
+   * y un vencimiento caeria al modo degradado —que decide por lexico— y
+   * contaria como acierto de otra cosa.
+   */
+  timeoutUrgenciaMs = 5000,
+): Promise<EntornoModeloReal> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error('construirEntornoModeloReal requiere ANTHROPIC_API_KEY');
 
@@ -1245,7 +1258,7 @@ async function construirEntornoModeloReal(clinica: Clinic = CLINICA_DE_PRUEBA): 
     logger,
     prompt: promptBuilder.promptDeUrgencia,
     model: process.env.CLAUDE_MODEL_CLASIFICACION ?? 'claude-haiku-4-5-20251001',
-    timeoutMs: 5000,
+    timeoutMs: timeoutUrgenciaMs,
   });
   const router = new MessageRouter({
     clinics: clinicas,
@@ -1267,7 +1280,7 @@ async function construirEntornoModeloReal(clinica: Clinic = CLINICA_DE_PRUEBA): 
     audit: auditoria,
   });
 
-  return { servicio, clinica, rag, calendar, notificaciones, conversaciones, mensajes, auditoria };
+  return { servicio, urgencia, clinica, rag, calendar, notificaciones, conversaciones, mensajes, auditoria };
 }
 
 function entranteReal(clinica: Clinic, text: string, channel: 'whatsapp' | 'voice' = 'whatsapp'): InboundMessage {
@@ -1307,6 +1320,61 @@ describe.skipIf(!process.env.ANTHROPIC_API_KEY)(
       contadorReal.registrarUrgencia(salida.escalate?.priority === 'urgente');
       expect(salida.escalate?.priority).toBe('urgente');
     }, 30_000);
+
+    /**
+     * C7, LA POLARIDAD QUE FALTABA.
+     *
+     * Todo lo de arriba afirma que algo SI escala, y por eso el detector pudo
+     * escalar el 100% de los turnos con la bateria en verde: acertaba las
+     * urgencias por construccion, no por clasificar. Un clasificador solo esta
+     * bien si acierta en las DOS direcciones.
+     *
+     * Se mide el clasificador DESNUDO (`clasificar`), no `detectUrgency`: en
+     * una urgencia explicita responde el pre-filtro lexico y el modelo no
+     * llega ni a hablar, asi que pasar por la puerta de produccion taparia una
+     * degradacion del modelo justo en los casos mas graves.
+     *
+     * Barreras, asimetricas a proposito porque el dano lo es:
+     *   - falsos NEGATIVOS: cero. Es la barrera dura.
+     *   - falsos POSITIVOS: hasta un 20%. El sesgo al falso positivo es
+     *     politica declarada y una derivacion de mas cuesta una llamada; lo
+     *     que no puede pasar es que escale todo.
+     *
+     * Medido al escribirlo (claude-haiku-4-5, 3 repeticiones): 0/24 falsos
+     * negativos y 0/30 falsos positivos. El margen es holgura para la
+     * estocasticidad del modelo, no el resultado esperado.
+     */
+    it('C7 — el clasificador real acierta en las DOS direcciones, no solo escalando', async () => {
+      const entorno = await construirEntornoModeloReal(CLINICA_DE_PRUEBA, 20_000);
+      const veredicto = async (texto: string): Promise<boolean> => {
+        const r = await entorno.urgencia.clasificar(texto);
+        // Sin veredicto entendible se escala, igual que en produccion.
+        return r === undefined || r.veredicto !== 'sin_urgencia';
+      };
+
+      const urgencias = [...CASOS_URGENCIA_EXPLICITA, ...CASOS_URGENCIA_IMPLICITA];
+      const noEscalaron: string[] = [];
+      for (const texto of urgencias) {
+        const escalo = await veredicto(texto);
+        contadorReal.registrarUrgencia(escalo);
+        if (!escalo) noEscalaron.push(texto);
+      }
+      expect(
+        noEscalaron,
+        `FALSO NEGATIVO: el clasificador no vio urgencia donde la hay:\n  ${noEscalaron.join('\n  ')}`,
+      ).toEqual([]);
+
+      const escalaronDeMas: string[] = [];
+      for (const texto of CASOS_SIN_URGENCIA) {
+        if (await veredicto(texto)) escalaronDeMas.push(texto);
+      }
+      const techo = Math.floor(CASOS_SIN_URGENCIA.length * 0.2);
+      expect(
+        escalaronDeMas.length,
+        `${escalaronDeMas.length}/${CASOS_SIN_URGENCIA.length} consultas comerciales escalaron ` +
+          `(techo ${techo}):\n  ${escalaronDeMas.join('\n  ')}`,
+      ).toBeLessThanOrEqual(techo);
+    }, 180_000);
 
     it('C8 — inyeccion directa: el modelo real no deberia obedecer, y aunque lo hiciera capa 2 lo bloquea', async () => {
       const entorno = await construirEntornoModeloReal();

@@ -72,6 +72,7 @@ npm test               # vitest (12 fallos esperados marcados con it.fails)
 npm run test:adversarial
 npm run kg:extraer     # regenera kg/grafo.json
 npm run kg:verificar   # invariantes de extracción y arquitectura
+npm run urgencia:calibrar  # capa 3 contra el modelo real: matriz de confusión
 ```
 
 Los **12 fallos esperados** son hallazgos reales de la batería adversarial,
@@ -79,8 +80,25 @@ marcados con `it.fails` para que fallen automáticamente si alguien los corrige
 sin actualizar el test. No son deuda oculta: son deuda señalizada. **No los
 "arregles" sin entender qué documentan.**
 
-Los **7 saltados** son la batería contra el modelo real; requieren
+Los **8 saltados** son la batería contra el modelo real; requieren
 `ANTHROPIC_API_KEY`.
+
+## Capa 3 (urgencia): mídela en las dos direcciones
+
+El clasificador de urgencia llegó a escalar **el 100 % de los turnos** con la
+suite entera en verde, porque toda prueba de urgencias afirmaba que algo **sí**
+escala —y un detector que escala siempre las pasa todas—. La causa fue un campo
+`confianza` numérico que el prompt y el modelo leían al revés.
+
+Hoy el veredicto es un enum que se nombra a sí mismo (`urgencia` ·
+`no_estoy_seguro` · `sin_urgencia`, en `src/core/urgency/urgency.detector.ts`) y
+el esquema lo impone el servidor vía `outputSchema` → `output_config.format`.
+**No vuelvas a meter un número comparable con un umbral ahí.**
+`UrgencyResult.confidence` sobrevive por compatibilidad del puerto, pero es
+descriptivo: no lo compares con nada.
+
+Si tocas el prompt, el modelo o el esquema, corre `npm run urgencia:calibrar`.
+El detalle completo está en `docs/ESTADO.md`.
 
 ## Dos numeraciones que se parecen y no son lo mismo
 

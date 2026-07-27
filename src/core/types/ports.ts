@@ -61,6 +61,18 @@ export interface ClaudeCallOptions {
   model?: string;
   maxTokens?: number;
   temperature?: number;
+  /**
+   * Esquema JSON que el PROVEEDOR obliga a cumplir en la respuesta (salidas
+   * estructuradas). No es una peticion en el prompt: si se manda, la respuesta
+   * no puede venir envuelta en markdown, ni faltarle un campo, ni traer un
+   * valor fuera del enum.
+   *
+   * Viaja como dato a proposito. Quien lo consume es `claude.service.ts`, el
+   * unico punto que conoce el SDK; el nucleo no importa nada del proveedor
+   * para poder usarlo. Requiere `additionalProperties: false` y `required`
+   * completo en cada objeto del esquema.
+   */
+  outputSchema?: Record<string, unknown>;
 }
 
 /**

@@ -361,6 +361,13 @@ export class ClaudeService implements ClaudePort {
     if (admiteTemperature(model)) {
       params.temperature = temperature;
     }
+    // Salidas estructuradas. Con esto la forma de la respuesta la impone el
+    // servidor, no nuestro parser: es la diferencia entre PEDIR un JSON y
+    // OBTENERLO. Solo se manda si el llamador trajo esquema, porque no todos
+    // los modelos lo admiten y la conversacion no lo usa.
+    if (opts.outputSchema) {
+      params.output_config = { format: { type: 'json_schema', schema: opts.outputSchema } };
+    }
     return params;
   }
 

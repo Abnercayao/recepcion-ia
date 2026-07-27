@@ -6,12 +6,12 @@
 |---|---|
 | `npm run build` | **exit 0** · 49 archivos JS en `dist/` |
 | `npx tsc -p tsconfig.test.json --noEmit` | **exit 0** |
-| `npx vitest run` | **16 ficheros · 414 pasando · 12 fallos esperados · 7 saltados** |
+| `npx vitest run` | **21 ficheros · 556 pasando · 12 fallos esperados · 8 saltados** |
 | Arranque real desde `dist/` | `/health` → 200 · gateway sin secreto → 401 · secreto erróneo → 401 |
 | Entorno incompleto | falla al arrancar enumerando cada variable ausente |
 
 Los **12 «fallos esperados»** son hallazgos reales de la batería adversarial, marcados con `it.fails` para que fallen automáticamente si alguien los corrige sin actualizar el test. No son deuda oculta: son deuda señalizada.
-Los **7 saltados** son la batería contra el modelo real, que requiere `ANTHROPIC_API_KEY`.
+Los **8 saltados** son la batería contra el modelo real, que requiere `ANTHROPIC_API_KEY`. Se ejecutaron el 27-07-2026 y **pasan los 8**.
 
 ---
 
@@ -117,7 +117,7 @@ deja 78 fragmentos, con los 39 originales huérfanos e inactivos. Por eso la
 aprobación de esta sesión se hizo sobre los fragmentos existentes, por el mismo
 `KnowledgeRepository.aprobar` que usa el script.
 
-### BLOQUEANTE CRÍTICO: el detector de urgencia escala el 100 % de los turnos
+### RESUELTO (27-07-2026): el detector de urgencia escalaba el 100 % de los turnos
 
 Descubierto el 27-07-2026 al correr la primera conversación completa contra la
 infraestructura real (`npm run demo:real`). **Los tres turnos escalaron**,
@@ -145,7 +145,7 @@ Es decir, interpreta `confianza` como seguridad en su propia clasificación —
 justo lo que el prompt le prohíbe—. Como `0.95 >= 0.3`, escala. **Cuanto más
 seguro está el modelo de que NO hay urgencia, más seguro escala el sistema.**
 
-Medido con el clasificador aislado:
+Medido con el clasificador aislado, **antes** del arreglo:
 
 | Mensaje | `urgente` | `confianza` | Resultado |
 |---|---|---|---|
@@ -161,18 +161,85 @@ verifica que los controles atrapen lo que el modelo *pueda* decir, no que el
 modelo obedezca el prompt. Este documento ya lo advertía. Es exactamente el
 fallo que ese aviso anticipaba, y solo aparece con `ANTHROPIC_API_KEY`.
 
-Quedan dos formas de arreglarlo, y la elección tiene consecuencias de seguridad:
+#### Cómo se arregló
 
-1. **Confiar solo en `urgente`**, y usar `confianza` únicamente para escalar
-   cuando el modelo se declara *inseguro* (`isUrgent = urgente || confianza <
-   umbral_de_certeza`). Preserva el sesgo «ante la duda, urgente» y encaja con
-   lo que los modelos producen de verdad.
-2. **Renombrar el campo** a algo que no se pueda malinterpretar
-   (`probabilidad_urgencia`) y mantener el consumo actual. Depende de que el
-   modelo obedezca, que es lo que acaba de fallar.
+Ni bajar el umbral ni renombrar el campo: las dos lecturas seguirían cabiendo en
+el mismo sitio y volvería a saltar al cambiar el modelo o el prompt. **Se quitó
+el número.** El veredicto ahora se nombra a sí mismo:
 
-Mientras no se resuelva, **ningún canal puede demostrarse**: ni voz ni WhatsApp,
-porque el fallo está en el núcleo que comparten.
+```ts
+{ veredicto: 'urgencia' | 'no_estoy_seguro' | 'sin_urgencia', senales: string[] }
+```
+
+`urgencia` y `no_estoy_seguro` escalan; `sin_urgencia` no. El sesgo al falso
+positivo vive **dentro de un valor** que el modelo puede elegir, no en una
+comparación posterior que alguien pueda reajustar. `UMBRAL_DE_URGENCIA` se
+eliminó. `UrgencyResult.confidence` sigue existiendo porque es campo del puerto,
+pero pasó a ser **descriptivo**: se deriva del veredicto y no entra en ninguna
+decisión.
+
+Tres piezas más, para que no dependa de la buena voluntad del modelo:
+
+1. **El esquema lo impone el servidor.** `ClaudeCallOptions` acepta
+   `outputSchema` y `claude.service.ts` lo traduce a `output_config.format`
+   (salidas estructuradas). Elimina de raíz la clase de fallo «vino en markdown /
+   faltó un campo / el enum trae un valor inventado». Es un cambio **aditivo y
+   opcional** al contrato compartido de `ports.ts`: ningún consumidor actual se
+   entera.
+2. **Fallar cerrado, distinguiendo dos cosas.** Que el proveedor no conteste
+   (timeout, 503) sigue cayendo al modo degradado de siempre. Que conteste algo
+   que no cumpla el contrato **escala**, con señal `veredicto_ininteligible`.
+3. **`UrgencyDetector.clasificar()`** expone el modelo desnudo, sin pre-filtro ni
+   respaldo. Hacía falta: en una urgencia explícita responde el léxico y el
+   modelo no llega ni a hablar, así que una degradación del clasificador
+   quedaría tapada justo en los casos más graves.
+
+#### Por qué no volverá a pasar sin que nos enteremos
+
+El defecto sobrevivió a una suite en verde porque **toda prueba de urgencias
+afirmaba que algo SÍ escala**. Un detector que escala siempre las pasa todas.
+Ahora se mide en las dos direcciones:
+
+- `tests/unit/guardrails.test.ts` — se **borró** el test «sesga al falso
+  positivo: dispara por encima de un umbral bajo», que codificaba el defecto como
+  comportamiento deseado. Entró una regresión con nombre: *una respuesta muy
+  segura de que NO hay urgencia no escala*.
+- `tests/adversarial/bateria.test.ts`, tramo modelo-real — corpus de urgencias
+  **y** de consultas comerciales (`CASOS_SIN_URGENCIA`). Falsos negativos: cero,
+  barrera dura. Falsos positivos: techo del 20 %, porque el sesgo es política
+  declarada pero escalar todo no.
+- `npm run urgencia:calibrar` — la lupa. Matriz de confusión contra el modelo
+  real, caso a caso, sin arrastrar la suite. Se corre cuando cambie el modelo, el
+  prompt o el esquema.
+- Los dobles (`tests/helpers/dobles.ts`) construyen la respuesta desde el tipo
+  real. Un cambio de contrato es ahora un error de `tsc`, no un doble mintiendo
+  en silencio.
+
+#### Medido después del arreglo
+
+`claude-haiku-4-5-20251001`, 3 repeticiones, clasificador aislado del pre-filtro:
+
+| | resultado |
+|---|---|
+| falsos negativos | **0 / 24** |
+| falsos positivos | **0 / 30** |
+| aciertos del clasificador solo | 18 / 18 |
+| latencia | p50 1 183 ms · p95 2 084 ms · máx 2 294 ms |
+
+Y de extremo a extremo (`npm run demo:real`): los dos primeros turnos responden
+comercialmente **sin escalar**, el tercero escala. Antes escalaban los tres.
+
+#### Lo que sigue abierto de esto
+
+- **La latencia va justa.** El p95 (2 084 ms) está al 83 % del presupuesto de
+  2 500 ms de capa 3. Pasado el presupuesto se cae al modo degradado, que decide
+  por léxico débil; una urgencia implícita **sin** léxico se perdería ahí. Durante
+  las pruebas se vio un vencimiento aislado por encima de 5 s. Conviene vigilarlo
+  con `npm run urgencia:calibrar` bajo carga antes de producción.
+- **Sigue sin haber control de capa 2 para el protocolo de urgencia.** Lo que
+  cambió es capa 3: ahora tiene un contrato inequívoco y una prueba contra el
+  modelo real. La línea roja en sí la sigue vigilando solo el prompt, y
+  `npm run kg:verificar` lo sigue señalando. No se ha cerrado esa brecha.
 
 ### Bloqueantes descubiertos
 
@@ -239,7 +306,7 @@ Config con validación Zod · logger con enmascarado obligatorio de PII · 8 rep
 
 - **Google Calendar, Meta y ElevenLabs**: sin credenciales, todo con dobles. *(Anthropic, Supabase y Voyage sí quedaron verificados el 26-07-2026; ver la sección de arriba.)*
 - **La agenda de la clínica de demostración no existe.** `clinic.config.googleCalendarId` apunta a `aurora-miraflores@group.calendar.google.com`, que es ficticio, igual que `googleImpersonateSubject`. Aunque las credenciales de la cuenta de servicio sean válidas, no habrá agenda real hasta cambiar esos dos valores.
-- **El modelo obedeciendo el prompt.** El modo dobles prueba que *los controles atrapan* lo que el modelo pueda decir, no que el modelo se porte bien. La clave de API ya existe, así que los 7 tests saltados **ya se pueden ejecutar**; no se han ejecutado todavía.
+- **El modelo obedeciendo el prompt.** El modo dobles prueba que *los controles atrapan* lo que el modelo pueda decir, no que el modelo se porte bien. El tramo modelo-real **ya se ejecutó** (27-07-2026, los 8 pasan), y fue justamente ahí donde apareció el defecto del clasificador de urgencia que el modo dobles no podía ver. Sigue siendo una foto de un momento: el modelo es estocástico y estos tests no corren en cada commit.
 - **El RAG de extremo a extremo con contenido aprobado.** Los 39 fragmentos están sembrados pero inactivos: falta la aprobación nominal (control O2), que es un acto humano y no un paso del script.
 - **Todo el canal de voz con audio real**: latencia por turno, gestión de turnos, barge-in y la brecha de comprensión por segmento de hablante.
 - **Las asunciones sobre ElevenLabs** que su documentación no cubre: formato de streaming de `tool_calls`, header de autenticación entrante, composición del HMAC del webhook. Ver `contrato-elevenlabs.md`.

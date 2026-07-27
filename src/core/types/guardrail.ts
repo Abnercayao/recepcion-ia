@@ -40,8 +40,14 @@ export type InboundFlag = (typeof INBOUND_FLAGS)[number];
  * un costo operativo, derivar de menos es un dano (riesgo R3, control C4).
  */
 export interface UrgencyResult {
+  /** La decision. La toma el veredicto del clasificador, no un umbral. */
   isUrgent: boolean;
-  /** 0..1. El umbral de disparo es deliberadamente bajo. */
+  /**
+   * 0..1, DESCRIPTIVO. Alimenta el log y el motivo del escalamiento; NO entra
+   * en ninguna decision. Se deriva de `isUrgent`, nunca al reves: hubo aqui un
+   * umbral sobre este campo y escalaba el 100% de los turnos (ver la cabecera
+   * de `urgency.detector.ts`). No vuelvas a comparar este numero con nada.
+   */
   confidence: number;
   /** Senales detectadas, para auditoria de falsos positivos. */
   signals: string[];

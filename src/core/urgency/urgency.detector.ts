@@ -15,15 +15,87 @@
  *      presupuesto de tiempo del control C4 es de cinco segundos, y una
  *      llamada al modelo puede agotarlo ella sola.
  *   2. Clasificador con `ClaudePort`. Cubre lo que el lexico no ve.
+ *
+ * POR QUE EL VEREDICTO ES UN ENUM Y NO UN NUMERO
+ * Hubo aqui un `confianza: 0..1` con un umbral de 0.3, y escalaba el 100% de
+ * los turnos. El prompt decia que «confianza» era la seguridad de que HAY
+ * urgencia; el modelo la leyo como la seguridad de SU CLASIFICACION y respondia
+ * `{"urgente": false, "confianza": 0.95}` a «¿cuanto cuesta una limpieza?».
+ * Como 0.95 >= 0.3, se escalaba: cuanto mas seguro estaba el modelo de que NO
+ * habia urgencia, con mas certeza escalaba el sistema.
+ *
+ * El defecto no era el umbral —moverlo deja las dos lecturas cabiendo en el
+ * mismo campo—, era el campo. Un numero no dice que significa. Un enum si:
+ * `sin_urgencia` no se puede confundir con `urgencia` por mucho que el modelo
+ * interprete la escala, porque ya no hay escala. Y el sesgo a escalar vive
+ * DENTRO de un valor (`no_estoy_seguro`), no en una comparacion posterior que
+ * alguien pueda reajustar.
  */
+import { z } from 'zod';
+
 import type { ClaudePort, Logger, UrgencyResult } from '../types/index.js';
 import { normalizar } from '../claude/guardrails.js';
 
 /**
- * Umbral de disparo. Deliberadamente bajo: por encima de 0.3 ya se trata como
- * urgencia. Subirlo es una decision clinica, no una decision de ingenieria.
+ * Contrato de salida del clasificador. Cada valor se nombra a si mismo: no hay
+ * lectura de esta respuesta bajo la cual la duda produzca silencio.
+ *
+ *   urgencia         -> escala
+ *   no_estoy_seguro  -> escala (aqui vive el sesgo al falso positivo)
+ *   sin_urgencia     -> no escala
  */
-export const UMBRAL_DE_URGENCIA = 0.3;
+export const VEREDICTOS = ['urgencia', 'no_estoy_seguro', 'sin_urgencia'] as const;
+export type Veredicto = (typeof VEREDICTOS)[number];
+
+export const EsquemaVeredicto = z.object({
+  veredicto: z.enum(VEREDICTOS),
+  senales: z.array(z.string()),
+});
+
+export type RespuestaDelClasificador = z.infer<typeof EsquemaVeredicto>;
+
+/**
+ * El MISMO contrato, en JSON Schema, para que lo imponga el servidor.
+ *
+ * Se escribe a mano en vez de derivarlo de Zod porque las salidas
+ * estructuradas exigen una forma concreta —`additionalProperties: false` y
+ * `required` completo— y un generador automatico puede dejar de cumplirla en
+ * una actualizacion sin que nadie lo note. Que las dos definiciones no se
+ * separen lo vigila una prueba unitaria.
+ */
+export const ESQUEMA_JSON_VEREDICTO: Record<string, unknown> = {
+  type: 'object',
+  properties: {
+    veredicto: {
+      type: 'string',
+      enum: [...VEREDICTOS],
+      description:
+        'urgencia si hay cualquier senal de urgencia medica; sin_urgencia solo si es claramente ' +
+        'una consulta comercial; no_estoy_seguro ante cualquier duda.',
+    },
+    senales: {
+      type: 'array',
+      items: { type: 'string' },
+      description: 'Expresiones del mensaje que motivaron el veredicto. Vacio si no hay ninguna.',
+    },
+  },
+  required: ['veredicto', 'senales'],
+  additionalProperties: false,
+};
+
+/** Un veredicto que no sea `sin_urgencia` escala. La duda escala. */
+export const escala = (veredicto: Veredicto): boolean => veredicto !== 'sin_urgencia';
+
+/**
+ * `UrgencyResult.confidence` es DESCRIPTIVO: alimenta el log y el motivo del
+ * escalamiento, y no entra en ninguna decision. Se deriva del veredicto para
+ * que no pueda volver a haber dos fuentes de verdad.
+ */
+const CONFIANZA_POR_VEREDICTO: Record<Veredicto, number> = {
+  urgencia: 0.9,
+  no_estoy_seguro: 0.5,
+  sin_urgencia: 0,
+};
 
 /**
  * Senales INEQUIVOCAS. No admiten segunda lectura ni esperan al modelo.
@@ -66,36 +138,24 @@ export function senalesDebiles(text: string): string[] {
   return SENALES_DEBILES.filter(([, re]) => re.test(t)).map(([nombre]) => nombre);
 }
 
-/** Forma del JSON que devuelve el clasificador. */
-interface RespuestaDelClasificador {
-  urgente: boolean;
-  confianza: number;
-  senales: string[];
-}
-
 /**
- * Extrae el JSON de la respuesta del modelo. Tolera que venga envuelto en
- * markdown o con texto alrededor: el clasificador tiene instruccion de no
- * hacerlo, pero un clasificador que se cae porque el modelo puso un cerco de
+ * Extrae y valida el veredicto. Cinturon y tirantes: el esquema del servidor ya
+ * garantiza la forma, pero este parser sigue tolerando que venga envuelto en
+ * markdown o con texto alrededor porque el puerto `ClaudePort` no promete que
+ * toda implementacion sepa imponer esquemas —un doble, otro proveedor, una
+ * version antigua del SDK—, y un clasificador que se cae por un cerco de
  * codigo es un clasificador que no sirve.
+ *
+ * Devuelve `undefined` solo si NO se pudo entender la respuesta. Quien llama
+ * decide que hacer con eso, y lo que hace es escalar.
  */
 export function parsearRespuesta(texto: string): RespuestaDelClasificador | undefined {
   const inicio = texto.indexOf('{');
   const fin = texto.lastIndexOf('}');
   if (inicio === -1 || fin <= inicio) return undefined;
   try {
-    const crudo: unknown = JSON.parse(texto.slice(inicio, fin + 1));
-    if (typeof crudo !== 'object' || crudo === null) return undefined;
-    const obj = crudo as Record<string, unknown>;
-    const confianza = typeof obj['confianza'] === 'number' ? obj['confianza'] : 0;
-    const senales = Array.isArray(obj['senales'])
-      ? obj['senales'].filter((s): s is string => typeof s === 'string')
-      : [];
-    return {
-      urgente: obj['urgente'] === true,
-      confianza: Math.min(1, Math.max(0, confianza)),
-      senales,
-    };
+    const analizado = EsquemaVeredicto.safeParse(JSON.parse(texto.slice(inicio, fin + 1)));
+    return analizado.success ? analizado.data : undefined;
   } catch {
     return undefined;
   }
@@ -141,29 +201,36 @@ export class UrgencyDetector {
 
     // 2. Clasificador.
     try {
-      const respuesta = await this.conTimeout(
-        this.deps.claude.complete({
-          system: this.deps.prompt,
-          messages: [{ role: 'user', content: text }],
-          model: this.deps.model,
-          maxTokens: 200,
-          temperature: 0,
-        }),
-      );
-      const parseada = parsearRespuesta(respuesta.text);
+      const parseada = await this.clasificar(text);
+
+      // El modelo CONTESTO y no se le entiende. Es distinto de que no
+      // conteste: con el esquema impuesto por el servidor esto no deberia
+      // ocurrir nunca, y si ocurre algo va muy mal. No se cae al modo
+      // degradado —que puede decidir «no urgente» por ausencia de lexico—;
+      // se escala.
       if (!parseada) {
-        return this.degradado(text, inicio, 'respuesta_no_parseable');
+        this.deps.logger.error(
+          { capa: 3, via: 'clasificador' },
+          'el clasificador respondio algo que no cumple el contrato; se escala por precaucion',
+        );
+        return {
+          isUrgent: true,
+          confidence: 0.5,
+          signals: ['veredicto_ininteligible'],
+          latencyMs: Date.now() - inicio,
+        };
       }
-      const isUrgent = parseada.urgente || parseada.confianza >= UMBRAL_DE_URGENCIA;
+
+      const isUrgent = escala(parseada.veredicto);
       if (isUrgent) {
         this.deps.logger.warn(
-          { capa: 3, via: 'clasificador', confianza: parseada.confianza, senales: parseada.senales },
+          { capa: 3, via: 'clasificador', veredicto: parseada.veredicto, senales: parseada.senales },
           'urgencia detectada por el clasificador',
         );
       }
       return {
         isUrgent,
-        confidence: parseada.confianza,
+        confidence: CONFIANZA_POR_VEREDICTO[parseada.veredicto],
         signals: parseada.senales,
         latencyMs: Date.now() - inicio,
       };
@@ -174,6 +241,32 @@ export class UrgencyDetector {
       );
       return this.degradado(text, inicio, 'fallo_clasificador');
     }
+  }
+
+  /**
+   * SOLO el clasificador: sin pre-filtro, sin modo degradado, sin decision.
+   *
+   * `detectUrgency` es la puerta de produccion y esta bien que lo sea, pero
+   * mide dos cosas a la vez: en una urgencia explicita responde el lexico y el
+   * modelo no llega ni a hablar. Asi, un clasificador que se degrade queda
+   * tapado por el camino rapido justo en los casos mas graves.
+   *
+   * Esto expone el modelo desnudo para poder calibrarlo
+   * (`npm run urgencia:calibrar`). Lanza si el proveedor falla: quien mide
+   * quiere enterarse, no recibir un respaldo.
+   */
+  async clasificar(text: string): Promise<RespuestaDelClasificador | undefined> {
+    const respuesta = await this.conTimeout(
+      this.deps.claude.complete({
+        system: this.deps.prompt,
+        messages: [{ role: 'user', content: text }],
+        model: this.deps.model,
+        maxTokens: 300,
+        temperature: 0,
+        outputSchema: ESQUEMA_JSON_VEREDICTO,
+      }),
+    );
+    return parsearRespuesta(respuesta.text);
   }
 
   /**
