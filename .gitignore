@@ -15,3 +15,22 @@ kg/grafo.html
 
 # SQL generado desde db/migrations por `npm run db:sql`
 migraciones.sql
+
+# --- Credenciales -----------------------------------------------------------
+# Nada de esta carpeta se versiona salvo su README.
+credenciales/*
+!credenciales/README.md
+
+# Cualquier variante de .env que no sea la plantilla
+.env
+.env.*
+!.env.example
+
+# Archivos de credenciales sueltos, esten donde esten
+*service-account*.json
+*serviceaccount*.json
+*credentials*.json
+*.pem
+*.p12
+*.pfx
+*.key

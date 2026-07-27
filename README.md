@@ -26,6 +26,23 @@ npm run build
 npm run dev
 ```
 
+## Credenciales
+
+```bash
+cp .env.example .env
+```
+
+Los valores reales van en `.env`, que git ignora. **Nunca en `.env.example`**,
+que sí está versionado. Los archivos de credenciales —JSON de cuentas de
+servicio, certificados— van en `credenciales/`, ignorada entera salvo su README.
+
+Un hook de pre-commit revisa lo que está a punto de entrar y rechaza el commit
+si detecta una credencial. Se instala solo con `npm install`; para pasarlo a
+mano, `npm run comprobar-secretos`.
+
+Que una credencial llegue a un commit no se arregla con un commit posterior: el
+valor se queda en el historial y sigue siendo válido hasta que se rota.
+
 ## Base de datos
 
 ```bash

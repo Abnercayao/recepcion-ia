@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "48769d2fb71ad364",
+  "huella": "5aae4681bbf0a334",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -868,6 +868,21 @@
         "lineas": 36,
         "capa": "prompts",
         "bloques": []
+      }
+    },
+    {
+      "id": "modulo:scripts/comprobar-secretos.ts",
+      "tipo": "modulo",
+      "nombre": "comprobar-secretos.ts",
+      "ruta": "scripts/comprobar-secretos.ts",
+      "resumen": "DETECTOR DE CREDENCIALES antes de que entren en el repositorio.",
+      "meta": {
+        "externas": [
+          "node:child_process",
+          "node:fs"
+        ],
+        "lineas": 151,
+        "capa": "scripts"
       }
     },
     {
@@ -7396,6 +7411,12 @@
       "relacion": "pertenece_a",
       "hacia": "capa:prompts",
       "origen": "prompts/urgencia.clasificador.md"
+    },
+    {
+      "desde": "modulo:scripts/comprobar-secretos.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:scripts",
+      "origen": "scripts/comprobar-secretos.ts"
     },
     {
       "desde": "modulo:scripts/demo.ts",

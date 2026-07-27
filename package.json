@@ -26,7 +26,9 @@
     "demo": "tsx scripts/demo.ts",
     "wer": "tsx scripts/wer.ts",
     "diagnostico": "tsx scripts/diagnostico.ts",
-    "db:sql": "tsx scripts/sql-para-pegar.ts"
+    "db:sql": "tsx scripts/sql-para-pegar.ts",
+    "comprobar-secretos": "tsx scripts/comprobar-secretos.ts",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",

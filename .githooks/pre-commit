@@ -1,0 +1,8 @@
+#!/bin/sh
+# Impide confirmar credenciales. Ver scripts/comprobar-secretos.ts.
+#
+# Se activa con `git config core.hooksPath .githooks`, que ejecuta solo el
+# script `prepare` de package.json al hacer `npm install`.
+#
+# Para saltarlo en un caso justificado: git commit --no-verify
+exec npx tsx scripts/comprobar-secretos.ts --staged
