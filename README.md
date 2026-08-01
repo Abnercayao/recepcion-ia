@@ -69,6 +69,28 @@ La batería adversarial corre en dos modos. El modo por defecto usa dobles y ver
 
 **Importante:** el modo dobles no prueba que el modelo obedezca el prompt; prueba que los controles atrapan lo que el modelo pueda decir. Son cosas distintas y conviene no confundirlas al leer los resultados.
 
+## Consola de inspección
+
+Para hablar con el agente y ver **por qué** responde lo que responde, sin
+depender de Meta ni de ElevenLabs:
+
+```bash
+npm run consola              # infraestructura real, solo esta máquina
+npm run consola -- --dobles  # sin gastar ni escribir en la base
+npm run consola -- --red     # accesible desde el móvil, misma wifi
+```
+
+Imprime una URL con un token de un solo arranque. Cada turno muestra, además de
+la respuesta: las banderas de capa 1, el veredicto del clasificador de urgencia,
+los fragmentos del RAG con su similitud, las intervenciones de capa 2 —**con el
+texto que el modelo dijo de verdad y el paciente no vio**— y las herramientas
+que se ejecutaron. Un interruptor cambia entre el estilo de WhatsApp y el de voz.
+
+**No es un tercer canal y no va a producción.** Impersona uno de los dos canales
+existentes, vive en `scripts/` y nunca se registra en `src/server.ts`: ese
+servidor será públicamente alcanzable, y esto es un chat sin autenticar que
+gasta de tu cuenta y escribe en la base.
+
 ## Grafo de conocimiento
 
 El repositorio tiene un mapa consultable de sí mismo: qué existe, dónde vive y

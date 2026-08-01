@@ -24,6 +24,7 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "demo": "tsx scripts/demo.ts",
+    "consola": "tsx scripts/consola.ts",
     "wer": "tsx scripts/wer.ts",
     "diagnostico": "tsx scripts/diagnostico.ts",
     "urgencia:calibrar": "tsx scripts/urgencia-calibrar.ts",

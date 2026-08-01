@@ -68,14 +68,14 @@ señala. Tenlo presente antes de afirmar que algo está garantizado.
 ```bash
 npm run build          # tsc
 npm run typecheck      # tsc --noEmit sobre src, tests, scripts y kg
-npm test               # vitest (12 fallos esperados marcados con it.fails)
+npm test               # vitest (13 fallos esperados marcados con it.fails)
 npm run test:adversarial
 npm run kg:extraer     # regenera kg/grafo.json
 npm run kg:verificar   # invariantes de extracción y arquitectura
 npm run urgencia:calibrar  # capa 3 contra el modelo real: matriz de confusión
 ```
 
-Los **12 fallos esperados** son hallazgos reales de la batería adversarial,
+Los **13 fallos esperados** son hallazgos reales de la batería adversarial,
 marcados con `it.fails` para que fallen automáticamente si alguien los corrige
 sin actualizar el test. No son deuda oculta: son deuda señalizada. **No los
 "arregles" sin entender qué documentan.**

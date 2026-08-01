@@ -47,6 +47,7 @@ import {
 import {
   checkOutbound,
   detectInboundFlags,
+  detectOutboundViolations,
   GuardrailService,
   RESPUESTAS_CANONICAS,
 } from '../../src/core/claude/guardrails.js';
@@ -346,6 +347,46 @@ describe('C2 — agendamiento completo de extremo a extremo', () => {
 
     expect(env.calendar.eventos).toHaveLength(0);
     expect(salida.text).toBe(RESPUESTAS_CANONICAS.cita_afirmada_sin_tool_call);
+  });
+
+  /**
+   * HALLAZGO (encontrado con `npm run consola`, 27-07-2026).
+   *
+   * OFRECER una cita en subjuntivo se bloquea como si la cita ya estuviera
+   * hecha. El patron `(te|le|se la|se lo) (agende|reserve|...)` no distingue
+   * «ya te agende» —afirmacion— de «¿quieres que te agende?» —oferta—, porque
+   * el unico eximente que existe es una negacion previa (`NEGACION_PREVIA`), y
+   * aqui no hay negacion sino interrogacion.
+   *
+   * El efecto no es teorico: capa 2 sustituye y al paciente le llega una
+   * respuesta correcta rematada con «todavia no le puedo dar la cita por
+   * segura», sobre una cita que nunca pidio. Y se pierde justo la frase que
+   * empuja la conversion comercial.
+   *
+   * Que la variante «¿le agendo una cita?» SI pase demuestra que es el patron
+   * y no la politica: las dos frases ofrecen exactamente lo mismo.
+   *
+   * No se arregla aqui a proposito. Tocar un patron de capa 2 es una decision
+   * de seguridad —relajarlo de mas deja pasar una cita afirmada de verdad— y
+   * merece la suya. Queda marcado para que falle en cuanto alguien lo corrija.
+   */
+  it.fails('HALLAZGO: capa 2 confunde OFRECER una cita con AFIRMARLA («¿quieres que te agende?»)', () => {
+    const ofertas = [
+      '¿Quieres que te agende una evaluación para que te den el precio exacto?',
+      '¿Prefiere que le agende para el martes o para el jueves?',
+    ];
+    for (const oferta of ofertas) {
+      expect(
+        detectOutboundViolations(oferta, contextoMinimo(), { citaCreada: false }),
+        `bloqueado como cita afirmada, siendo una oferta: "${oferta}"`,
+      ).toEqual([]);
+    }
+  });
+
+  it('la variante equivalente sin subjuntivo SI pasa: es el patron, no la politica', () => {
+    for (const oferta of ['¿Le agendo una cita para la valoración?', '¿Le busco un espacio para la valoración?']) {
+      expect(detectOutboundViolations(oferta, contextoMinimo(), { citaCreada: false })).toEqual([]);
+    }
   });
 });
 

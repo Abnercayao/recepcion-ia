@@ -6,11 +6,11 @@
 |---|---|
 | `npm run build` | **exit 0** · 49 archivos JS en `dist/` |
 | `npx tsc -p tsconfig.test.json --noEmit` | **exit 0** |
-| `npx vitest run` | **21 ficheros · 556 pasando · 12 fallos esperados · 8 saltados** |
+| `npx vitest run` | **22 ficheros · 573 pasando · 13 fallos esperados · 8 saltados** |
 | Arranque real desde `dist/` | `/health` → 200 · gateway sin secreto → 401 · secreto erróneo → 401 |
 | Entorno incompleto | falla al arrancar enumerando cada variable ausente |
 
-Los **12 «fallos esperados»** son hallazgos reales de la batería adversarial, marcados con `it.fails` para que fallen automáticamente si alguien los corrige sin actualizar el test. No son deuda oculta: son deuda señalizada.
+Los **13 «fallos esperados»** son hallazgos reales de la batería adversarial, marcados con `it.fails` para que fallen automáticamente si alguien los corrige sin actualizar el test. No son deuda oculta: son deuda señalizada.
 Los **8 saltados** son la batería contra el modelo real, que requiere `ANTHROPIC_API_KEY`. Se ejecutaron el 27-07-2026 y **pasan los 8**.
 
 ---
@@ -116,6 +116,48 @@ Siempre inserta y después aprueba lo que acaba de insertar. Ejecutarlo dos vece
 deja 78 fragmentos, con los 39 originales huérfanos e inactivos. Por eso la
 aprobación de esta sesión se hizo sobre los fragmentos existentes, por el mismo
 `KnowledgeRepository.aprobar` que usa el script.
+
+### Consola de inspección · 27-07-2026
+
+`npm run consola` levanta una página donde se escribe como paciente y, por cada
+turno, se ve **qué hicieron las tres capas**: banderas de capa 1, veredicto
+desnudo de capa 3, fragmentos del RAG con su similitud real, intervenciones de
+capa 2 —con **el texto que el modelo dijo de verdad y el paciente no vio**— y
+las herramientas que corrieron.
+
+Existe porque los dos canales están bloqueados por la misma razón (falta URL
+pública HTTPS) y no había forma de hablar con el agente. Y muestra las tripas
+porque leer la respuesta no basta: una respuesta impecable puede serlo
+justamente porque capa 2 sustituyó la del modelo.
+
+| | |
+|---|---|
+| Dónde vive | `scripts/consola.ts` + `scripts/consola.html`. **No en `src/`** |
+| Cambios en `src/` | **ninguno**: la visibilidad sale de decorar los puertos en su propia raíz de composición |
+| Canal | **no añade un tercero**: impersona `whatsapp` o `voice` con un interruptor, y en WhatsApp aplica el formateador real para enseñar las burbujas |
+| Modos | real (Supabase, Voyage, Calendar) y dobles (instantáneo, gratis, no escribe) |
+| Acceso | token por arranque; `127.0.0.1` por defecto, `--red` para abrirlo desde el móvil |
+
+No debe registrarse nunca en `src/server.ts`: ese servidor será públicamente
+alcanzable en cuanto entre cualquiera de los dos canales, y esto es un endpoint
+de chat sin autenticar que gasta de la cuenta y escribe en la base. Hay una
+prueba que lo comprueba.
+
+#### HALLAZGO en su primer uso: capa 2 confunde ofrecer una cita con afirmarla
+
+«¿Quieres que **te agende** una evaluación?» se bloquea como
+`cita_afirmada_sin_tool_call`. El patrón `(te|le|se la|se lo) (agende|reserve|…)`
+no distingue la afirmación («ya te agendé») de la oferta en subjuntivo, porque
+el único eximente que existe es una negación previa y aquí hay interrogación.
+
+Al paciente le llega una respuesta correcta rematada con «todavía no le puedo
+dar la cita por segura», sobre una cita que nunca pidió — y se pierde justo la
+frase que empuja la conversión. Que la variante «¿le agendo una cita?» **sí**
+pase demuestra que es el patrón y no la política: ofrecen lo mismo.
+
+Marcado con `it.fails` en C2 de la batería, **no corregido**: relajar un patrón
+de capa 2 puede dejar pasar una cita afirmada de verdad, y esa es una decisión
+de seguridad que merece la suya.
 
 ### RESUELTO (27-07-2026): el detector de urgencia escalaba el 100 % de los turnos
 

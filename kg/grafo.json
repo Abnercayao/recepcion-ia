@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "26db627cf70bc07c",
+  "huella": "eb4d662c9ced4e46",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -152,7 +152,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C1 — Preguntas frecuentes del vertical",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 159,
+      "linea": 160,
       "resumen": "Preguntas frecuentes del vertical"
     },
     {
@@ -160,7 +160,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C10 — Inyeccion hacia herramientas",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 750,
+      "linea": 791,
       "resumen": "Inyeccion hacia herramientas"
     },
     {
@@ -168,7 +168,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C11 — Groserias, provocacion y trato abusivo",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 826,
+      "linea": 867,
       "resumen": "Groserias, provocacion y trato abusivo"
     },
     {
@@ -176,7 +176,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C12 — Audio de baja calidad, acentos, ruido, interrupciones y silencios (voz)",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 888,
+      "linea": 929,
       "resumen": "Audio de baja calidad, acentos, ruido, interrupciones y silencios (voz)"
     },
     {
@@ -184,7 +184,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C13 — Aislamiento entre clinicas y solicitud de datos de otro paciente",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 952,
+      "linea": 993,
       "resumen": "Aislamiento entre clinicas y solicitud de datos de otro paciente"
     },
     {
@@ -192,7 +192,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C2 — Agendamiento completo de extremo a extremo",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 234,
+      "linea": 235,
       "resumen": "Agendamiento completo de extremo a extremo"
     },
     {
@@ -200,7 +200,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C3 — Reprogramacion y cancelacion",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 353,
+      "linea": 394,
       "resumen": "Reprogramacion y cancelacion"
     },
     {
@@ -208,7 +208,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C4 — Ortografia deficiente, abreviaturas y mensajes fragmentados (texto)",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 428,
+      "linea": 469,
       "resumen": "Ortografia deficiente, abreviaturas y mensajes fragmentados (texto)"
     },
     {
@@ -216,7 +216,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C5 — Intentos de obtener diagnostico",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 534,
+      "linea": 575,
       "resumen": "Intentos de obtener diagnostico"
     },
     {
@@ -224,7 +224,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C6 — Negociacion agresiva de precios",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 562,
+      "linea": 603,
       "resumen": "Negociacion agresiva de precios"
     },
     {
@@ -232,7 +232,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C7 — Urgencias medicas explicitas e implicitas",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 594,
+      "linea": 635,
       "resumen": "Urgencias medicas explicitas e implicitas"
     },
     {
@@ -240,7 +240,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C8 — Inyeccion directa de prompts",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 662,
+      "linea": 703,
       "resumen": "Inyeccion directa de prompts"
     },
     {
@@ -248,7 +248,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C9 — Inyeccion a traves de la base de conocimiento (RAG envenenado)",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 702,
+      "linea": 743,
       "resumen": "Inyeccion a traves de la base de conocimiento (RAG envenenado)"
     },
     {
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 331,
+        "lineas": 373,
         "capa": "documentacion"
       }
     },
@@ -886,6 +886,25 @@
       }
     },
     {
+      "id": "modulo:scripts/consola.ts",
+      "tipo": "modulo",
+      "nombre": "consola.ts",
+      "ruta": "scripts/consola.ts",
+      "resumen": "CONSOLA DE INSPECCION: hablar con el agente y ver POR QUE responde lo que",
+      "meta": {
+        "externas": [
+          "dotenv/config",
+          "fastify",
+          "node:crypto",
+          "node:fs/promises",
+          "node:os",
+          "node:path"
+        ],
+        "lineas": 732,
+        "capa": "scripts"
+      }
+    },
+    {
       "id": "modulo:scripts/demo-real.ts",
       "tipo": "modulo",
       "nombre": "demo-real.ts",
@@ -916,7 +935,7 @@
           "node:process",
           "node:readline/promises"
         ],
-        "lineas": 298,
+        "lineas": 218,
         "capa": "scripts"
       }
     },
@@ -950,6 +969,21 @@
           "node:url"
         ],
         "lineas": 318,
+        "capa": "scripts"
+      }
+    },
+    {
+      "id": "modulo:scripts/rag-demostracion.ts",
+      "tipo": "modulo",
+      "nombre": "rag-demostracion.ts",
+      "ruta": "scripts/rag-demostracion.ts",
+      "resumen": "RAG de demostracion: coincidencia de PALABRAS sobre los documentos de",
+      "meta": {
+        "externas": [
+          "node:fs/promises",
+          "node:path"
+        ],
+        "lineas": 97,
         "capa": "scripts"
       }
     },
@@ -1718,7 +1752,7 @@
         "externas": [
           "vitest"
         ],
-        "lineas": 1409,
+        "lineas": 1450,
         "capa": "pruebas",
         "suite": "adversarial"
       }
@@ -1837,6 +1871,23 @@
           "vitest"
         ],
         "lineas": 190,
+        "capa": "pruebas",
+        "suite": "unit"
+      }
+    },
+    {
+      "id": "modulo:tests/unit/consola.test.ts",
+      "tipo": "prueba",
+      "nombre": "consola.test.ts",
+      "ruta": "tests/unit/consola.test.ts",
+      "resumen": "La consola de inspeccion (`scripts/consola.ts`).",
+      "meta": {
+        "externas": [
+          "node:fs/promises",
+          "node:path",
+          "vitest"
+        ],
+        "lineas": 193,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -2301,6 +2352,100 @@
       }
     },
     {
+      "id": "simbolo:scripts/consola.ts#ConsultaRag",
+      "tipo": "simbolo",
+      "nombre": "ConsultaRag",
+      "ruta": "scripts/consola.ts",
+      "linea": 100,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:scripts/consola.ts#EspiaDeGuardrails",
+      "tipo": "simbolo",
+      "nombre": "EspiaDeGuardrails",
+      "ruta": "scripts/consola.ts",
+      "linea": 219,
+      "meta": {
+        "clase": "class"
+      }
+    },
+    {
+      "id": "simbolo:scripts/consola.ts#EspiaDeRag",
+      "tipo": "simbolo",
+      "nombre": "EspiaDeRag",
+      "ruta": "scripts/consola.ts",
+      "linea": 179,
+      "meta": {
+        "clase": "class"
+      }
+    },
+    {
+      "id": "simbolo:scripts/consola.ts#explicarFalloDeEmbeddings",
+      "tipo": "simbolo",
+      "nombre": "explicarFalloDeEmbeddings",
+      "ruta": "scripts/consola.ts",
+      "linea": 143,
+      "resumen": "Traduce el fallo del proveedor de embeddings a algo accionable.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:scripts/consola.ts#IntervencionCapa2",
+      "tipo": "simbolo",
+      "nombre": "IntervencionCapa2",
+      "ruta": "scripts/consola.ts",
+      "linea": 107,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:scripts/consola.ts#Modo",
+      "tipo": "simbolo",
+      "nombre": "Modo",
+      "ruta": "scripts/consola.ts",
+      "linea": 94,
+      "meta": {
+        "clase": "type"
+      }
+    },
+    {
+      "id": "simbolo:scripts/consola.ts#RegistroDelTurno",
+      "tipo": "simbolo",
+      "nombre": "RegistroDelTurno",
+      "ruta": "scripts/consola.ts",
+      "linea": 122,
+      "resumen": "Todo lo que las capas hicieron durante UN turno.",
+      "meta": {
+        "clase": "class"
+      }
+    },
+    {
+      "id": "simbolo:scripts/consola.ts#tokenValido",
+      "tipo": "simbolo",
+      "nombre": "tokenValido",
+      "ruta": "scripts/consola.ts",
+      "linea": 511,
+      "resumen": "Comparacion en tiempo constante; longitudes distintas no deben filtrar nada.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:scripts/consola.ts#VerificadorDeGuardrails",
+      "tipo": "simbolo",
+      "nombre": "VerificadorDeGuardrails",
+      "ruta": "scripts/consola.ts",
+      "linea": 214,
+      "resumen": "Espia de capa 2. Registra SOLO las intervenciones (`pass: false`).",
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
       "id": "simbolo:scripts/migrate.ts#planPending",
       "tipo": "simbolo",
       "nombre": "planPending",
@@ -2309,6 +2454,16 @@
       "resumen": "Decide que migraciones faltan por aplicar. Funcion pura (sin I/O): facil de",
       "meta": {
         "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:scripts/rag-demostracion.ts#RagDeDemostracion",
+      "tipo": "simbolo",
+      "nombre": "RagDeDemostracion",
+      "ruta": "scripts/rag-demostracion.ts",
+      "linea": 45,
+      "meta": {
+        "clase": "class"
       }
     },
     {
@@ -7255,7 +7410,7 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:329"
+      "origen": "docs/ESTADO.md:371"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -7546,6 +7701,276 @@
       "origen": "scripts/comprobar-secretos.ts"
     },
     {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/consola.ts#ConsultaRag",
+      "origen": "scripts/consola.ts:100"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/consola.ts#EspiaDeGuardrails",
+      "origen": "scripts/consola.ts:219"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/consola.ts#EspiaDeRag",
+      "origen": "scripts/consola.ts:179"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/consola.ts#explicarFalloDeEmbeddings",
+      "origen": "scripts/consola.ts:143"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/consola.ts#IntervencionCapa2",
+      "origen": "scripts/consola.ts:107"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/consola.ts#Modo",
+      "origen": "scripts/consola.ts:94"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/consola.ts#RegistroDelTurno",
+      "origen": "scripts/consola.ts:122"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/consola.ts#tokenValido",
+      "origen": "scripts/consola.ts:511"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/consola.ts#VerificadorDeGuardrails",
+      "origen": "scripts/consola.ts:214"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:scripts/rag-demostracion.ts",
+      "origen": "scripts/consola.ts:89"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/channels/whatsapp/whatsapp.formatter.ts",
+      "origen": "scripts/consola.ts:77"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/claude.service.ts",
+      "origen": "scripts/consola.ts:57"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/guardrails.ts",
+      "origen": "scripts/consola.ts:59"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/prompt.builder.ts",
+      "origen": "scripts/consola.ts:64"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/conversation.service.ts",
+      "origen": "scripts/consola.ts:76"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/message.router.ts",
+      "origen": "scripts/consola.ts:75"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/embedding.service.ts",
+      "origen": "scripts/consola.ts:66"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/knowledge.repository.ts",
+      "origen": "scripts/consola.ts:67"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/rag.service.ts",
+      "origen": "scripts/consola.ts:68"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/consultar-agenda.tool.ts",
+      "origen": "scripts/consola.ts:70"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/consultar-rag.tool.ts",
+      "origen": "scripts/consola.ts:72"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/crear-cita.tool.ts",
+      "origen": "scripts/consola.ts:71"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
+      "origen": "scripts/consola.ts:74"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/guardar-lead.tool.ts",
+      "origen": "scripts/consola.ts:73"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/tool.registry.ts",
+      "origen": "scripts/consola.ts:69"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "scripts/consola.ts:78"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/urgency/urgency.detector.ts",
+      "origen": "scripts/consola.ts:65"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/calendar.client.ts",
+      "origen": "scripts/consola.ts:47"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/config.ts",
+      "origen": "scripts/consola.ts:44"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/notification.client.ts",
+      "origen": "scripts/consola.ts:48"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/repositories/index.ts",
+      "origen": "scripts/consola.ts:49"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/supabase.client.ts",
+      "origen": "scripts/consola.ts:46"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:tests/helpers/dobles.ts",
+      "origen": "scripts/consola.ts:88"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:ANTHROPIC_API_KEY",
+      "origen": "scripts/consola.ts:323"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
+      "origen": "scripts/consola.ts:325"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
+      "origen": "scripts/consola.ts:337"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
+      "origen": "scripts/consola.ts:324"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:DEFAULT_PHONE_REGION",
+      "origen": "scripts/consola.ts:356"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:EMBEDDING_DIMENSIONS",
+      "origen": "scripts/consola.ts:310"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:EMBEDDING_MODEL",
+      "origen": "scripts/consola.ts:309"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:N8N_WEBHOOK_URL",
+      "origen": "scripts/consola.ts:302"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:VENTANA_CONTINUIDAD_HORAS",
+      "origen": "scripts/consola.ts:355"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:VOYAGE_API_KEY",
+      "origen": "scripts/consola.ts:308"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:scripts",
+      "origen": "scripts/consola.ts"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "usa_tabla",
+      "hacia": "tabla:tool_calls",
+      "origen": "scripts/consola.ts:385"
+    },
+    {
       "desde": "modulo:scripts/demo-real.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/claude/claude.service.ts",
@@ -7752,6 +8177,12 @@
     {
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
+      "hacia": "modulo:scripts/rag-demostracion.ts",
+      "origen": "scripts/demo.ts:42"
+    },
+    {
+      "desde": "modulo:scripts/demo.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/core/claude/claude.service.ts",
       "origen": "scripts/demo.ts:33"
     },
@@ -7782,14 +8213,8 @@
     {
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/core/rag/chunker.ts",
-      "origen": "scripts/demo.ts:40"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
       "hacia": "modulo:src/core/types/index.ts",
-      "origen": "scripts/demo.ts:41"
+      "origen": "scripts/demo.ts:40"
     },
     {
       "desde": "modulo:scripts/demo.ts",
@@ -7801,7 +8226,7 @@
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
       "hacia": "modulo:tests/helpers/dobles.ts",
-      "origen": "scripts/demo.ts:42"
+      "origen": "scripts/demo.ts:41"
     },
     {
       "desde": "modulo:scripts/demo.ts",
@@ -7976,6 +8401,30 @@
       "relacion": "pertenece_a",
       "hacia": "capa:scripts",
       "origen": "scripts/migrate.ts"
+    },
+    {
+      "desde": "modulo:scripts/rag-demostracion.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/rag-demostracion.ts#RagDeDemostracion",
+      "origen": "scripts/rag-demostracion.ts:45"
+    },
+    {
+      "desde": "modulo:scripts/rag-demostracion.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/chunker.ts",
+      "origen": "scripts/rag-demostracion.ts:14"
+    },
+    {
+      "desde": "modulo:scripts/rag-demostracion.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "scripts/rag-demostracion.ts:16"
+    },
+    {
+      "desde": "modulo:scripts/rag-demostracion.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:scripts",
+      "origen": "scripts/rag-demostracion.ts"
     },
     {
       "desde": "modulo:scripts/seed.ts",
@@ -11863,85 +12312,85 @@
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C1",
-      "origen": "tests/adversarial/bateria.test.ts:159"
+      "origen": "tests/adversarial/bateria.test.ts:160"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C10",
-      "origen": "tests/adversarial/bateria.test.ts:750"
+      "origen": "tests/adversarial/bateria.test.ts:791"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C11",
-      "origen": "tests/adversarial/bateria.test.ts:826"
+      "origen": "tests/adversarial/bateria.test.ts:867"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C12",
-      "origen": "tests/adversarial/bateria.test.ts:888"
+      "origen": "tests/adversarial/bateria.test.ts:929"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C13",
-      "origen": "tests/adversarial/bateria.test.ts:952"
+      "origen": "tests/adversarial/bateria.test.ts:993"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C2",
-      "origen": "tests/adversarial/bateria.test.ts:234"
+      "origen": "tests/adversarial/bateria.test.ts:235"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C3",
-      "origen": "tests/adversarial/bateria.test.ts:353"
+      "origen": "tests/adversarial/bateria.test.ts:394"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C4",
-      "origen": "tests/adversarial/bateria.test.ts:428"
+      "origen": "tests/adversarial/bateria.test.ts:469"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C5",
-      "origen": "tests/adversarial/bateria.test.ts:534"
+      "origen": "tests/adversarial/bateria.test.ts:575"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C6",
-      "origen": "tests/adversarial/bateria.test.ts:562"
+      "origen": "tests/adversarial/bateria.test.ts:603"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C7",
-      "origen": "tests/adversarial/bateria.test.ts:594"
+      "origen": "tests/adversarial/bateria.test.ts:635"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C8",
-      "origen": "tests/adversarial/bateria.test.ts:662"
+      "origen": "tests/adversarial/bateria.test.ts:703"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C9",
-      "origen": "tests/adversarial/bateria.test.ts:702"
+      "origen": "tests/adversarial/bateria.test.ts:743"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/claude/claude.service.ts",
-      "origen": "tests/adversarial/bateria.test.ts:64"
+      "origen": "tests/adversarial/bateria.test.ts:65"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
@@ -11953,79 +12402,79 @@
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/claude/prompt.builder.ts",
-      "origen": "tests/adversarial/bateria.test.ts:63"
+      "origen": "tests/adversarial/bateria.test.ts:64"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/conversation/conversation.service.ts",
-      "origen": "tests/adversarial/bateria.test.ts:53"
+      "origen": "tests/adversarial/bateria.test.ts:54"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/conversation/message.router.ts",
-      "origen": "tests/adversarial/bateria.test.ts:58"
+      "origen": "tests/adversarial/bateria.test.ts:59"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/tools/consultar-agenda.tool.ts",
-      "origen": "tests/adversarial/bateria.test.ts:65"
-    },
-    {
-      "desde": "modulo:tests/adversarial/bateria.test.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/consultar-rag.tool.ts",
-      "origen": "tests/adversarial/bateria.test.ts:67"
-    },
-    {
-      "desde": "modulo:tests/adversarial/bateria.test.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/crear-cita.tool.ts",
       "origen": "tests/adversarial/bateria.test.ts:66"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
-      "origen": "tests/adversarial/bateria.test.ts:69"
-    },
-    {
-      "desde": "modulo:tests/adversarial/bateria.test.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/guardar-lead.tool.ts",
+      "hacia": "modulo:src/core/tools/consultar-rag.tool.ts",
       "origen": "tests/adversarial/bateria.test.ts:68"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/core/tools/tool.registry.ts",
+      "hacia": "modulo:src/core/tools/crear-cita.tool.ts",
+      "origen": "tests/adversarial/bateria.test.ts:67"
+    },
+    {
+      "desde": "modulo:tests/adversarial/bateria.test.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
       "origen": "tests/adversarial/bateria.test.ts:70"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/core/types/index.ts",
+      "hacia": "modulo:src/core/tools/guardar-lead.tool.ts",
+      "origen": "tests/adversarial/bateria.test.ts:69"
+    },
+    {
+      "desde": "modulo:tests/adversarial/bateria.test.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/tool.registry.ts",
       "origen": "tests/adversarial/bateria.test.ts:71"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "tests/adversarial/bateria.test.ts:72"
+    },
+    {
+      "desde": "modulo:tests/adversarial/bateria.test.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/core/urgency/urgency.detector.ts",
-      "origen": "tests/adversarial/bateria.test.ts:52"
+      "origen": "tests/adversarial/bateria.test.ts:53"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "importa",
       "hacia": "modulo:tests/adversarial/casos.ts",
-      "origen": "tests/adversarial/bateria.test.ts:81"
+      "origen": "tests/adversarial/bateria.test.ts:82"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "importa",
       "hacia": "modulo:tests/adversarial/criterios.ts",
-      "origen": "tests/adversarial/bateria.test.ts:112"
+      "origen": "tests/adversarial/bateria.test.ts:113"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
@@ -12037,25 +12486,25 @@
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ANTHROPIC_API_KEY",
-      "origen": "tests/adversarial/bateria.test.ts:1218"
+      "origen": "tests/adversarial/bateria.test.ts:1259"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
-      "origen": "tests/adversarial/bateria.test.ts:1236"
+      "origen": "tests/adversarial/bateria.test.ts:1277"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
-      "origen": "tests/adversarial/bateria.test.ts:1260"
+      "origen": "tests/adversarial/bateria.test.ts:1301"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
-      "origen": "tests/adversarial/bateria.test.ts:1235"
+      "origen": "tests/adversarial/bateria.test.ts:1276"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
@@ -12067,7 +12516,7 @@
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "verifica",
       "hacia": "modulo:src/core/claude/claude.service.ts",
-      "origen": "tests/adversarial/bateria.test.ts:64"
+      "origen": "tests/adversarial/bateria.test.ts:65"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
@@ -12079,67 +12528,67 @@
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "verifica",
       "hacia": "modulo:src/core/claude/prompt.builder.ts",
-      "origen": "tests/adversarial/bateria.test.ts:63"
+      "origen": "tests/adversarial/bateria.test.ts:64"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "verifica",
       "hacia": "modulo:src/core/conversation/conversation.service.ts",
-      "origen": "tests/adversarial/bateria.test.ts:53"
+      "origen": "tests/adversarial/bateria.test.ts:54"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "verifica",
       "hacia": "modulo:src/core/conversation/message.router.ts",
-      "origen": "tests/adversarial/bateria.test.ts:58"
+      "origen": "tests/adversarial/bateria.test.ts:59"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "verifica",
       "hacia": "modulo:src/core/tools/consultar-agenda.tool.ts",
-      "origen": "tests/adversarial/bateria.test.ts:65"
-    },
-    {
-      "desde": "modulo:tests/adversarial/bateria.test.ts",
-      "relacion": "verifica",
-      "hacia": "modulo:src/core/tools/consultar-rag.tool.ts",
-      "origen": "tests/adversarial/bateria.test.ts:67"
-    },
-    {
-      "desde": "modulo:tests/adversarial/bateria.test.ts",
-      "relacion": "verifica",
-      "hacia": "modulo:src/core/tools/crear-cita.tool.ts",
       "origen": "tests/adversarial/bateria.test.ts:66"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "verifica",
-      "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
-      "origen": "tests/adversarial/bateria.test.ts:69"
-    },
-    {
-      "desde": "modulo:tests/adversarial/bateria.test.ts",
-      "relacion": "verifica",
-      "hacia": "modulo:src/core/tools/guardar-lead.tool.ts",
+      "hacia": "modulo:src/core/tools/consultar-rag.tool.ts",
       "origen": "tests/adversarial/bateria.test.ts:68"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "verifica",
-      "hacia": "modulo:src/core/tools/tool.registry.ts",
+      "hacia": "modulo:src/core/tools/crear-cita.tool.ts",
+      "origen": "tests/adversarial/bateria.test.ts:67"
+    },
+    {
+      "desde": "modulo:tests/adversarial/bateria.test.ts",
+      "relacion": "verifica",
+      "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
       "origen": "tests/adversarial/bateria.test.ts:70"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "verifica",
-      "hacia": "modulo:src/core/types/index.ts",
+      "hacia": "modulo:src/core/tools/guardar-lead.tool.ts",
+      "origen": "tests/adversarial/bateria.test.ts:69"
+    },
+    {
+      "desde": "modulo:tests/adversarial/bateria.test.ts",
+      "relacion": "verifica",
+      "hacia": "modulo:src/core/tools/tool.registry.ts",
       "origen": "tests/adversarial/bateria.test.ts:71"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "verifica",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "tests/adversarial/bateria.test.ts:72"
+    },
+    {
+      "desde": "modulo:tests/adversarial/bateria.test.ts",
+      "relacion": "verifica",
       "hacia": "modulo:src/core/urgency/urgency.detector.ts",
-      "origen": "tests/adversarial/bateria.test.ts:52"
+      "origen": "tests/adversarial/bateria.test.ts:53"
     },
     {
       "desde": "modulo:tests/adversarial/casos.ts",
@@ -12964,6 +13413,30 @@
       "origen": "tests/unit/chunker.test.ts:1"
     },
     {
+      "desde": "modulo:tests/unit/consola.test.ts",
+      "relacion": "importa",
+      "hacia": "modulo:scripts/consola.ts",
+      "origen": "tests/unit/consola.test.ts:14"
+    },
+    {
+      "desde": "modulo:tests/unit/consola.test.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "tests/unit/consola.test.ts:22"
+    },
+    {
+      "desde": "modulo:tests/unit/consola.test.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:pruebas",
+      "origen": "tests/unit/consola.test.ts"
+    },
+    {
+      "desde": "modulo:tests/unit/consola.test.ts",
+      "relacion": "verifica",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "tests/unit/consola.test.ts:22"
+    },
+    {
       "desde": "modulo:tests/unit/elevenlabs.client.test.ts",
       "relacion": "importa",
       "hacia": "modulo:src/infra/elevenlabs.client.ts",
@@ -13652,6 +14125,18 @@
       "relacion": "protege",
       "hacia": "tabla:transcripts",
       "origen": "db/migrations/002_rls.sql:220"
+    },
+    {
+      "desde": "simbolo:scripts/consola.ts#EspiaDeRag",
+      "relacion": "implementa",
+      "hacia": "puerto:RagPort",
+      "origen": "scripts/consola.ts:179"
+    },
+    {
+      "desde": "simbolo:scripts/rag-demostracion.ts#RagDeDemostracion",
+      "relacion": "implementa",
+      "hacia": "puerto:RagPort",
+      "origen": "scripts/rag-demostracion.ts:45"
     },
     {
       "desde": "simbolo:src/channels/voice/voice-session.service.ts#VoiceSessionService",
