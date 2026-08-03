@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "c02d3137cec1e1ff",
+  "huella": "d9932407018ce09f",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 75,
+        "lineas": 114,
         "capa": "documentacion"
       }
     },
@@ -7022,7 +7022,7 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:73"
+      "origen": "docs/ESTADO.md:112"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
