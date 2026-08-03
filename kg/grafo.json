@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "b659e829afccf71b",
+  "huella": "522f8f153871743f",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -694,7 +694,7 @@
       "ruta": "docs/DEMO.md",
       "resumen": "Probar el demo",
       "meta": {
-        "lineas": 156,
+        "lineas": 192,
         "capa": "documentacion"
       }
     },

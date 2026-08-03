@@ -148,6 +148,42 @@ porque relajar ese patrón puede dejar pasar una cita afirmada de verdad.
 | El agente no sabe nada de la clínica | `npm run diagnostico -- --solo demo` y mira los fragmentos activos. |
 | El móvil no conecta con `--red` | El cortafuegos de Windows. Permite Node en redes privadas. |
 
+## La comprobación que solo se puede hacer en Windows
+
+Había un fallo por el que `npm run consola` y `npm start` **terminaban en
+silencio**: sin arrancar, sin error y sin imprimir nada. El guard que decide si
+un módulo es la entrada del proceso construía la URL a mano, y en Windows
+producía `file://C:/…` —dos barras— frente a las tres de `file:///C:/…` que
+genera Node. En Linux y macOS cuadraba de casualidad, y por eso no se veía.
+
+Está corregido en `src/infra/entrada-principal.ts` con `pathToFileURL`, y hay
+pruebas sobre las cadenas exactas de cada plataforma. **Pero nunca se ha
+ejecutado en Windows**, porque se corrigió desde un contenedor Linux.
+
+Confirmarlo es un comando:
+
+```powershell
+npm run consola -- --dobles
+```
+
+Tiene que imprimir esto, con otro token:
+
+```
+  CONSOLA DE INSPECCION — Recepcion-IA
+
+  Modo inicial: dobles
+
+  Aqui:      http://localhost:4545/?t=e31d38f6-b5e6-41e5-a3ae-c1ecdcf1d6c1
+
+  Solo esta maquina. Usa --red para abrirlo desde el movil.
+```
+
+**Si no imprime nada y vuelve al prompt, el fallo sigue vivo** — y esa salida
+vacía es exactamente el síntoma. Comprueba entonces que hiciste `git pull` de la
+rama `claude/recepcion-ia-project-gzijfs`.
+
+Lo mismo aplica a `npm start` una vez compilado con `npm run build`.
+
 ## Lo que este demo no es
 
 No es producción. Ver [`ESTADO.md`](ESTADO.md): qué está verificado, qué no, y

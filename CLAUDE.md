@@ -3,6 +3,43 @@
 Agente conversacional para el primer contacto de pacientes en clínicas dentales
 y de medicina estética. Dos canales —WhatsApp y voz— sobre **un único núcleo**.
 
+## Estado actual · empieza por aquí (03-08-2026)
+
+El trabajo vivo está en la rama **`claude/recepcion-ia-project-gzijfs`**, no en
+`main`. Haz `git pull` antes de nada.
+
+**El demo está listo y se lanza así:**
+
+```bash
+npm install
+npm run preparar      # comprueba Node y dependencias; crea o completa el .env
+npm run diagnostico   # que cada proveedor responda de verdad
+npm run consola       # habla con el agente y mira las tres capas
+```
+
+La guía completa, con un guion de cinco minutos, está en
+[`docs/DEMO.md`](docs/DEMO.md). No hay que migrar ni sembrar: la base ya tiene la
+clínica con su calendario y **39 fragmentos aprobados y activos**.
+
+**Pendiente de verificar EN WINDOWS.** Había un fallo por el que
+`npm run consola` y `npm start` terminaban en silencio, sin arrancar y sin
+error: el guard de entrada construía la URL a mano y en Windows salía
+`file://C:/…` con dos barras donde Node produce tres. Está corregido en
+`src/infra/entrada-principal.ts` y cubierto por pruebas sobre las cadenas de
+cada plataforma, **pero nunca se ha ejecutado en Windows**. Confirmarlo es lo
+primero que debería hacer una sesión que corra ahí.
+
+**Tres asuntos abiertos**, con el detalle en [`docs/ESTADO.md`](docs/ESTADO.md):
+
+1. `origin/main` sigue exponiendo **cinco credenciales vivas** en su
+   `.env.example`, entre ellas la `service_role` de Supabase, que salta RLS.
+   Sin rotar. La secuencia de rotación está escrita en `ESTADO.md`.
+2. Capa 2 confunde **ofrecer** una cita con **afirmarla** («¿quieres que te
+   agende?»). Marcado con `it.fails`, sin corregir a propósito: relajar ese
+   patrón puede dejar pasar una cita afirmada de verdad.
+3. Falta `N8N_WEBHOOK_URL`, así que un escalamiento **no llega a ninguna
+   persona**. La consola lo muestra en rojo en vez de darlo por bueno.
+
 ## Empieza por el grafo de conocimiento
 
 Este repositorio tiene un grafo consultable de sí mismo. **Úsalo antes de
