@@ -12,11 +12,9 @@ El razonamiento es siempre de Claude. ElevenLabs aporta reconocimiento de voz, g
 npm install
 ```
 
-```bash
-cp .env.example .env
-```
+Crea un `.env` en la raíz. **No hay plantilla en el repositorio, y es a propósito**: un archivo de ejemplo versionado acaba llenándose de claves reales. Las variables que el sistema exige están documentadas en [`docs/PUESTA_EN_MARCHA.md`](docs/PUESTA_EN_MARCHA.md), etapa por etapa, y la fuente de verdad es el esquema de [`src/infra/config.ts`](src/infra/config.ts).
 
-Rellena `.env`. El sistema **no arranca** si falta algo obligatorio, y te dirá exactamente qué. Es deliberado.
+El sistema **no arranca** si falta algo obligatorio, y te dirá exactamente qué. Es deliberado.
 
 ```bash
 npm run build
