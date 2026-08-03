@@ -5,13 +5,49 @@
 | Comprobación | Resultado |
 |---|---|
 | `npm run build` | **exit 0** · 49 archivos JS en `dist/` |
-| `npx tsc -p tsconfig.test.json --noEmit` | **exit 0** |
-| `npx vitest run` | **16 ficheros · 414 pasando · 12 fallos esperados · 7 saltados** |
+| `npm run typecheck` | **exit 0** |
+| `npx vitest run` | **20 ficheros · 537 pasando · 12 fallos esperados · 7 saltados** |
+| `npx vitest run tests/adversarial` **con clave real** | **88 pasando · 12 fallos esperados · 0 saltados** |
 | Arranque real desde `dist/` | `/health` → 200 · gateway sin secreto → 401 · secreto erróneo → 401 |
 | Entorno incompleto | falla al arrancar enumerando cada variable ausente |
+| `npm run kg:verificar` | **exit 0** |
 
 Los **12 «fallos esperados»** son hallazgos reales de la batería adversarial, marcados con `it.fails` para que fallen automáticamente si alguien los corrige sin actualizar el test. No son deuda oculta: son deuda señalizada.
-Los **7 saltados** son la batería contra el modelo real, que requiere `ANTHROPIC_API_KEY`.
+Los **7 saltados** son la batería contra el modelo real. Ya se han ejecutado al menos una vez (ver abajo); se saltan cuando no hay `ANTHROPIC_API_KEY` en el entorno del proceso. Ojo: `vitest` **no lee el `.env`**, así que hay que exportar la variable en la shell para que corran.
+
+---
+
+## Verificación contra proveedores reales
+
+Hecha con credenciales activas. Deja de ser cierto que «ninguna llamada real está comprobada»:
+
+| Proveedor | Comprobación | Resultado |
+|---|---|---|
+| Anthropic | `POST /v1/messages` | **200** |
+| Voyage | `POST /v1/embeddings` | **200** · 1024 dimensiones, coincide con `vector(1024)` del esquema |
+| Supabase PostgREST | `GET /rest/v1/clinics` | **200** · tabla accesible |
+| Supabase Postgres | conexión directa | **conectada** · 12 tablas en `public`; migraciones 001–003 aplicadas |
+| ElevenLabs | `GET /v1/user` y `GET /v1/convai/agents/{id}` | **200** · el agente existe |
+
+**Batería adversarial contra el modelo real:** 0 consejos clínicos, 0 precios cerrados no autorizados, 0 fugas entre clínicas, 0 inyecciones exitosas, 1/1 urgencias escaladas, 5/5 respuestas correctas.
+
+**Demo conversacional (`npm run demo`) contra el modelo real:** saludo, consulta de precio (devuelve rango, no cifra cerrada), petición de cita (usa `consultar_agenda`) y petición de medicación (se niega y deriva) se comportan según la especificación. «Me sangra mucho la encía y no para» escala en **16 ms** por el prefiltro léxico, sin llegar a llamar al modelo.
+
+Sigue sin comprobarse todo lo que exige cuentas de las que no se dispone: Meta BSP, telefonía real y Google Calendar.
+
+---
+
+## Fallo encontrado al ejecutar contra el modelo real
+
+Merece constar, porque ilustra un límite de la batería.
+
+El clasificador de urgencia marcaba **todo mensaje** como urgencia médica: un saludo, una consulta de precios y una petición de cita escalaban igual. El flujo comercial estaba anulado por completo.
+
+La causa era una ambigüedad del prompt, no de la lógica. El campo `confianza` se definía como «cuán seguro estás de que HAY urgencia», y el modelo lo devolvía como su seguridad **en la propia clasificación**: ante un saludo respondía `{"urgente": false, "confianza": 0.95}`. Como el detector escala cuando la confianza supera 0.3 con independencia del booleano —comportamiento deliberado, fijado en `tests/unit/guardrails.test.ts:479`—, el `false` se ignoraba.
+
+Corregido renombrando el campo a `probabilidad_de_urgencia`, con la semántica explícita y ejemplos resueltos en el prompt. El umbral y el sesgo hacia el falso positivo no se tocaron: moverlos es una decisión clínica.
+
+**Por qué la batería no lo veía**, que es lo importante: en modo dobles el clasificador devuelve valores controlados, así que la ambigüedad nunca se ejercita; y en modo modelo-real la Tabla 14 solo mide el **sub**-escalamiento. Sobre-escalar al 100% no dispara ningún criterio. No hay hoy ninguna prueba que detecte un exceso de derivaciones, y añadirla exige decidir qué tasa es aceptable — decisión clínica, no de ingeniería.
 
 ---
 
@@ -41,8 +77,8 @@ Config con validación Zod · logger con enmascarado obligatorio de PII · 8 rep
 | 1 | Capa 2 bloquea precio cerrado y afirmación clínica | ✅ sobre el turno completo |
 | 2 | Ninguna lógica de negocio en `channels/whatsapp/` | ✅ |
 | 2 | Conversación real por WhatsApp que agenda en Calendar | ⛔ **requiere cuenta de BSP** |
-| 3 | Batería de 13 categorías | ✅ 91 casos en modo dobles |
-| 3 | Criterios bloqueantes de la Tabla 14 | ⚠️ verificables en modo dobles; los de latencia y equidad, no |
+| 3 | Batería de 13 categorías | ✅ 91 casos en modo dobles · ejecutada también contra el modelo real |
+| 3 | Criterios bloqueantes de la Tabla 14 | ⚠️ verificables en modo dobles y contra el modelo real; los de latencia y equidad, no. **Ninguno mide el sobre-escalamiento** |
 | 4 | SSE válido terminando en `data: [DONE]` | ✅ forma literal byte a byte |
 | 4 | Escalamiento → `transfer_to_number` con whitelist | ✅ sobre el núcleo real |
 | 4 | Petición sin secreto → 401 | ✅ las tres vías |
@@ -50,8 +86,9 @@ Config con validación Zod · logger con enmascarado obligatorio de PII · 8 rep
 
 ## Lo que NO se ha verificado, y no puede verificarse aquí
 
-- **Ninguna llamada real** a Anthropic, Supabase, Voyage, Google Calendar, Meta ni ElevenLabs. Todo con dobles. El sistema compila, arranca y sus controles funcionan; que los proveedores respondan como se asume está sin comprobar.
-- **El modelo obedeciendo el prompt.** El modo dobles prueba que *los controles atrapan* lo que el modelo pueda decir, no que el modelo se porte bien. Eso exige la clave de API.
+- **Google Calendar, Meta y la telefonía real.** No hay cuentas. Una conversación de WhatsApp que acabe agendando en Calendar sigue sin ejecutarse de extremo a extremo.
+- **El modelo obedeciendo el prompt, de forma sostenida.** Se ha ejercitado contra el modelo real, y ahí apareció el fallo del clasificador descrito arriba. Pero una pasada de la batería no es una garantía: el modo dobles prueba que *los controles atrapan* lo que el modelo pueda decir, no que el modelo se porte bien de manera estable.
+- **El exceso de derivaciones.** Ninguna prueba lo mide. Es el hueco por el que se coló el fallo del clasificador.
 - **Todo el canal de voz con audio real**: latencia por turno, gestión de turnos, barge-in y la brecha de comprensión por segmento de hablante.
 - **Las asunciones sobre ElevenLabs** que su documentación no cubre: formato de streaming de `tool_calls`, header de autenticación entrante, composición del HMAC del webhook. Ver `contrato-elevenlabs.md`.
 
@@ -62,9 +99,11 @@ Detalle completo en `decisiones.md`. Los principales:
 1. **RLS vs `SUPABASE_SERVICE_KEY`** — decidido para v1 con deuda reconocida; el `audit_log` inalterable sí queda resuelto de verdad.
 2. **`CalendarPort` sin sede ni profesional** — la clínica tiene dos sedes y especialistas que no atienden en ambas.
 3. **Falta herramienta de cancelación** — y las fuentes se contradicen: la Tabla 13 la exige, el anti-patrón 10 fija cinco herramientas.
-4. **Umbral del RAG en 0.75, sin calibrar** — no hay clave de Voyage.
+4. **Umbral del RAG en 0.75, sin calibrar** — ya hay clave de Voyage y el endpoint responde, así que la calibración pasa a ser posible; sigue sin hacerse.
 5. **Riesgo de doble locución al escalar por voz** — solo detectable con telefonía real.
 6. **Revelación en WhatsApp sobre memoria de proceso** — frágil para un criterio bloqueante.
+7. **`scripts/migrate.ts` y `scripts/seed.ts` no leen el `.env`.** Ninguno importa `dotenv`, pero `PUESTA_EN_MARCHA.md` los documenta como si lo hicieran: pones la clave en el archivo y el script no la ve. `scripts/demo.ts` ya está corregido; estos dos, no.
+8. **No hay medida del sobre-escalamiento.** Ver el fallo del clasificador descrito arriba.
 
 ## Correcciones hechas a los documentos originales
 
