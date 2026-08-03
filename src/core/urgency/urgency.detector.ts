@@ -87,7 +87,13 @@ export function parsearRespuesta(texto: string): RespuestaDelClasificador | unde
     const crudo: unknown = JSON.parse(texto.slice(inicio, fin + 1));
     if (typeof crudo !== 'object' || crudo === null) return undefined;
     const obj = crudo as Record<string, unknown>;
-    const confianza = typeof obj['confianza'] === 'number' ? obj['confianza'] : 0;
+    // El campo se llamaba `confianza` y los modelos lo leian como "cuan seguro
+    // estoy de mi respuesta", no como "probabilidad de que haya urgencia":
+    // devolvian 0.95 junto a `urgente: false`, y la linea 157 lo convertia en
+    // urgencia. Todo mensaje escalaba, incluido un saludo. El nombre nuevo
+    // lleva la semantica dentro; se sigue aceptando el viejo por compatibilidad.
+    const bruto = obj['probabilidad_de_urgencia'] ?? obj['confianza'];
+    const confianza = typeof bruto === 'number' ? bruto : 0;
     const senales = Array.isArray(obj['senales'])
       ? obj['senales'].filter((s): s is string => typeof s === 'string')
       : [];

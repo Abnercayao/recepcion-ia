@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "def6ff492d7c21f1",
+  "huella": "c02d3137cec1e1ff",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -749,7 +749,7 @@
       "ruta": "docs/PUESTA_EN_MARCHA.md",
       "resumen": "Puesta en marcha — de cero a demo funcional",
       "meta": {
-        "lineas": 213,
+        "lineas": 211,
         "capa": "documentacion"
       }
     },
@@ -865,7 +865,7 @@
       "nombre": "urgencia.clasificador.md",
       "ruta": "prompts/urgencia.clasificador.md",
       "meta": {
-        "lineas": 36,
+        "lineas": 62,
         "capa": "prompts",
         "bloques": []
       }
@@ -878,12 +878,13 @@
       "resumen": "Demo conversacional en la terminal.",
       "meta": {
         "externas": [
+          "dotenv/config",
           "node:fs/promises",
           "node:path",
           "node:process",
           "node:readline/promises"
         ],
-        "lineas": 291,
+        "lineas": 296,
         "capa": "scripts"
       }
     },
@@ -1366,7 +1367,7 @@
       "ruta": "src/core/urgency/urgency.detector.ts",
       "resumen": "CAPA 3: clasificador de urgencia.",
       "meta": {
-        "lineas": 215,
+        "lineas": 221,
         "capa": "nucleo"
       }
     },
@@ -5292,7 +5293,7 @@
       "tipo": "simbolo",
       "nombre": "UrgencyDetector",
       "ruta": "src/core/urgency/urgency.detector.ts",
-      "linea": 117,
+      "linea": 123,
       "meta": {
         "clase": "class"
       }
@@ -5302,7 +5303,7 @@
       "tipo": "simbolo",
       "nombre": "UrgencyDetectorDeps",
       "ruta": "src/core/urgency/urgency.detector.ts",
-      "linea": 104,
+      "linea": 110,
       "meta": {
         "clase": "interface"
       }
@@ -7291,55 +7292,55 @@
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/claude/claude.service.ts",
-      "origen": "scripts/demo.ts:26"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/claude/guardrails.ts",
-      "origen": "scripts/demo.ts:28"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/claude/prompt.builder.ts",
-      "origen": "scripts/demo.ts:29"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/conversation/conversation.service.ts",
-      "origen": "scripts/demo.ts:32"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/conversation/message.router.ts",
       "origen": "scripts/demo.ts:31"
     },
     {
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/core/rag/chunker.ts",
+      "hacia": "modulo:src/core/claude/guardrails.ts",
       "origen": "scripts/demo.ts:33"
     },
     {
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/core/types/index.ts",
+      "hacia": "modulo:src/core/claude/prompt.builder.ts",
       "origen": "scripts/demo.ts:34"
     },
     {
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/conversation.service.ts",
+      "origen": "scripts/demo.ts:37"
+    },
+    {
+      "desde": "modulo:scripts/demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/message.router.ts",
+      "origen": "scripts/demo.ts:36"
+    },
+    {
+      "desde": "modulo:scripts/demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/chunker.ts",
+      "origen": "scripts/demo.ts:38"
+    },
+    {
+      "desde": "modulo:scripts/demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "scripts/demo.ts:39"
+    },
+    {
+      "desde": "modulo:scripts/demo.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/core/urgency/urgency.detector.ts",
-      "origen": "scripts/demo.ts:30"
+      "origen": "scripts/demo.ts:35"
     },
     {
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
       "hacia": "modulo:tests/helpers/dobles.ts",
-      "origen": "scripts/demo.ts:35"
+      "origen": "scripts/demo.ts:40"
     },
     {
       "desde": "modulo:scripts/demo.ts",
@@ -10249,13 +10250,13 @@
       "desde": "modulo:src/core/urgency/urgency.detector.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
-      "origen": "src/core/urgency/urgency.detector.ts:117"
+      "origen": "src/core/urgency/urgency.detector.ts:123"
     },
     {
       "desde": "modulo:src/core/urgency/urgency.detector.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetectorDeps",
-      "origen": "src/core/urgency/urgency.detector.ts:104"
+      "origen": "src/core/urgency/urgency.detector.ts:110"
     },
     {
       "desde": "modulo:src/core/urgency/urgency.detector.ts",
