@@ -20,6 +20,11 @@
  *
  * Uso:  npm run demo
  */
+// La guia de puesta en marcha dice: pon la clave en .env y ejecuta `npm run
+// demo`. Sin esto, el script no lee ese archivo y aborta pidiendo una clave que
+// el usuario ya habia puesto.
+import 'dotenv/config';
+
 import { createInterface } from 'node:readline/promises';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
