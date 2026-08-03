@@ -10,7 +10,7 @@
  * Los dos canales comparten el MISMO `ConversationService`. Si algun dia hay
  * que construir dos, el diseno se rompio.
  */
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, join } from 'node:path';
 import Fastify from 'fastify';
 import 'dotenv/config';
@@ -233,7 +233,15 @@ async function main(): Promise<void> {
 }
 
 // Solo arranca si se ejecuta directamente; importarlo desde un test no levanta nada.
-if (process.argv[1] && import.meta.url === `file://${process.argv[1].replace(/\\/g, '/')}`) {
+//
+// La comparacion la hace `pathToFileURL` y no una plantilla a mano. Construir
+// `file://${ruta}` falla en dos casos que aqui se dan a la vez: en Windows la
+// URL lleva TRES barras antes de la letra de unidad (`file:///C:/...`), y
+// cualquier ruta con espacios llega percent-encoded (`IA%20GENERATIVA`). Con la
+// plantilla, la igualdad era falsa siempre, `main()` no se llamaba y el proceso
+// terminaba en silencio: `npm run dev` y `npm start` no levantaban nada y no
+// imprimian ningun error.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error: unknown) => {
     console.error(error instanceof Error ? error.message : String(error));
     process.exit(1);

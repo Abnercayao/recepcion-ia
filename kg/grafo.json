@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "4805f24d442fc494",
+  "huella": "934f9b81dd65552e",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -1637,7 +1637,7 @@
           "node:path",
           "node:url"
         ],
-        "lineas": 242,
+        "lineas": 250,
         "capa": "composicion"
       }
     },
