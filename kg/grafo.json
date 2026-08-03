@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "eb4d662c9ced4e46",
+  "huella": "b659e829afccf71b",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -345,7 +345,7 @@
       "id": "control:O2",
       "tipo": "control",
       "nombre": "O2",
-      "resumen": "squema | 11 tablas del proyecto, accesibles por PostgREST | | Siembra de la clínica de demostración | 39 fragmentos · faq 27, formulario 7, protocolo 5 · **todos inactivos** | | *…",
+      "resumen": "Nombre del responsable",
       "meta": {
         "clase": "operativo",
         "definicionInferida": true
@@ -688,6 +688,17 @@
       }
     },
     {
+      "id": "modulo:docs/DEMO.md",
+      "tipo": "documento",
+      "nombre": "DEMO.md",
+      "ruta": "docs/DEMO.md",
+      "resumen": "Probar el demo",
+      "meta": {
+        "lineas": 156,
+        "capa": "documentacion"
+      }
+    },
+    {
       "id": "modulo:docs/esquema.md",
       "tipo": "documento",
       "nombre": "esquema.md",
@@ -705,7 +716,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 373,
+        "lineas": 407,
         "capa": "documentacion"
       }
     },
@@ -900,7 +911,7 @@
           "node:os",
           "node:path"
         ],
-        "lineas": 732,
+        "lineas": 733,
         "capa": "scripts"
       }
     },
@@ -950,7 +961,7 @@
           "dotenv/config",
           "pg"
         ],
-        "lineas": 410,
+        "lineas": 507,
         "capa": "scripts"
       }
     },
@@ -969,6 +980,22 @@
           "node:url"
         ],
         "lineas": 318,
+        "capa": "scripts"
+      }
+    },
+    {
+      "id": "modulo:scripts/preparar.ts",
+      "tipo": "modulo",
+      "nombre": "preparar.ts",
+      "ruta": "scripts/preparar.ts",
+      "resumen": "PREPARAR LA MAQUINA para correr el demo. Un comando, sin red.",
+      "meta": {
+        "externas": [
+          "node:child_process",
+          "node:fs",
+          "node:path"
+        ],
+        "lineas": 391,
         "capa": "scripts"
       }
     },
@@ -1048,10 +1075,9 @@
         "externas": [
           "node:fs/promises",
           "node:path",
-          "node:url",
           "zod"
         ],
-        "lineas": 891,
+        "lineas": 889,
         "capa": "scripts"
       }
     },
@@ -1550,6 +1576,20 @@
       }
     },
     {
+      "id": "modulo:src/infra/entrada-principal.ts",
+      "tipo": "modulo",
+      "nombre": "entrada-principal.ts",
+      "ruta": "src/infra/entrada-principal.ts",
+      "resumen": "¿Se esta ejecutando este modulo directamente, o solo lo han importado?",
+      "meta": {
+        "externas": [
+          "node:url"
+        ],
+        "lineas": 34,
+        "capa": "infraestructura"
+      }
+    },
+    {
       "id": "modulo:src/infra/logger.ts",
       "tipo": "modulo",
       "nombre": "logger.ts",
@@ -1738,7 +1778,7 @@
           "node:path",
           "node:url"
         ],
-        "lineas": 244,
+        "lineas": 245,
         "capa": "composicion"
       }
     },
@@ -1980,6 +2020,22 @@
           "vitest"
         ],
         "lineas": 857,
+        "capa": "pruebas",
+        "suite": "unit"
+      }
+    },
+    {
+      "id": "modulo:tests/unit/preparar.test.ts",
+      "tipo": "prueba",
+      "nombre": "preparar.test.ts",
+      "ruta": "tests/unit/preparar.test.ts",
+      "resumen": "`npm run preparar` y la deteccion de entrada principal.",
+      "meta": {
+        "externas": [
+          "node:url",
+          "vitest"
+        ],
+        "lineas": 190,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -2356,7 +2412,7 @@
       "tipo": "simbolo",
       "nombre": "ConsultaRag",
       "ruta": "scripts/consola.ts",
-      "linea": 100,
+      "linea": 101,
       "meta": {
         "clase": "interface"
       }
@@ -2366,7 +2422,7 @@
       "tipo": "simbolo",
       "nombre": "EspiaDeGuardrails",
       "ruta": "scripts/consola.ts",
-      "linea": 219,
+      "linea": 220,
       "meta": {
         "clase": "class"
       }
@@ -2376,7 +2432,7 @@
       "tipo": "simbolo",
       "nombre": "EspiaDeRag",
       "ruta": "scripts/consola.ts",
-      "linea": 179,
+      "linea": 180,
       "meta": {
         "clase": "class"
       }
@@ -2386,7 +2442,7 @@
       "tipo": "simbolo",
       "nombre": "explicarFalloDeEmbeddings",
       "ruta": "scripts/consola.ts",
-      "linea": 143,
+      "linea": 144,
       "resumen": "Traduce el fallo del proveedor de embeddings a algo accionable.",
       "meta": {
         "clase": "function"
@@ -2397,7 +2453,7 @@
       "tipo": "simbolo",
       "nombre": "IntervencionCapa2",
       "ruta": "scripts/consola.ts",
-      "linea": 107,
+      "linea": 108,
       "meta": {
         "clase": "interface"
       }
@@ -2407,7 +2463,7 @@
       "tipo": "simbolo",
       "nombre": "Modo",
       "ruta": "scripts/consola.ts",
-      "linea": 94,
+      "linea": 95,
       "meta": {
         "clase": "type"
       }
@@ -2417,7 +2473,7 @@
       "tipo": "simbolo",
       "nombre": "RegistroDelTurno",
       "ruta": "scripts/consola.ts",
-      "linea": 122,
+      "linea": 123,
       "resumen": "Todo lo que las capas hicieron durante UN turno.",
       "meta": {
         "clase": "class"
@@ -2428,7 +2484,7 @@
       "tipo": "simbolo",
       "nombre": "tokenValido",
       "ruta": "scripts/consola.ts",
-      "linea": 511,
+      "linea": 512,
       "resumen": "Comparacion en tiempo constante; longitudes distintas no deben filtrar nada.",
       "meta": {
         "clase": "function"
@@ -2439,7 +2495,7 @@
       "tipo": "simbolo",
       "nombre": "VerificadorDeGuardrails",
       "ruta": "scripts/consola.ts",
-      "linea": 214,
+      "linea": 215,
       "resumen": "Espia de capa 2. Registra SOLO las intervenciones (`pass: false`).",
       "meta": {
         "clase": "interface"
@@ -2452,6 +2508,69 @@
       "ruta": "scripts/migrate.ts",
       "linea": 135,
       "resumen": "Decide que migraciones faltan por aplicar. Funcion pura (sin I/O): facil de",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:scripts/preparar.ts#clavesDe",
+      "tipo": "simbolo",
+      "nombre": "clavesDe",
+      "ruta": "scripts/preparar.ts",
+      "linea": 234,
+      "resumen": "Claves presentes y si tienen valor. No devuelve los valores: nada de este",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:scripts/preparar.ts#completar",
+      "tipo": "simbolo",
+      "nombre": "completar",
+      "ruta": "scripts/preparar.ts",
+      "linea": 253,
+      "resumen": "Añade al final las variables ausentes. **No reescribe el archivo**: se",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:scripts/preparar.ts#generarEsqueleto",
+      "tipo": "simbolo",
+      "nombre": "generarEsqueleto",
+      "ruta": "scripts/preparar.ts",
+      "linea": 213,
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:scripts/preparar.ts#GRUPOS",
+      "tipo": "simbolo",
+      "nombre": "GRUPOS",
+      "ruta": "scripts/preparar.ts",
+      "linea": 67,
+      "resumen": "Los valores por defecto son los MEDIDOS, no los inventados: el umbral del RAG",
+      "meta": {
+        "clase": "const"
+      }
+    },
+    {
+      "id": "simbolo:scripts/preparar.ts#TODAS_LAS_VARIABLES",
+      "tipo": "simbolo",
+      "nombre": "TODAS_LAS_VARIABLES",
+      "ruta": "scripts/preparar.ts",
+      "linea": 201,
+      "meta": {
+        "clase": "const"
+      }
+    },
+    {
+      "id": "simbolo:scripts/preparar.ts#versionDeNodeSuficiente",
+      "tipo": "simbolo",
+      "nombre": "versionDeNodeSuficiente",
+      "ruta": "scripts/preparar.ts",
+      "linea": 279,
       "meta": {
         "clase": "function"
       }
@@ -2471,7 +2590,7 @@
       "tipo": "simbolo",
       "nombre": "agregarSegmento",
       "ruta": "scripts/wer.ts",
-      "linea": 462,
+      "linea": 463,
       "resumen": "Agrega los resultados de un segmento.",
       "meta": {
         "clase": "function"
@@ -2482,7 +2601,7 @@
       "tipo": "simbolo",
       "nombre": "calcularBrecha",
       "ruta": "scripts/wer.ts",
-      "linea": 521,
+      "linea": 522,
       "resumen": "Calcula la brecha entre el segmento con menor y mayor WER.",
       "meta": {
         "clase": "function"
@@ -2493,7 +2612,7 @@
       "tipo": "simbolo",
       "nombre": "calcularOperacionesEdicion",
       "ruta": "scripts/wer.ts",
-      "linea": 291,
+      "linea": 292,
       "resumen": "Calcula sustituciones, inserciones y eliminaciones para convertir `ref` en",
       "meta": {
         "clase": "function"
@@ -2504,7 +2623,7 @@
       "tipo": "simbolo",
       "nombre": "convertirNumerosATexto",
       "ruta": "scripts/wer.ts",
-      "linea": 187,
+      "linea": 188,
       "resumen": "Reemplaza digitos y horas \"H:MM\" por su forma hablada en espanol.",
       "meta": {
         "clase": "function"
@@ -2515,7 +2634,7 @@
       "tipo": "simbolo",
       "nombre": "evaluarConjunto",
       "ruta": "scripts/wer.ts",
-      "linea": 558,
+      "linea": 559,
       "meta": {
         "clase": "function"
       }
@@ -2525,7 +2644,7 @@
       "tipo": "simbolo",
       "nombre": "evaluarPar",
       "ruta": "scripts/wer.ts",
-      "linea": 371,
+      "linea": 372,
       "resumen": "Evalua un par referencia/hipotesis aplicando la normalizacion dada.",
       "meta": {
         "clase": "function"
@@ -2536,7 +2655,7 @@
       "tipo": "simbolo",
       "nombre": "formatearReporteConsola",
       "ruta": "scripts/wer.ts",
-      "linea": 656,
+      "linea": 657,
       "meta": {
         "clase": "function"
       }
@@ -2546,7 +2665,7 @@
       "tipo": "simbolo",
       "nombre": "formatearReporteMarkdown",
       "ruta": "scripts/wer.ts",
-      "linea": 741,
+      "linea": 742,
       "meta": {
         "clase": "function"
       }
@@ -2556,7 +2675,7 @@
       "tipo": "simbolo",
       "nombre": "IntervaloConfianza",
       "ruta": "scripts/wer.ts",
-      "linea": 404,
+      "linea": 405,
       "meta": {
         "clase": "interface"
       }
@@ -2566,7 +2685,7 @@
       "tipo": "simbolo",
       "nombre": "intervaloWilson",
       "ruta": "scripts/wer.ts",
-      "linea": 423,
+      "linea": 424,
       "resumen": "Intervalo de Wilson para una proporcion, usado como aproximacion del",
       "meta": {
         "clase": "function"
@@ -2577,7 +2696,7 @@
       "tipo": "simbolo",
       "nombre": "NivelConfianzaMuestra",
       "ruta": "scripts/wer.ts",
-      "linea": 402,
+      "linea": 403,
       "meta": {
         "clase": "type"
       }
@@ -2587,7 +2706,7 @@
       "tipo": "simbolo",
       "nombre": "NORMALIZACION_POR_DEFECTO",
       "ruta": "scripts/wer.ts",
-      "linea": 78,
+      "linea": 79,
       "meta": {
         "clase": "const"
       }
@@ -2597,7 +2716,7 @@
       "tipo": "simbolo",
       "nombre": "normalizarTexto",
       "ruta": "scripts/wer.ts",
-      "linea": 250,
+      "linea": 251,
       "resumen": "Aplica la normalizacion configurada. Documentar cualquier cambio aqui: afecta la cifra de WER.",
       "meta": {
         "clase": "function"
@@ -2608,7 +2727,7 @@
       "tipo": "simbolo",
       "nombre": "numeroAPalabras",
       "ruta": "scripts/wer.ts",
-      "linea": 146,
+      "linea": 147,
       "resumen": "Convierte un entero no negativo a su forma en palabras, en espanol.",
       "meta": {
         "clase": "function"
@@ -2619,7 +2738,7 @@
       "tipo": "simbolo",
       "nombre": "OpcionesNormalizacion",
       "ruta": "scripts/wer.ts",
-      "linea": 59,
+      "linea": 60,
       "meta": {
         "clase": "interface"
       }
@@ -2629,7 +2748,7 @@
       "tipo": "simbolo",
       "nombre": "OperacionesEdicion",
       "ruta": "scripts/wer.ts",
-      "linea": 274,
+      "linea": 275,
       "meta": {
         "clase": "interface"
       }
@@ -2639,7 +2758,7 @@
       "tipo": "simbolo",
       "nombre": "ParEntrada",
       "ruta": "scripts/wer.ts",
-      "linea": 352,
+      "linea": 353,
       "meta": {
         "clase": "type"
       }
@@ -2649,7 +2768,7 @@
       "tipo": "simbolo",
       "nombre": "ResultadoBrecha",
       "ruta": "scripts/wer.ts",
-      "linea": 503,
+      "linea": 504,
       "meta": {
         "clase": "interface"
       }
@@ -2659,7 +2778,7 @@
       "tipo": "simbolo",
       "nombre": "ResultadoGlobal",
       "ruta": "scripts/wer.ts",
-      "linea": 545,
+      "linea": 546,
       "meta": {
         "clase": "interface"
       }
@@ -2669,7 +2788,7 @@
       "tipo": "simbolo",
       "nombre": "ResultadoPar",
       "ruta": "scripts/wer.ts",
-      "linea": 356,
+      "linea": 357,
       "meta": {
         "clase": "interface"
       }
@@ -2679,7 +2798,7 @@
       "tipo": "simbolo",
       "nombre": "ResultadoSegmento",
       "ruta": "scripts/wer.ts",
-      "linea": 436,
+      "linea": 437,
       "meta": {
         "clase": "interface"
       }
@@ -2689,7 +2808,7 @@
       "tipo": "simbolo",
       "nombre": "tokenizar",
       "ruta": "scripts/wer.ts",
-      "linea": 263,
+      "linea": 264,
       "resumen": "Separa el texto normalizado en palabras (colapsa espacios multiples).",
       "meta": {
         "clase": "function"
@@ -2700,7 +2819,7 @@
       "tipo": "simbolo",
       "nombre": "UMBRAL_BRECHA_POR_DEFECTO",
       "ruta": "scripts/wer.ts",
-      "linea": 400,
+      "linea": 401,
       "resumen": "Brecha maxima aceptable entre el mejor y el peor segmento, en puntos de",
       "meta": {
         "clase": "const"
@@ -2711,7 +2830,7 @@
       "tipo": "simbolo",
       "nombre": "UMBRALES_POR_DEFECTO",
       "ruta": "scripts/wer.ts",
-      "linea": 388,
+      "linea": 389,
       "meta": {
         "clase": "const"
       }
@@ -2721,7 +2840,7 @@
       "tipo": "simbolo",
       "nombre": "UmbralesHablantes",
       "ruta": "scripts/wer.ts",
-      "linea": 381,
+      "linea": 382,
       "meta": {
         "clase": "interface"
       }
@@ -5851,6 +5970,16 @@
       }
     },
     {
+      "id": "simbolo:src/infra/entrada-principal.ts#esEntradaPrincipal",
+      "tipo": "simbolo",
+      "nombre": "esEntradaPrincipal",
+      "ruta": "src/infra/entrada-principal.ts",
+      "linea": 25,
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
       "id": "simbolo:src/infra/logger.ts#createLogger",
       "tipo": "simbolo",
       "nombre": "createLogger",
@@ -6043,7 +6172,7 @@
       "tipo": "simbolo",
       "nombre": "construirServidor",
       "ruta": "src/server.ts",
-      "linea": 61,
+      "linea": 62,
       "meta": {
         "clase": "function"
       }
@@ -7389,6 +7518,18 @@
       "origen": "docs/decisiones.md"
     },
     {
+      "desde": "modulo:docs/DEMO.md",
+      "relacion": "menciona",
+      "hacia": "control:O2",
+      "origen": "docs/DEMO.md:63"
+    },
+    {
+      "desde": "modulo:docs/DEMO.md",
+      "relacion": "pertenece_a",
+      "hacia": "capa:documentacion",
+      "origen": "docs/DEMO.md"
+    },
+    {
       "desde": "modulo:docs/esquema.md",
       "relacion": "menciona",
       "hacia": "control:C10",
@@ -7410,7 +7551,7 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:371"
+      "origen": "docs/ESTADO.md:405"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -7704,169 +7845,169 @@
       "desde": "modulo:scripts/consola.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/consola.ts#ConsultaRag",
-      "origen": "scripts/consola.ts:100"
+      "origen": "scripts/consola.ts:101"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/consola.ts#EspiaDeGuardrails",
-      "origen": "scripts/consola.ts:219"
+      "origen": "scripts/consola.ts:220"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/consola.ts#EspiaDeRag",
-      "origen": "scripts/consola.ts:179"
+      "origen": "scripts/consola.ts:180"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/consola.ts#explicarFalloDeEmbeddings",
-      "origen": "scripts/consola.ts:143"
+      "origen": "scripts/consola.ts:144"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/consola.ts#IntervencionCapa2",
-      "origen": "scripts/consola.ts:107"
+      "origen": "scripts/consola.ts:108"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/consola.ts#Modo",
-      "origen": "scripts/consola.ts:94"
+      "origen": "scripts/consola.ts:95"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/consola.ts#RegistroDelTurno",
-      "origen": "scripts/consola.ts:122"
+      "origen": "scripts/consola.ts:123"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/consola.ts#tokenValido",
-      "origen": "scripts/consola.ts:511"
+      "origen": "scripts/consola.ts:512"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/consola.ts#VerificadorDeGuardrails",
-      "origen": "scripts/consola.ts:214"
+      "origen": "scripts/consola.ts:215"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "importa",
       "hacia": "modulo:scripts/rag-demostracion.ts",
-      "origen": "scripts/consola.ts:89"
+      "origen": "scripts/consola.ts:90"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "importa",
       "hacia": "modulo:src/channels/whatsapp/whatsapp.formatter.ts",
-      "origen": "scripts/consola.ts:77"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/claude/claude.service.ts",
-      "origen": "scripts/consola.ts:57"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/claude/guardrails.ts",
-      "origen": "scripts/consola.ts:59"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/claude/prompt.builder.ts",
-      "origen": "scripts/consola.ts:64"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/conversation/conversation.service.ts",
-      "origen": "scripts/consola.ts:76"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/conversation/message.router.ts",
-      "origen": "scripts/consola.ts:75"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/embedding.service.ts",
-      "origen": "scripts/consola.ts:66"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/knowledge.repository.ts",
-      "origen": "scripts/consola.ts:67"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/rag.service.ts",
-      "origen": "scripts/consola.ts:68"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/consultar-agenda.tool.ts",
-      "origen": "scripts/consola.ts:70"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/consultar-rag.tool.ts",
-      "origen": "scripts/consola.ts:72"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/crear-cita.tool.ts",
-      "origen": "scripts/consola.ts:71"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
-      "origen": "scripts/consola.ts:74"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/guardar-lead.tool.ts",
-      "origen": "scripts/consola.ts:73"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/tool.registry.ts",
-      "origen": "scripts/consola.ts:69"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/types/index.ts",
       "origen": "scripts/consola.ts:78"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/core/urgency/urgency.detector.ts",
+      "hacia": "modulo:src/core/claude/claude.service.ts",
+      "origen": "scripts/consola.ts:58"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/guardrails.ts",
+      "origen": "scripts/consola.ts:60"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/prompt.builder.ts",
       "origen": "scripts/consola.ts:65"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/conversation.service.ts",
+      "origen": "scripts/consola.ts:77"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/message.router.ts",
+      "origen": "scripts/consola.ts:76"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/embedding.service.ts",
+      "origen": "scripts/consola.ts:67"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/knowledge.repository.ts",
+      "origen": "scripts/consola.ts:68"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/rag.service.ts",
+      "origen": "scripts/consola.ts:69"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/consultar-agenda.tool.ts",
+      "origen": "scripts/consola.ts:71"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/consultar-rag.tool.ts",
+      "origen": "scripts/consola.ts:73"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/crear-cita.tool.ts",
+      "origen": "scripts/consola.ts:72"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
+      "origen": "scripts/consola.ts:75"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/guardar-lead.tool.ts",
+      "origen": "scripts/consola.ts:74"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/tool.registry.ts",
+      "origen": "scripts/consola.ts:70"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "scripts/consola.ts:79"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/urgency/urgency.detector.ts",
+      "origen": "scripts/consola.ts:66"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/infra/calendar.client.ts",
-      "origen": "scripts/consola.ts:47"
+      "origen": "scripts/consola.ts:48"
     },
     {
       "desde": "modulo:scripts/consola.ts",
@@ -7877,86 +8018,92 @@
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/infra/notification.client.ts",
-      "origen": "scripts/consola.ts:48"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/infra/repositories/index.ts",
-      "origen": "scripts/consola.ts:49"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/infra/supabase.client.ts",
+      "hacia": "modulo:src/infra/entrada-principal.ts",
       "origen": "scripts/consola.ts:46"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/infra/notification.client.ts",
+      "origen": "scripts/consola.ts:49"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/repositories/index.ts",
+      "origen": "scripts/consola.ts:50"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/supabase.client.ts",
+      "origen": "scripts/consola.ts:47"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "importa",
       "hacia": "modulo:tests/helpers/dobles.ts",
-      "origen": "scripts/consola.ts:88"
+      "origen": "scripts/consola.ts:89"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ANTHROPIC_API_KEY",
-      "origen": "scripts/consola.ts:323"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
-      "origen": "scripts/consola.ts:325"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
-      "origen": "scripts/consola.ts:337"
-    },
-    {
-      "desde": "modulo:scripts/consola.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
       "origen": "scripts/consola.ts:324"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
+      "origen": "scripts/consola.ts:326"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
+      "origen": "scripts/consola.ts:338"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
+      "origen": "scripts/consola.ts:325"
+    },
+    {
+      "desde": "modulo:scripts/consola.ts",
+      "relacion": "lee_variable",
       "hacia": "variable_entorno:DEFAULT_PHONE_REGION",
-      "origen": "scripts/consola.ts:356"
+      "origen": "scripts/consola.ts:357"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:EMBEDDING_DIMENSIONS",
-      "origen": "scripts/consola.ts:310"
+      "origen": "scripts/consola.ts:311"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:EMBEDDING_MODEL",
-      "origen": "scripts/consola.ts:309"
+      "origen": "scripts/consola.ts:310"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:N8N_WEBHOOK_URL",
-      "origen": "scripts/consola.ts:302"
+      "origen": "scripts/consola.ts:303"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VENTANA_CONTINUIDAD_HORAS",
-      "origen": "scripts/consola.ts:355"
+      "origen": "scripts/consola.ts:356"
     },
     {
       "desde": "modulo:scripts/consola.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOYAGE_API_KEY",
-      "origen": "scripts/consola.ts:308"
+      "origen": "scripts/consola.ts:309"
     },
     {
       "desde": "modulo:scripts/consola.ts",
@@ -7968,7 +8115,7 @@
       "desde": "modulo:scripts/consola.ts",
       "relacion": "usa_tabla",
       "hacia": "tabla:tool_calls",
-      "origen": "scripts/consola.ts:385"
+      "origen": "scripts/consola.ts:386"
     },
     {
       "desde": "modulo:scripts/demo-real.ts",
@@ -8292,7 +8439,7 @@
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ELEVENLABS_API_KEY",
-      "origen": "scripts/diagnostico.ts:326"
+      "origen": "scripts/diagnostico.ts:423"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
@@ -8310,7 +8457,7 @@
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:GOOGLE_CALENDAR_CREDENTIALS",
-      "origen": "scripts/diagnostico.ts:281"
+      "origen": "scripts/diagnostico.ts:298"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
@@ -8334,7 +8481,7 @@
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_ENABLED",
-      "origen": "scripts/diagnostico.ts:318"
+      "origen": "scripts/diagnostico.ts:415"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
@@ -8346,31 +8493,49 @@
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_BSP_TOKEN",
-      "origen": "scripts/diagnostico.ts:301"
+      "origen": "scripts/diagnostico.ts:398"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_ENABLED",
-      "origen": "scripts/diagnostico.ts:296"
+      "origen": "scripts/diagnostico.ts:393"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_PHONE_ID",
-      "origen": "scripts/diagnostico.ts:300"
+      "origen": "scripts/diagnostico.ts:397"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "menciona",
       "hacia": "control:C9",
-      "origen": "scripts/diagnostico.ts:239"
+      "origen": "scripts/diagnostico.ts:256"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "menciona",
+      "hacia": "control:O2",
+      "origen": "scripts/diagnostico.ts:353"
     },
     {
       "desde": "modulo:scripts/diagnostico.ts",
       "relacion": "pertenece_a",
       "hacia": "capa:scripts",
       "origen": "scripts/diagnostico.ts"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "usa_tabla",
+      "hacia": "tabla:clinics",
+      "origen": "scripts/diagnostico.ts:317"
+    },
+    {
+      "desde": "modulo:scripts/diagnostico.ts",
+      "relacion": "usa_tabla",
+      "hacia": "tabla:knowledge_chunks",
+      "origen": "scripts/diagnostico.ts:356"
     },
     {
       "desde": "modulo:scripts/migrate.ts",
@@ -8401,6 +8566,54 @@
       "relacion": "pertenece_a",
       "hacia": "capa:scripts",
       "origen": "scripts/migrate.ts"
+    },
+    {
+      "desde": "modulo:scripts/preparar.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/preparar.ts#clavesDe",
+      "origen": "scripts/preparar.ts:234"
+    },
+    {
+      "desde": "modulo:scripts/preparar.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/preparar.ts#completar",
+      "origen": "scripts/preparar.ts:253"
+    },
+    {
+      "desde": "modulo:scripts/preparar.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/preparar.ts#generarEsqueleto",
+      "origen": "scripts/preparar.ts:213"
+    },
+    {
+      "desde": "modulo:scripts/preparar.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/preparar.ts#GRUPOS",
+      "origen": "scripts/preparar.ts:67"
+    },
+    {
+      "desde": "modulo:scripts/preparar.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/preparar.ts#TODAS_LAS_VARIABLES",
+      "origen": "scripts/preparar.ts:201"
+    },
+    {
+      "desde": "modulo:scripts/preparar.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/preparar.ts#versionDeNodeSuficiente",
+      "origen": "scripts/preparar.ts:279"
+    },
+    {
+      "desde": "modulo:scripts/preparar.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/entrada-principal.ts",
+      "origen": "scripts/preparar.ts:27"
+    },
+    {
+      "desde": "modulo:scripts/preparar.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:scripts",
+      "origen": "scripts/preparar.ts"
     },
     {
       "desde": "modulo:scripts/rag-demostracion.ts",
@@ -8550,151 +8763,157 @@
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#agregarSegmento",
-      "origen": "scripts/wer.ts:462"
+      "origen": "scripts/wer.ts:463"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#calcularBrecha",
-      "origen": "scripts/wer.ts:521"
+      "origen": "scripts/wer.ts:522"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#calcularOperacionesEdicion",
-      "origen": "scripts/wer.ts:291"
+      "origen": "scripts/wer.ts:292"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#convertirNumerosATexto",
-      "origen": "scripts/wer.ts:187"
+      "origen": "scripts/wer.ts:188"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#evaluarConjunto",
-      "origen": "scripts/wer.ts:558"
+      "origen": "scripts/wer.ts:559"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#evaluarPar",
-      "origen": "scripts/wer.ts:371"
+      "origen": "scripts/wer.ts:372"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#formatearReporteConsola",
-      "origen": "scripts/wer.ts:656"
+      "origen": "scripts/wer.ts:657"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#formatearReporteMarkdown",
-      "origen": "scripts/wer.ts:741"
+      "origen": "scripts/wer.ts:742"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#IntervaloConfianza",
-      "origen": "scripts/wer.ts:404"
+      "origen": "scripts/wer.ts:405"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#intervaloWilson",
-      "origen": "scripts/wer.ts:423"
+      "origen": "scripts/wer.ts:424"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#NivelConfianzaMuestra",
-      "origen": "scripts/wer.ts:402"
+      "origen": "scripts/wer.ts:403"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#NORMALIZACION_POR_DEFECTO",
-      "origen": "scripts/wer.ts:78"
+      "origen": "scripts/wer.ts:79"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#normalizarTexto",
-      "origen": "scripts/wer.ts:250"
+      "origen": "scripts/wer.ts:251"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#numeroAPalabras",
-      "origen": "scripts/wer.ts:146"
+      "origen": "scripts/wer.ts:147"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#OpcionesNormalizacion",
-      "origen": "scripts/wer.ts:59"
+      "origen": "scripts/wer.ts:60"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#OperacionesEdicion",
-      "origen": "scripts/wer.ts:274"
+      "origen": "scripts/wer.ts:275"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#ParEntrada",
-      "origen": "scripts/wer.ts:352"
+      "origen": "scripts/wer.ts:353"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#ResultadoBrecha",
-      "origen": "scripts/wer.ts:503"
+      "origen": "scripts/wer.ts:504"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#ResultadoGlobal",
-      "origen": "scripts/wer.ts:545"
+      "origen": "scripts/wer.ts:546"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#ResultadoPar",
-      "origen": "scripts/wer.ts:356"
+      "origen": "scripts/wer.ts:357"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#ResultadoSegmento",
-      "origen": "scripts/wer.ts:436"
+      "origen": "scripts/wer.ts:437"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#tokenizar",
-      "origen": "scripts/wer.ts:263"
+      "origen": "scripts/wer.ts:264"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#UMBRAL_BRECHA_POR_DEFECTO",
-      "origen": "scripts/wer.ts:400"
+      "origen": "scripts/wer.ts:401"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#UMBRALES_POR_DEFECTO",
-      "origen": "scripts/wer.ts:388"
+      "origen": "scripts/wer.ts:389"
     },
     {
       "desde": "modulo:scripts/wer.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/wer.ts#UmbralesHablantes",
-      "origen": "scripts/wer.ts:381"
+      "origen": "scripts/wer.ts:382"
+    },
+    {
+      "desde": "modulo:scripts/wer.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/entrada-principal.ts",
+      "origen": "scripts/wer.ts:52"
     },
     {
       "desde": "modulo:scripts/wer.ts",
@@ -11619,6 +11838,18 @@
       "origen": "src/infra/elevenlabs.client.ts"
     },
     {
+      "desde": "modulo:src/infra/entrada-principal.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/infra/entrada-principal.ts#esEntradaPrincipal",
+      "origen": "src/infra/entrada-principal.ts:25"
+    },
+    {
+      "desde": "modulo:src/infra/entrada-principal.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:infraestructura",
+      "origen": "src/infra/entrada-principal.ts"
+    },
+    {
       "desde": "modulo:src/infra/logger.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/logger.ts#createLogger",
@@ -12012,139 +12243,139 @@
       "desde": "modulo:src/server.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/server.ts#construirServidor",
-      "origen": "src/server.ts:61"
+      "origen": "src/server.ts:62"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
       "hacia": "modulo:src/channels/voice/post-call.controller.ts",
-      "origen": "src/server.ts:53"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/channels/voice/voice-gateway.controller.ts",
-      "origen": "src/server.ts:52"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/channels/voice/voice-session.service.ts",
       "origen": "src/server.ts:54"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/channels/voice/voice-gateway.controller.ts",
+      "origen": "src/server.ts:53"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/channels/voice/voice-session.service.ts",
+      "origen": "src/server.ts:55"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/channels/whatsapp/whatsapp.adapter.ts",
-      "origen": "src/server.ts:50"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/channels/whatsapp/whatsapp.controller.ts",
-      "origen": "src/server.ts:48"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/channels/whatsapp/whatsapp.types.ts",
       "origen": "src/server.ts:51"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/channels/whatsapp/whatsapp.controller.ts",
+      "origen": "src/server.ts:49"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/channels/whatsapp/whatsapp.types.ts",
+      "origen": "src/server.ts:52"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/core/claude/claude.service.ts",
-      "origen": "src/server.ts:32"
+      "origen": "src/server.ts:33"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/claude/guardrails.ts",
-      "origen": "src/server.ts:34"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/claude/prompt.builder.ts",
       "origen": "src/server.ts:35"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/core/conversation/conversation.service.ts",
-      "origen": "src/server.ts:47"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/conversation/message.router.ts",
-      "origen": "src/server.ts:46"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/embedding.service.ts",
-      "origen": "src/server.ts:37"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/knowledge.repository.ts",
-      "origen": "src/server.ts:38"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/rag.service.ts",
-      "origen": "src/server.ts:39"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/consultar-agenda.tool.ts",
-      "origen": "src/server.ts:41"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/consultar-rag.tool.ts",
-      "origen": "src/server.ts:43"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/crear-cita.tool.ts",
-      "origen": "src/server.ts:42"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
-      "origen": "src/server.ts:45"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/guardar-lead.tool.ts",
-      "origen": "src/server.ts:44"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/tool.registry.ts",
-      "origen": "src/server.ts:40"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/urgency/urgency.detector.ts",
+      "hacia": "modulo:src/core/claude/prompt.builder.ts",
       "origen": "src/server.ts:36"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/conversation.service.ts",
+      "origen": "src/server.ts:48"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/message.router.ts",
+      "origen": "src/server.ts:47"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/embedding.service.ts",
+      "origen": "src/server.ts:38"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/knowledge.repository.ts",
+      "origen": "src/server.ts:39"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/rag.service.ts",
+      "origen": "src/server.ts:40"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/consultar-agenda.tool.ts",
+      "origen": "src/server.ts:42"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/consultar-rag.tool.ts",
+      "origen": "src/server.ts:44"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/crear-cita.tool.ts",
+      "origen": "src/server.ts:43"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
+      "origen": "src/server.ts:46"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/guardar-lead.tool.ts",
+      "origen": "src/server.ts:45"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/tool.registry.ts",
+      "origen": "src/server.ts:41"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/urgency/urgency.detector.ts",
+      "origen": "src/server.ts:37"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/infra/calendar.client.ts",
-      "origen": "src/server.ts:20"
+      "origen": "src/server.ts:21"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -12155,152 +12386,158 @@
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/infra/logger.ts",
+      "hacia": "modulo:src/infra/entrada-principal.ts",
       "origen": "src/server.ts:18"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/infra/notification.client.ts",
-      "origen": "src/server.ts:21"
+      "hacia": "modulo:src/infra/logger.ts",
+      "origen": "src/server.ts:19"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/infra/repositories/index.ts",
+      "hacia": "modulo:src/infra/notification.client.ts",
       "origen": "src/server.ts:22"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/infra/repositories/index.ts",
+      "origen": "src/server.ts:23"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/infra/supabase.client.ts",
-      "origen": "src/server.ts:19"
+      "origen": "src/server.ts:20"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ANTHROPIC_API_KEY",
-      "origen": "src/server.ts:96"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
-      "origen": "src/server.ts:98"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
-      "origen": "src/server.ts:112"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
       "origen": "src/server.ts:97"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
+      "origen": "src/server.ts:99"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
+      "origen": "src/server.ts:113"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
+      "origen": "src/server.ts:98"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
       "hacia": "variable_entorno:DEFAULT_PHONE_REGION",
-      "origen": "src/server.ts:131"
+      "origen": "src/server.ts:132"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ELEVENLABS_WEBHOOK_SECRET",
-      "origen": "src/server.ts:202"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:EMBEDDING_DIMENSIONS",
-      "origen": "src/server.ts:87"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:EMBEDDING_MODEL",
-      "origen": "src/server.ts:86"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:N8N_WEBHOOK_URL",
-      "origen": "src/server.ts:79"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:PORT",
-      "origen": "src/server.ts:224"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:RETENCION_AUDIO_DIAS",
       "origen": "src/server.ts:203"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
+      "hacia": "variable_entorno:EMBEDDING_DIMENSIONS",
+      "origen": "src/server.ts:88"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:EMBEDDING_MODEL",
+      "origen": "src/server.ts:87"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:N8N_WEBHOOK_URL",
+      "origen": "src/server.ts:80"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:PORT",
+      "origen": "src/server.ts:225"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:RETENCION_AUDIO_DIAS",
+      "origen": "src/server.ts:204"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
       "hacia": "variable_entorno:VENTANA_CONTINUIDAD_HORAS",
-      "origen": "src/server.ts:130"
+      "origen": "src/server.ts:131"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_BUFFER_WORD_MS",
-      "origen": "src/server.ts:192"
+      "origen": "src/server.ts:193"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_ENABLED",
-      "origen": "src/server.ts:146"
+      "origen": "src/server.ts:147"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_GATEWAY_SECRET",
-      "origen": "src/server.ts:191"
+      "origen": "src/server.ts:192"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOYAGE_API_KEY",
-      "origen": "src/server.ts:85"
+      "origen": "src/server.ts:86"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_APP_SECRET",
-      "origen": "src/server.ts:172"
+      "origen": "src/server.ts:173"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_BSP_TOKEN",
-      "origen": "src/server.ts:155"
+      "origen": "src/server.ts:156"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_ENABLED",
-      "origen": "src/server.ts:146"
+      "origen": "src/server.ts:147"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_PHONE_ID",
-      "origen": "src/server.ts:154"
+      "origen": "src/server.ts:155"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_WEBHOOK_SECRET",
-      "origen": "src/server.ts:170"
+      "origen": "src/server.ts:171"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -13647,6 +13884,18 @@
       "origen": "tests/unit/post-call.controller.test.ts:38"
     },
     {
+      "desde": "modulo:tests/unit/preparar.test.ts",
+      "relacion": "importa",
+      "hacia": "modulo:scripts/preparar.ts",
+      "origen": "tests/unit/preparar.test.ts:9"
+    },
+    {
+      "desde": "modulo:tests/unit/preparar.test.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:pruebas",
+      "origen": "tests/unit/preparar.test.ts"
+    },
+    {
       "desde": "modulo:tests/unit/prompt.builder.test.ts",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
@@ -14130,7 +14379,7 @@
       "desde": "simbolo:scripts/consola.ts#EspiaDeRag",
       "relacion": "implementa",
       "hacia": "puerto:RagPort",
-      "origen": "scripts/consola.ts:179"
+      "origen": "scripts/consola.ts:180"
     },
     {
       "desde": "simbolo:scripts/rag-demostracion.ts#RagDeDemostracion",
@@ -14142,13 +14391,13 @@
       "desde": "simbolo:src/channels/voice/voice-session.service.ts#VoiceSessionService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/call.repository.ts#SupabaseCallRepository",
-      "origen": "src/server.ts:184"
+      "origen": "src/server.ts:185"
     },
     {
       "desde": "simbolo:src/channels/voice/voice-session.service.ts#VoiceSessionService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/transcript.repository.ts#SupabaseTranscriptRepository",
-      "origen": "src/server.ts:184"
+      "origen": "src/server.ts:185"
     },
     {
       "desde": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
@@ -14196,85 +14445,85 @@
       "desde": "simbolo:src/core/claude/guardrails.ts#GuardrailService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:106"
+      "origen": "src/server.ts:107"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:137"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/guardrails.ts#GuardrailService",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:137"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:137"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:137"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:137"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:137"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:137"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:137"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/message.repository.ts#SupabaseMessageRepository",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:137"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/clinic.repository.ts#SupabaseClinicRepository",
-      "origen": "src/server.ts:127"
+      "origen": "src/server.ts:128"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/conversation.repository.ts#SupabaseConversationRepository",
-      "origen": "src/server.ts:127"
+      "origen": "src/server.ts:128"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/message.repository.ts#SupabaseMessageRepository",
-      "origen": "src/server.ts:127"
+      "origen": "src/server.ts:128"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/patient.repository.ts#SupabasePatientRepository",
-      "origen": "src/server.ts:127"
+      "origen": "src/server.ts:128"
     },
     {
       "desde": "simbolo:src/core/rag/embedding.service.ts#VoyageEmbeddingService",
@@ -14292,7 +14541,7 @@
       "desde": "simbolo:src/core/rag/rag.service.ts#RagService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/embedding.service.ts#VoyageEmbeddingService",
-      "origen": "src/server.ts:89"
+      "origen": "src/server.ts:90"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
@@ -14304,13 +14553,13 @@
       "desde": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/server.ts:117"
+      "origen": "src/server.ts:118"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:117"
+      "origen": "src/server.ts:118"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-rag.tool.ts#ConsultarRagTool",
@@ -14322,13 +14571,13 @@
       "desde": "simbolo:src/core/tools/consultar-rag.tool.ts#ConsultarRagTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/server.ts:119"
+      "origen": "src/server.ts:120"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-rag.tool.ts#ConsultarRagTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:119"
+      "origen": "src/server.ts:120"
     },
     {
       "desde": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
@@ -14340,13 +14589,13 @@
       "desde": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/server.ts:118"
+      "origen": "src/server.ts:119"
     },
     {
       "desde": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:118"
+      "origen": "src/server.ts:119"
     },
     {
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
@@ -14358,19 +14607,19 @@
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/notification.client.ts#NotificationClient",
-      "origen": "src/server.ts:121"
+      "origen": "src/server.ts:122"
     },
     {
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/conversation.repository.ts#SupabaseConversationRepository",
-      "origen": "src/server.ts:121"
+      "origen": "src/server.ts:122"
     },
     {
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:121"
+      "origen": "src/server.ts:122"
     },
     {
       "desde": "simbolo:src/core/tools/guardar-lead.tool.ts#GuardarLeadTool",
@@ -14382,61 +14631,61 @@
       "desde": "simbolo:src/core/tools/guardar-lead.tool.ts#GuardarLeadTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:120"
+      "origen": "src/server.ts:121"
     },
     {
       "desde": "simbolo:src/core/tools/guardar-lead.tool.ts#GuardarLeadTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:120"
+      "origen": "src/server.ts:121"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:116"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:116"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/notification.client.ts#NotificationClient",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:116"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:116"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/conversation.repository.ts#SupabaseConversationRepository",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:116"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:116"
     },
     {
       "desde": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
-      "origen": "src/server.ts:108"
+      "origen": "src/server.ts:109"
     },
     {
       "desde": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/server.ts:108"
+      "origen": "src/server.ts:109"
     },
     {
       "desde": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
@@ -14448,7 +14697,7 @@
       "desde": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/clinic.repository.ts#SupabaseClinicRepository",
-      "origen": "src/server.ts:76"
+      "origen": "src/server.ts:77"
     },
     {
       "desde": "simbolo:src/infra/notification.client.ts#NotificationClient",

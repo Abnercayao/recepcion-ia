@@ -21,10 +21,15 @@ migraciones.sql
 credenciales/*
 !credenciales/README.md
 
-# Cualquier variante de .env que no sea la plantilla
+# Cualquier variante de .env, sin excepciones.
+#
+# Aqui habia un `!.env.example` que des-ignoraba la plantilla. La plantilla se
+# elimino del repositorio y de su historial porque acabo con cinco credenciales
+# reales dentro; dejar la negacion significaba que volver a crear ese archivo lo
+# hacia confirmable otra vez, que es el camino exacto de aquella filtracion.
+# El esqueleto lo genera `npm run preparar` en local, y no se versiona.
 .env
 .env.*
-!.env.example
 
 # Archivos de credenciales sueltos, esten donde esten
 *service-account*.json

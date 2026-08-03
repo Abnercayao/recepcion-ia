@@ -6,7 +6,7 @@
 |---|---|
 | `npm run build` | **exit 0** · 49 archivos JS en `dist/` |
 | `npx tsc -p tsconfig.test.json --noEmit` | **exit 0** |
-| `npx vitest run` | **22 ficheros · 573 pasando · 13 fallos esperados · 8 saltados** |
+| `npx vitest run` | **23 ficheros · 593 pasando · 13 fallos esperados · 8 saltados** |
 | Arranque real desde `dist/` | `/health` → 200 · gateway sin secreto → 401 · secreto erróneo → 401 |
 | Entorno incompleto | falla al arrancar enumerando cada variable ausente |
 
@@ -116,6 +116,40 @@ Siempre inserta y después aprueba lo que acaba de insertar. Ejecutarlo dos vece
 deja 78 fragmentos, con los 39 originales huérfanos e inactivos. Por eso la
 aprobación de esta sesión se hizo sobre los fragmentos existentes, por el mismo
 `KnowledgeRepository.aprobar` que usa el script.
+
+### ABIERTO: cinco credenciales siguen expuestas en `origin/main`
+
+Comprobado el 03-08-2026. El archivo `.env.example` **sigue en el árbol actual
+de `main`** con valores reales dentro. Se limpió en la rama de trabajo, nunca en
+`main`.
+
+| Credencial | Alcance de la exposición |
+|---|---|
+| `SUPABASE_SERVICE_KEY` | **La peor.** Salta Row Level Security: lectura y escritura completas sobre la base de pacientes |
+| `SUPABASE_DB_URL` | Cadena de Postgres con contraseña |
+| `ANTHROPIC_API_KEY` | Consumo con cargo a la cuenta |
+| `VOYAGE_API_KEY` | Consumo |
+| `ELEVENLABS_API_KEY` | Consumo |
+
+**Rotar es lo único que sirve.** Limpiar el historial ayuda pero llega tarde: lo
+que estuvo publicado hay que darlo por comprometido, y GitHub conserva copias de
+commits huérfanos accesibles por su hash.
+
+Orden sugerido, de mayor a menor daño:
+
+1. **Supabase** → *Project Settings* → *API keys* → revocar y regenerar
+   `service_role`. Y *Database* → cambiar la contraseña, que invalida
+   `SUPABASE_DB_URL`.
+2. **Anthropic** → *Settings* → *API keys* → revocar la clave y crear otra.
+3. **Voyage** → *dash.voyageai.com* → revocar y crear.
+4. **ElevenLabs** → *Profile* → revocar y crear.
+5. Actualizar el `.env` local con los valores nuevos (`npm run preparar` no los
+   toca; se editan a mano) y volver a correr `npm run diagnostico`.
+6. Solo entonces, limpiar `main`: eliminar el archivo y reescribir el historial.
+   Requiere un `push --force` sobre `main`, que **no está autorizado todavía**.
+
+Mientras no se haga, cualquiera con acceso al repositorio tiene acceso a la base
+de datos de pacientes.
 
 ### Consola de inspección · 27-07-2026
 

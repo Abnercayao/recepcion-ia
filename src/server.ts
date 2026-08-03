@@ -16,6 +16,7 @@ import Fastify from 'fastify';
 import 'dotenv/config';
 
 import { loadConfig, type Config } from './infra/config.js';
+import { esEntradaPrincipal } from './infra/entrada-principal.js';
 import { createLogger } from './infra/logger.js';
 import { createSupabaseClient } from './infra/supabase.client.js';
 import { GoogleCalendarClient } from './infra/calendar.client.js';
@@ -235,7 +236,7 @@ async function main(): Promise<void> {
 }
 
 // Solo arranca si se ejecuta directamente; importarlo desde un test no levanta nada.
-if (process.argv[1] && import.meta.url === `file://${process.argv[1].replace(/\\/g, '/')}`) {
+if (esEntradaPrincipal(import.meta.url)) {
   main().catch((error: unknown) => {
     console.error(error instanceof Error ? error.message : String(error));
     process.exit(1);

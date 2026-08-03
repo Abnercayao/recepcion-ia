@@ -225,7 +225,24 @@ const ETAPAS: Etapa[] = [
       }
       const cliente = new ClientePg({ connectionString: config.SUPABASE_DB_URL });
       try {
-        await conLimiteDeTiempo(cliente.connect(), TIEMPO_MAXIMO_MS, 'conexion a Postgres');
+        try {
+          await conLimiteDeTiempo(cliente.connect(), TIEMPO_MAXIMO_MS, 'conexion a Postgres');
+        } catch (error) {
+          // Caso conocido: `db.<proyecto>.supabase.co` es la conexion directa
+          // heredada y en los proyectos nuevos ya no tiene registro DNS. Se
+          // distingue de un fallo real porque la consecuencia es distinta: esta
+          // cadena SOLO la usan las migraciones, y el demo no las necesita.
+          const mensaje = mensajeDeError(error);
+          if (/ENOTFOUND|EAI_AGAIN/.test(mensaje)) {
+            return fallo(
+              mensaje,
+              'el host directo `db.<proyecto>.supabase.co` ya no resuelve en los proyectos nuevos',
+              'usa la cadena del pooler (Session mode) que da Supabase en Connection string',
+              'NO BLOQUEA EL DEMO: esta cadena solo la usan las migraciones, y ya estan aplicadas',
+            );
+          }
+          throw error;
+        }
         const detalle: string[] = [];
 
         const version = await cliente.query<{ version: string }>('select version()');
@@ -286,6 +303,86 @@ const ETAPAS: Etapa[] = [
       }
       const credenciales = parseGoogleCredentials(config.GOOGLE_CALENDAR_CREDENTIALS);
       return ok(`cuenta de servicio: ${credenciales.client_email}`, 'credenciales bien formadas');
+    },
+  },
+
+  {
+    nombre: 'demo',
+    titulo: 'Demo — ¿hay clinica, agenda y conocimiento APROBADO?',
+    async ejecutar(config) {
+      const clinicId = process.env['CLINIC_ID'] ?? '00000000-0000-4000-8000-000000000001';
+      const supabase = createSupabaseClient(config);
+
+      const { data: clinicas, error: errorClinica } = await conLimiteDeTiempo(
+        Promise.resolve(supabase.from('clinics').select('id,nombre,config').eq('id', clinicId)),
+        TIEMPO_MAXIMO_MS,
+        'clinica del demo',
+      );
+      if (errorClinica) return fallo(`no se pudo leer clinics: ${errorClinica.message}`);
+
+      const clinica = (clinicas ?? [])[0] as { nombre: string; config?: Record<string, unknown> } | undefined;
+      if (!clinica) {
+        return fallo(
+          `no existe la clinica ${clinicId}`,
+          'ejecuta `npm run db:seed -- --aprobar-como "Nombre del responsable"`',
+        );
+      }
+
+      const detalle = [`clinica: ${clinica.nombre}`];
+      const cfg = clinica.config ?? {};
+
+      // El formato PLURAL es el corregido: el singular no puede expresar el
+      // cierre del mediodia y hacia que `crear_cita` cayera al horario por
+      // defecto (lunes a sabado 08:00-20:00) sin avisar. Ver docs/ESTADO.md.
+      if (cfg['horarios']) detalle.push('horarios: formato plural (el corregido)');
+      else if (cfg['horario']) {
+        return fallo(
+          ...detalle,
+          'horarios en formato SINGULAR: `crear_cita` caera al horario por defecto en silencio',
+          'vuelve a sembrar la clinica con db/seed/clinica-demo/clinica.json actualizado',
+        );
+      } else detalle.push('sin horarios declarados: se usara el horario por defecto');
+
+      detalle.push(
+        cfg['googleCalendarId']
+          ? 'googleCalendarId configurado'
+          : 'sin googleCalendarId: `consultar_agenda` no tiene contra que preguntar',
+      );
+
+      // ESTO es lo que decide si el RAG devuelve algo. Contar filas no basta:
+      // con el control O2, un fragmento sin aprobar NO se recupera, y 39 filas
+      // inactivas se ven igual que 39 activas en un recuento total.
+      const { count: total } = await conLimiteDeTiempo(
+        Promise.resolve(supabase.from('knowledge_chunks').select('*', { count: 'exact' }).eq('clinic_id', clinicId).limit(0)),
+        TIEMPO_MAXIMO_MS,
+        'fragmentos',
+      );
+      const { count: activos } = await conLimiteDeTiempo(
+        Promise.resolve(
+          supabase
+            .from('knowledge_chunks')
+            .select('*', { count: 'exact' })
+            .eq('clinic_id', clinicId)
+            .eq('activo', true)
+            .limit(0),
+        ),
+        TIEMPO_MAXIMO_MS,
+        'fragmentos activos',
+      );
+      detalle.push(`fragmentos: ${activos ?? 0} activos de ${total ?? 0}`);
+
+      if ((total ?? 0) === 0) {
+        return fallo(...detalle, 'no hay base de conocimiento: el agente no podra responder nada de la clinica');
+      }
+      if ((activos ?? 0) === 0) {
+        return fallo(
+          ...detalle,
+          'HAY fragmentos pero NINGUNO aprobado: el RAG devolvera vacio para todo (control O2)',
+          'aprueba con `npm run db:seed -- --aprobar-como "Nombre del responsable"`',
+        );
+      }
+
+      return ok(...detalle, 'el demo tiene con que responder');
     },
   },
 

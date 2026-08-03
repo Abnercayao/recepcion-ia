@@ -10,11 +10,21 @@ El razonamiento es siempre de Claude. ElevenLabs aporta reconocimiento de voz, g
 
 ```bash
 npm install
+npm run preparar
 ```
 
-Crea tu `.env` con las variables que enumera
-[`docs/PUESTA_EN_MARCHA.md`](docs/PUESTA_EN_MARCHA.md). El sistema **no arranca**
-si falta algo obligatorio, y te dirá exactamente qué. Es deliberado.
+`npm run preparar` comprueba la versión de Node y las dependencias, y se ocupa
+del `.env`: lo crea si no existe, o le añade las variables que falten **sin
+tocar ningún valor que ya hayas escrito**. Al terminar dice qué datos siguen
+faltando y de qué consola sale cada uno.
+
+Para llegar de cero a una conversación con el agente, incluido un guion de
+demostración de cinco minutos: [`docs/DEMO.md`](docs/DEMO.md). La referencia
+completa de variables y proveedores está en
+[`docs/PUESTA_EN_MARCHA.md`](docs/PUESTA_EN_MARCHA.md).
+
+El sistema **no arranca** si falta algo obligatorio, y te dirá exactamente qué.
+Es deliberado.
 
 ```bash
 npm run build

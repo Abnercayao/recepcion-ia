@@ -49,8 +49,9 @@
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
 import { z } from 'zod';
+
+import { esEntradaPrincipal } from '../src/infra/entrada-principal.js';
 
 // ---------------------------------------------------------------------------
 // 1. Normalizacion de texto (configurable y documentada, como exige el encargo)
@@ -879,10 +880,7 @@ async function main(): Promise<void> {
   process.exitCode = bloqueaPorBrecha || bloqueaPorMuestra || bloqueaPorFaltaDeBrecha ? 1 : 0;
 }
 
-const esEntradaPrincipal =
-  process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
-
-if (esEntradaPrincipal) {
+if (esEntradaPrincipal(import.meta.url)) {
   main().catch((error: unknown) => {
     console.error(`wer.ts fallo de forma inesperada: ${error instanceof Error ? error.message : String(error)}`);
     process.exitCode = 2;

@@ -21,6 +21,7 @@
     "kg:verificar": "tsx kg/cli.ts verificar",
     "kg:visor": "tsx kg/visor.ts",
     "kg:mcp": "tsx kg/mcp.ts",
+    "preparar": "tsx scripts/preparar.ts",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "demo": "tsx scripts/demo.ts",

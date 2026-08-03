@@ -44,6 +44,7 @@ import { join, resolve } from 'node:path';
 import Fastify from 'fastify';
 
 import { loadConfig } from '../src/infra/config.js';
+import { esEntradaPrincipal } from '../src/infra/entrada-principal.js';
 import { createSupabaseClient } from '../src/infra/supabase.client.js';
 import { GoogleCalendarClient } from '../src/infra/calendar.client.js';
 import { NotificationClient } from '../src/infra/notification.client.js';
@@ -723,7 +724,7 @@ async function main(): Promise<void> {
 }
 
 // Solo arranca si se ejecuta directamente: importarlo desde un test no levanta nada.
-if (process.argv[1] && import.meta.url === `file://${process.argv[1].replace(/\\/g, '/')}`) {
+if (esEntradaPrincipal(import.meta.url)) {
   main().catch((error: unknown) => {
     process.stderr.write((error instanceof Error ? error.message : String(error)) + '\n');
     process.exit(1);
