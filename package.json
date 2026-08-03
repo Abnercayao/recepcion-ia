@@ -23,6 +23,7 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "demo": "tsx scripts/demo.ts",
+    "demo:web": "tsx scripts/web.ts",
     "wer": "tsx scripts/wer.ts"
   },
   "dependencies": {

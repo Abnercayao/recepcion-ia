@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Clínica Dental Aurora — Miraflores y San Isidro</title>
+    <meta
+      name="description"
+      content="Clínica dental en Miraflores y San Isidro. Agenda tu cita, consulta precios de referencia y resuelve tus dudas."
+    />
+    <link rel="stylesheet" href="/estilos.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>"
+    />
+  </head>
+  <body>
+    <div class="aviso-demo" role="note">
+      <strong>Demostración.</strong> Clínica ficticia, datos de prueba. Las citas no se agendan de
+      verdad.
+    </div>
+
+    <header class="cabecera">
+      <div class="contenedor cabecera__fila">
+        <a class="marca" href="#inicio">
+          <span class="marca__icono" aria-hidden="true">🦷</span>
+          <span class="marca__texto">
+            <strong>Clínica Dental Aurora</strong>
+            <small>Miraflores · San Isidro</small>
+          </span>
+        </a>
+        <nav class="nav" aria-label="Principal">
+          <a href="#servicios">Servicios</a>
+          <a href="#horarios">Horarios</a>
+          <a href="#sedes">Sedes</a>
+          <a class="nav__cta" href="#chat">Agendar cita</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="inicio">
+      <!-- ------------------------------------------------------------- -->
+      <!-- Portada: el chat es el centro, no un accesorio en una esquina -->
+      <!-- ------------------------------------------------------------- -->
+      <section class="portada">
+        <div class="contenedor portada__rejilla">
+          <div class="portada__texto">
+            <p class="etiqueta">Atención en el día</p>
+            <h1>Tu cita, resuelta en una conversación.</h1>
+            <p class="entradilla">
+              Pregunta por precios de referencia, horarios o disponibilidad y agenda sin llamar.
+              Te atiende nuestro asistente virtual, y si hace falta te pasamos con una persona
+              del equipo.
+            </p>
+            <ul class="lista-marcas">
+              <li>Respuesta inmediata, todos los días</li>
+              <li>Precios de referencia antes de venir</li>
+              <li>Urgencias derivadas de inmediato</li>
+            </ul>
+            <p class="portada__nota">
+              ¿Prefieres hablar? <strong>(01) 700-0000</strong> · Urgencias
+              <strong>+51 999 000 001</strong>
+            </p>
+          </div>
+
+          <!-- Chat ------------------------------------------------------ -->
+          <section class="chat" id="chat" aria-label="Chat con recepción">
+            <header class="chat__cabecera">
+              <div class="chat__identidad">
+                <span class="chat__avatar" aria-hidden="true">🦷</span>
+                <div>
+                  <p class="chat__nombre">Recepción Aurora</p>
+                  <p class="chat__estado"><span class="punto"></span> En línea ahora</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="chat__detalle-boton"
+                id="alternar-detalle"
+                aria-pressed="false"
+                title="Muestra latencia y herramientas usadas en cada turno"
+              >
+                Detalle técnico
+              </button>
+            </header>
+
+            <div class="chat__aviso">
+              Asistente virtual. No damos diagnósticos ni indicamos medicación.
+            </div>
+
+            <div
+              class="chat__mensajes"
+              id="mensajes"
+              role="log"
+              aria-live="polite"
+              aria-label="Conversación"
+            >
+              <!-- Los mensajes se insertan desde chat.js -->
+            </div>
+
+            <div class="chat__sugerencias" id="sugerencias">
+              <button type="button" data-texto="¿Cuánto cuesta un implante dental?">
+                Precio de un implante
+              </button>
+              <button type="button" data-texto="Quiero agendar una limpieza">
+                Agendar una limpieza
+              </button>
+              <button type="button" data-texto="¿A qué hora atienden los sábados?">
+                Horario del sábado
+              </button>
+              <button type="button" data-texto="¿Atienden niños?">¿Atienden niños?</button>
+            </div>
+
+            <form class="chat__formulario" id="formulario">
+              <label class="visualmente-oculto" for="entrada">Escribe tu mensaje</label>
+              <input
+                id="entrada"
+                name="entrada"
+                type="text"
+                autocomplete="off"
+                placeholder="Escribe tu consulta…"
+                maxlength="2000"
+                required
+              />
+              <button type="submit" id="enviar" aria-label="Enviar mensaje">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path
+                    d="M3.4 20.4 21 12 3.4 3.6 3.4 10.2 15 12 3.4 13.8z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <!-- Servicios ---------------------------------------------------- -->
+      <section class="seccion" id="servicios">
+        <div class="contenedor">
+          <h2>Qué hacemos</h2>
+          <p class="seccion__entrada">
+            Los precios son rangos de referencia. El importe final siempre depende de la
+            valoración del profesional.
+          </p>
+          <div class="tarjetas">
+            <article class="tarjeta">
+              <h3>Consulta de evaluación</h3>
+              <p class="tarjeta__precio">S/ 50 – 80</p>
+              <p>Se descuenta del tratamiento si este empieza dentro de los 30 días.</p>
+            </article>
+            <article class="tarjeta">
+              <h3>Limpieza dental</h3>
+              <p class="tarjeta__precio">40 – 60 min</p>
+              <p>Profilaxis y control. El precio se confirma en la valoración.</p>
+            </article>
+            <article class="tarjeta">
+              <h3>Implantes</h3>
+              <p class="tarjeta__precio">S/ 3,000 – 5,500</p>
+              <p>Implante unitario con corona incluida. Admite pago fraccionado.</p>
+            </article>
+            <article class="tarjeta">
+              <h3>Ortodoncia</h3>
+              <p class="tarjeta__precio">Pago en partes</p>
+              <p>Plan acordado en la consulta de valoración, sin intereses.</p>
+            </article>
+            <article class="tarjeta">
+              <h3>Blanqueamiento</h3>
+              <p class="tarjeta__precio">≈ 1 hora</p>
+              <p>Sesión en consultorio. La duración del resultado varía por persona.</p>
+            </article>
+            <article class="tarjeta">
+              <h3>Odontopediatría</h3>
+              <p class="tarjeta__precio">Miraflores</p>
+              <p>Con la Dra. Ana Quispe, en horario de mañana, con apoderado.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Horarios y sedes --------------------------------------------- -->
+      <section class="seccion seccion--alterna" id="horarios">
+        <div class="contenedor rejilla-dos">
+          <div>
+            <h2>Horarios</h2>
+            <table class="tabla">
+              <tbody>
+                <tr><th scope="row">Lunes a viernes</th><td>9:00 – 13:00 · 15:00 – 20:00</td></tr>
+                <tr><th scope="row">Sábado</th><td>9:00 – 14:00 <small>(solo Miraflores)</small></td></tr>
+                <tr><th scope="row">Domingo</th><td>Cerrado</td></tr>
+              </tbody>
+            </table>
+            <p class="nota">
+              Cancela o reprograma sin costo hasta <strong>4 horas antes</strong>. Si el retraso
+              supera los 15 minutos puede que haya que mover la cita.
+            </p>
+          </div>
+          <div id="sedes">
+            <h2>Sedes</h2>
+            <article class="sede">
+              <h3>Miraflores</h3>
+              <p>Av. Larco 1234</p>
+              <p class="nota">Playas de estacionamiento cercanas, no propias.</p>
+            </article>
+            <article class="sede">
+              <h3>San Isidro</h3>
+              <p>Calle Las Begonias 456</p>
+              <p class="nota">Con estacionamiento para pacientes.</p>
+            </article>
+            <p class="nota">
+              Atención particular. No se trabaja con seguros ni reembolso de EPS. Aceptamos
+              efectivo, tarjetas, Yape y Plin.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Urgencias ----------------------------------------------------- -->
+      <section class="urgencias">
+        <div class="contenedor urgencias__caja">
+          <div>
+            <h2>¿Es una urgencia?</h2>
+            <p>
+              Si tienes sangrado que no para, dificultad para respirar o tragar, un golpe fuerte
+              o dolor que no aguantas, no escribas: llama.
+            </p>
+          </div>
+          <a class="boton-urgencia" href="tel:+51999000001">+51 999 000 001</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pie">
+      <div class="contenedor pie__fila">
+        <p><strong>Clínica Dental Aurora</strong> · Miraflores y San Isidro, Lima</p>
+        <p class="nota">
+          Clínica ficticia creada para demostrar el sistema Recepción-IA. Ningún dato de esta
+          página corresponde a un establecimiento real.
+        </p>
+      </div>
+    </footer>
+
+    <script src="/chat.js"></script>
+  </body>
+</html>

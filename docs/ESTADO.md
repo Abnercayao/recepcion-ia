@@ -102,8 +102,22 @@ Detalle completo en `decisiones.md`. Los principales:
 4. **Umbral del RAG en 0.75, sin calibrar** — ya hay clave de Voyage y el endpoint responde, así que la calibración pasa a ser posible; sigue sin hacerse.
 5. **Riesgo de doble locución al escalar por voz** — solo detectable con telefonía real.
 6. **Revelación en WhatsApp sobre memoria de proceso** — frágil para un criterio bloqueante.
-7. **`scripts/migrate.ts` y `scripts/seed.ts` no leen el `.env`.** Ninguno importa `dotenv`, pero `PUESTA_EN_MARCHA.md` los documenta como si lo hicieran: pones la clave en el archivo y el script no la ve. `scripts/demo.ts` ya está corregido; estos dos, no.
-8. **No hay medida del sobre-escalamiento.** Ver el fallo del clasificador descrito arriba.
+7. **No hay medida del sobre-escalamiento.** Ver el fallo del clasificador descrito arriba. Es el único de esta lista que ya causó un fallo real en producción de la demo.
+
+*(Resuelto: `scripts/demo.ts`, `migrate.ts` y `seed.ts` no importaban `dotenv`, así que no leían el `.env` que la guía manda rellenar. Los tres lo hacen ya.)*
+
+## Demostración
+
+Dos arneses sobre el **mismo** montaje del núcleo (`scripts/nucleo-demo.ts`), para que no puedan divergir:
+
+```bash
+npm run demo         # conversación en la terminal
+npm run demo:web     # web local de la clínica, chat incluido
+```
+
+`npm run demo:web` levanta `http://localhost:4000` y sirve `web/`: la página de la Clínica Dental Aurora con el chat como elemento central. El turno se envía como canal `whatsapp` —el estilo de texto—, así que **no es un tercer canal**: `src/channels/` sigue teniendo dos y el núcleo no sabe que esa página existe. La clave del modelo nunca llega al navegador.
+
+En ambos: persistencia en memoria, RAG por coincidencia de palabras (peor que el real) y agenda simulada. El prompt, los tres controles y las cinco herramientas sí son los reales.
 
 ## Correcciones hechas a los documentos originales
 

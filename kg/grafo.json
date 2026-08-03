@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "d9932407018ce09f",
+  "huella": "4805f24d442fc494",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 114,
+        "lineas": 128,
         "capa": "documentacion"
       }
     },
@@ -879,12 +879,10 @@
       "meta": {
         "externas": [
           "dotenv/config",
-          "node:fs/promises",
-          "node:path",
           "node:process",
           "node:readline/promises"
         ],
-        "lineas": 296,
+        "lineas": 94,
         "capa": "scripts"
       }
     },
@@ -896,12 +894,28 @@
       "resumen": "migrate.ts",
       "meta": {
         "externas": [
+          "dotenv/config",
           "node:crypto",
           "node:fs",
           "node:path",
           "node:url"
         ],
-        "lineas": 311,
+        "lineas": 315,
+        "capa": "scripts"
+      }
+    },
+    {
+      "id": "modulo:scripts/nucleo-demo.ts",
+      "tipo": "modulo",
+      "nombre": "nucleo-demo.ts",
+      "ruta": "scripts/nucleo-demo.ts",
+      "resumen": "Montaje del NUCLEO REAL para demostraciones.",
+      "meta": {
+        "externas": [
+          "node:fs/promises",
+          "node:path"
+        ],
+        "lineas": 248,
         "capa": "scripts"
       }
     },
@@ -914,11 +928,29 @@
       "meta": {
         "externas": [
           "@supabase/supabase-js",
+          "dotenv/config",
           "node:fs/promises",
           "node:path",
           "zod"
         ],
-        "lineas": 229,
+        "lineas": 233,
+        "capa": "scripts"
+      }
+    },
+    {
+      "id": "modulo:scripts/web.ts",
+      "tipo": "modulo",
+      "nombre": "web.ts",
+      "ruta": "scripts/web.ts",
+      "resumen": "Web local de la clinica, con el chat conectado al NUCLEO REAL.",
+      "meta": {
+        "externas": [
+          "dotenv/config",
+          "fastify",
+          "node:fs/promises",
+          "node:path"
+        ],
+        "lineas": 144,
         "capa": "scripts"
       }
     },
@@ -2191,10 +2223,72 @@
       "tipo": "simbolo",
       "nombre": "planPending",
       "ruta": "scripts/migrate.ts",
-      "linea": 128,
+      "linea": 132,
       "resumen": "Decide que migraciones faltan por aplicar. Funcion pura (sin I/O): facil de",
       "meta": {
         "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:scripts/nucleo-demo.ts#clinicaDeLaSemilla",
+      "tipo": "simbolo",
+      "nombre": "clinicaDeLaSemilla",
+      "ruta": "scripts/nucleo-demo.ts",
+      "linea": 124,
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:scripts/nucleo-demo.ts#FaltaLaClaveError",
+      "tipo": "simbolo",
+      "nombre": "FaltaLaClaveError",
+      "ruta": "scripts/nucleo-demo.ts",
+      "linea": 173,
+      "meta": {
+        "clase": "class"
+      }
+    },
+    {
+      "id": "simbolo:scripts/nucleo-demo.ts#loggerDeConsola",
+      "tipo": "simbolo",
+      "nombre": "loggerDeConsola",
+      "ruta": "scripts/nucleo-demo.ts",
+      "linea": 145,
+      "resumen": "Logger silencioso salvo errores: en una demo el ruido estorba.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:scripts/nucleo-demo.ts#montarNucleoDeDemostracion",
+      "tipo": "simbolo",
+      "nombre": "montarNucleoDeDemostracion",
+      "ruta": "scripts/nucleo-demo.ts",
+      "linea": 189,
+      "resumen": "Levanta el nucleo real con infraestructura de demostracion.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:scripts/nucleo-demo.ts#NucleoDeDemostracion",
+      "tipo": "simbolo",
+      "nombre": "NucleoDeDemostracion",
+      "ruta": "scripts/nucleo-demo.ts",
+      "linea": 164,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:scripts/nucleo-demo.ts#RagDeDemostracion",
+      "tipo": "simbolo",
+      "nombre": "RagDeDemostracion",
+      "ruta": "scripts/nucleo-demo.ts",
+      "linea": 67,
+      "meta": {
+        "clase": "class"
       }
     },
     {
@@ -7022,7 +7116,7 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:112"
+      "origen": "docs/ESTADO.md:126"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -7291,56 +7385,14 @@
     {
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/core/claude/claude.service.ts",
-      "origen": "scripts/demo.ts:31"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/claude/guardrails.ts",
-      "origen": "scripts/demo.ts:33"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/claude/prompt.builder.ts",
-      "origen": "scripts/demo.ts:34"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/conversation/conversation.service.ts",
-      "origen": "scripts/demo.ts:37"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/conversation/message.router.ts",
-      "origen": "scripts/demo.ts:36"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/chunker.ts",
-      "origen": "scripts/demo.ts:38"
+      "hacia": "modulo:scripts/nucleo-demo.ts",
+      "origen": "scripts/demo.ts:22"
     },
     {
       "desde": "modulo:scripts/demo.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/types/index.ts",
-      "origen": "scripts/demo.ts:39"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/urgency/urgency.detector.ts",
-      "origen": "scripts/demo.ts:35"
-    },
-    {
-      "desde": "modulo:scripts/demo.ts",
-      "relacion": "importa",
-      "hacia": "modulo:tests/helpers/dobles.ts",
-      "origen": "scripts/demo.ts:40"
+      "origen": "scripts/demo.ts:20"
     },
     {
       "desde": "modulo:scripts/demo.ts",
@@ -7352,25 +7404,25 @@
       "desde": "modulo:scripts/migrate.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/migrate.ts#planPending",
-      "origen": "scripts/migrate.ts:128"
+      "origen": "scripts/migrate.ts:132"
     },
     {
       "desde": "modulo:scripts/migrate.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/types/index.ts",
-      "origen": "scripts/migrate.ts:56"
+      "origen": "scripts/migrate.ts:60"
     },
     {
       "desde": "modulo:scripts/migrate.ts",
       "relacion": "importa",
       "hacia": "modulo:src/infra/config.ts",
-      "origen": "scripts/migrate.ts:53"
+      "origen": "scripts/migrate.ts:57"
     },
     {
       "desde": "modulo:scripts/migrate.ts",
       "relacion": "importa",
       "hacia": "modulo:src/infra/logger.ts",
-      "origen": "scripts/migrate.ts:55"
+      "origen": "scripts/migrate.ts:59"
     },
     {
       "desde": "modulo:scripts/migrate.ts",
@@ -7379,64 +7431,160 @@
       "origen": "scripts/migrate.ts"
     },
     {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/nucleo-demo.ts#clinicaDeLaSemilla",
+      "origen": "scripts/nucleo-demo.ts:124"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/nucleo-demo.ts#FaltaLaClaveError",
+      "origen": "scripts/nucleo-demo.ts:173"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/nucleo-demo.ts#loggerDeConsola",
+      "origen": "scripts/nucleo-demo.ts:145"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/nucleo-demo.ts#montarNucleoDeDemostracion",
+      "origen": "scripts/nucleo-demo.ts:189"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/nucleo-demo.ts#NucleoDeDemostracion",
+      "origen": "scripts/nucleo-demo.ts:164"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:scripts/nucleo-demo.ts#RagDeDemostracion",
+      "origen": "scripts/nucleo-demo.ts:67"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/claude.service.ts",
+      "origen": "scripts/nucleo-demo.ts:25"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/guardrails.ts",
+      "origen": "scripts/nucleo-demo.ts:27"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/prompt.builder.ts",
+      "origen": "scripts/nucleo-demo.ts:28"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/conversation.service.ts",
+      "origen": "scripts/nucleo-demo.ts:31"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/message.router.ts",
+      "origen": "scripts/nucleo-demo.ts:30"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/chunker.ts",
+      "origen": "scripts/nucleo-demo.ts:32"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "scripts/nucleo-demo.ts:33"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/urgency/urgency.detector.ts",
+      "origen": "scripts/nucleo-demo.ts:29"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:tests/helpers/dobles.ts",
+      "origen": "scripts/nucleo-demo.ts:34"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:scripts",
+      "origen": "scripts/nucleo-demo.ts"
+    },
+    {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/rag/chunker.ts",
-      "origen": "scripts/seed.ts:21"
-    },
-    {
-      "desde": "modulo:scripts/seed.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/embedding.service.ts",
-      "origen": "scripts/seed.ts:22"
-    },
-    {
-      "desde": "modulo:scripts/seed.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/knowledge.repository.ts",
-      "origen": "scripts/seed.ts:23"
-    },
-    {
-      "desde": "modulo:scripts/seed.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/types/index.ts",
       "origen": "scripts/seed.ts:25"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/core/rag/embedding.service.ts",
+      "origen": "scripts/seed.ts:26"
+    },
+    {
+      "desde": "modulo:scripts/seed.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/knowledge.repository.ts",
+      "origen": "scripts/seed.ts:27"
+    },
+    {
+      "desde": "modulo:scripts/seed.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "scripts/seed.ts:29"
+    },
+    {
+      "desde": "modulo:scripts/seed.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/infra/config.ts",
-      "origen": "scripts/seed.ts:24"
+      "origen": "scripts/seed.ts:28"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:EMBEDDING_DIMENSIONS",
-      "origen": "scripts/seed.ts:172"
+      "origen": "scripts/seed.ts:176"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:EMBEDDING_MODEL",
-      "origen": "scripts/seed.ts:171"
+      "origen": "scripts/seed.ts:175"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:SUPABASE_SERVICE_KEY",
-      "origen": "scripts/seed.ts:146"
+      "origen": "scripts/seed.ts:150"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:SUPABASE_URL",
-      "origen": "scripts/seed.ts:146"
+      "origen": "scripts/seed.ts:150"
     },
     {
       "desde": "modulo:scripts/seed.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOYAGE_API_KEY",
-      "origen": "scripts/seed.ts:136"
+      "origen": "scripts/seed.ts:140"
     },
     {
       "desde": "modulo:scripts/seed.ts",
@@ -7454,7 +7602,19 @@
       "desde": "modulo:scripts/seed.ts",
       "relacion": "usa_tabla",
       "hacia": "tabla:clinics",
-      "origen": "scripts/seed.ts:149"
+      "origen": "scripts/seed.ts:153"
+    },
+    {
+      "desde": "modulo:scripts/web.ts",
+      "relacion": "importa",
+      "hacia": "modulo:scripts/nucleo-demo.ts",
+      "origen": "scripts/web.ts:23"
+    },
+    {
+      "desde": "modulo:scripts/web.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:scripts",
+      "origen": "scripts/web.ts"
     },
     {
       "desde": "modulo:scripts/wer.ts",
@@ -12873,6 +13033,12 @@
       "relacion": "protege",
       "hacia": "tabla:transcripts",
       "origen": "db/migrations/002_rls.sql:220"
+    },
+    {
+      "desde": "simbolo:scripts/nucleo-demo.ts#RagDeDemostracion",
+      "relacion": "implementa",
+      "hacia": "puerto:RagPort",
+      "origen": "scripts/nucleo-demo.ts:67"
     },
     {
       "desde": "simbolo:src/channels/voice/voice-session.service.ts#VoiceSessionService",

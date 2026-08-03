@@ -24,6 +24,20 @@ npm run build
 npm run dev
 ```
 
+## Verlo funcionando
+
+Con solo `ANTHROPIC_API_KEY` ya se puede hablar con el sistema. Dos arneses sobre el mismo montaje del núcleo:
+
+```bash
+npm run demo
+```
+
+```bash
+npm run demo:web
+```
+
+El segundo levanta `http://localhost:4000` con la web de la clínica y el chat conectado al núcleo real. En ambos la persistencia es en memoria, la recuperación es por coincidencia de palabras y la agenda es simulada; el prompt, los tres controles y las cinco herramientas son los de verdad. Detalles y límites en [`scripts/nucleo-demo.ts`](scripts/nucleo-demo.ts).
+
 ## Base de datos
 
 ```bash

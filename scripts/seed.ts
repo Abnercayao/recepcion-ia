@@ -15,6 +15,10 @@
  *   npm run db:seed -- --dir db/seed/clinica-demo
  *   npm run db:seed -- --dir db/seed/clinica-demo --aprobar-como "Dra. Carmen Rios"
  */
+// Mismo motivo que en migrate.ts: la guia manda poner las claves en .env, y
+// loadConfig() lee de process.env. Sin esto el script no ve ese archivo.
+import 'dotenv/config';
+
 import { readFile, readdir } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import { createClient } from '@supabase/supabase-js';

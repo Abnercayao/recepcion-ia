@@ -47,6 +47,10 @@
  * base real. Ver el informe final de esta rama.
  * =============================================================================
  */
+// PUESTA_EN_MARCHA.md dice: pon SUPABASE_DB_URL en .env y ejecuta este script.
+// Sin esto no lee ese archivo y aborta pidiendo lo que el usuario ya escribio.
+import 'dotenv/config';
+
 import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
