@@ -10,9 +10,7 @@ Guía ordenada de todo lo que hay que contratar y conectar. Cada etapa deja algo
 - `.env` ya está en `.gitignore`. Verifícalo con `git check-ignore .env` antes del primer push.
 - Si una clave se te escapa a un commit, no basta con borrarla en el siguiente: queda en el historial. Hay que rotarla en el proveedor.
 
-```bash
-cp .env.example .env
-```
+**No hay `.env.example` en el repositorio, y es deliberado.** Existió, y acabó commiteado con claves reales dentro: exactamente el fallo que este apartado advierte. Crea el `.env` a mano. Las variables van apareciendo en las etapas de abajo, y la lista completa con sus reglas de obligatoriedad está en el esquema de `src/infra/config.ts`.
 
 El sistema valida el entorno al arrancar y **falla si falta algo obligatorio**, diciéndote exactamente qué. Eso es deliberado.
 
