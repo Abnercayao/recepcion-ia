@@ -104,9 +104,16 @@ Detalle completo en `decisiones.md`. Los principales:
 6. **Revelación en WhatsApp sobre memoria de proceso** — frágil para un criterio bloqueante.
 7. **No hay medida del sobre-escalamiento.** Ver el fallo del clasificador descrito arriba.
 
-8. **`escalar_humano` notifica a un panel local, no a n8n.** Con `N8N_WEBHOOK_URL` vacío la herramienta devolvía `error` y el escalamiento no llegaba a nadie — contra el control O5. Resuelto **para la demostración**: `npm run demo:web` expone `POST /api/escalamientos` y lo muestra en `/recepcion`. Verificado por los dos canales: `escalar_humano` pasa de `error` a `ok` y el aviso aparece con motivo, prioridad, canal, teléfono y resumen.
+8. ~~**`escalar_humano` no tiene a quién notificar**~~ — **resuelto.** Con `N8N_WEBHOOK_URL` vacío la herramienta devolvía `error` y el escalamiento no llegaba a nadie, contra el control O5.
 
-   **No es una solución de producción**: vive en memoria, se pierde al reiniciar y no avisa a ninguna persona de verdad. El destino real previsto es `n8n/F4_notificar_escalamiento.json`, que hoy no puede desplegarse porque la cuenta de n8n Cloud no tiene workspace activo. Cuando lo tenga, basta cambiar `N8N_WEBHOOK_URL`.
+   Ahora `N8N_WEBHOOK_URL` apunta a un webhook desplegado y **publicado** en n8n Cloud (`POST /webhook/escalamiento`). Verificado por los **dos** canales: `escalar_humano` pasa de `error` a `ok`, y en n8n quedan las ejecuciones con la carga completa —clínica, motivo, prioridad, resumen para recepción, teléfono del paciente, canal y momento—.
+
+   Dos matices que conviene no perder de vista:
+
+   - El flujo desplegado es **solo el webhook**: recibe y registra. No manda SMS ni correo, así que sigue haciendo falta que alguien mire n8n. El flujo completo de `n8n/F4_notificar_escalamiento.json` añade consulta a Postgres y SMS por Twilio, y necesita esas credenciales.
+   - El arnés de la web usa dobles y no pasa por `NotificationClient`, así que notifica al mismo destino por su cuenta (`scripts/web.ts`). Sin eso, n8n solo vería los escalamientos de voz.
+
+   `/recepcion` en la demo local se mantiene como espejo para ver los avisos sin salir de la web.
 
 9. **Plan gratuito de Voyage: 3 peticiones por minuto.** Cada turno con RAG consume una. En una conversación real el límite se alcanza enseguida y el RAG empieza a fallar — de forma silenciosa para el paciente, por el fail-safe. Requiere añadir método de pago en el panel de Voyage.
 

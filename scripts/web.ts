@@ -132,11 +132,11 @@ async function main(): Promise<void> {
           .slice(antes)
           .map((l) => ({ nombre: l.herramienta, estado: l.estado }));
 
-        // El arnes de la web usa dobles, asi que no pasa por
-        // `NotificationClient`. Se anota aqui para que el panel de recepcion
-        // vea tambien los escalamientos del chat de texto y no solo los de voz.
+        // El arnes de la web usa dobles, asi que NO pasa por
+        // `NotificationClient`: si no se notificase aqui, n8n solo veria los
+        // escalamientos de voz y daria una impresion falsa de cobertura.
         if (turno.escalate) {
-          escalamientos.unshift({
+          const carga = {
             clinicaNombre: clinica.nombre,
             motivo: turno.escalate.reason,
             prioridad: turno.escalate.priority,
@@ -144,9 +144,28 @@ async function main(): Promise<void> {
             telefonoPaciente: telefonoDe(sesion),
             canal: 'whatsapp',
             ocurridoEn: new Date().toISOString(),
-            recibidoEn: new Date().toISOString(),
-          });
+          };
+
+          escalamientos.unshift({ ...carga, recibidoEn: new Date().toISOString() });
           if (escalamientos.length > MAX_ESCALAMIENTOS) escalamientos.length = MAX_ESCALAMIENTOS;
+
+          // Al mismo destino que usa el nucleo real. Sin await y sin romper el
+          // turno: el paciente ya tiene su respuesta, y un fallo de la
+          // notificacion no debe retrasarsela ni tumbarla.
+          const destino = process.env['N8N_WEBHOOK_URL'];
+          if (destino && !destino.includes('/api/escalamientos')) {
+            void fetch(destino, {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify(carga),
+              signal: AbortSignal.timeout(10_000),
+            }).catch((e: unknown) => {
+              console.error(
+                '  [aviso] no se pudo notificar el escalamiento del chat:',
+                e instanceof Error ? e.message : String(e),
+              );
+            });
+          }
         }
 
         return {

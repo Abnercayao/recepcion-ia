@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "cef361aea9da8957",
+  "huella": "6c0e6a684b0b988b",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -365,7 +365,7 @@
       "id": "control:O5",
       "tipo": "control",
       "nombre": "O5",
-      "resumen": "al**, no un reemplazo del ultimo intento automatico — apagar el canal automatico hacia el paciente justo cuando mas cerca esta la cita contradice el principio de \"nunca silencio\" …",
+      "resumen": "~~**`escalar_humano` no tiene a quién notificar**~~ — **resuelto.** Con `N8N_WEBHOOK_URL` vacío la herramienta devolvía `error` y el escalamiento no llegaba a nadie, contra el con…",
       "meta": {
         "clase": "operativo",
         "definicionInferida": true
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 160,
+        "lineas": 169,
         "capa": "documentacion"
       }
     },
@@ -950,7 +950,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 193,
+        "lineas": 212,
         "capa": "scripts"
       }
     },
@@ -7183,13 +7183,13 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:158"
+      "origen": "docs/ESTADO.md:167"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "menciona",
       "hacia": "control:C8",
-      "origen": "docs/ESTADO.md:137"
+      "origen": "docs/ESTADO.md:146"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
