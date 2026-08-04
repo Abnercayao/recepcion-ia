@@ -2,7 +2,7 @@
 
 Guía operativa para dejar `crear_cita` y `consultar_agenda` funcionando contra un calendario real.
 
-> **Estado: hecho todo salvo la clave privada.** Falta el paso 3, que es del titular de la cuenta.
+> **Estado: funcionando y verificado contra el calendario real.**
 
 ## Lo que ya está montado
 
@@ -13,10 +13,22 @@ Guía operativa para dejar `crear_cita` y `consultar_agenda` funcionando contra 
 | Cuenta de servicio | `recepcion-ia-agenda@calcium-post-365206.iam.gserviceaccount.com` · sin roles de IAM |
 | Calendario | «Clinica Aurora - agenda» · zona horaria **(GMT-05:00) Perú** |
 | ID del calendario | `723a5338e4b21175d26cd7aebf4a26666ab1123b9ca02a1e920d48cd58d9cd8b@group.calendar.google.com` |
-| Compartido con | la cuenta de servicio, con **«Hacer cambios (ver eventos privados como libre/ocupado)»** |
+| Compartido con | la cuenta de servicio, con **«Hacer cambios y ver todos los detalles del evento»** |
 | `clinica.json` y fila `clinics` | actualizados con ese ID, sin `googleImpersonateSubject` |
 
-Sobre el permiso elegido: es el **más restrictivo que permite escribir**. La cuenta de servicio puede crear citas pero no leer el detalle de los eventos privados de otros. Encaja con el diseño, que usa `freebusy.query` justamente para que no exista la ruta por la que ver datos de otros pacientes.
+## Verificado contra el calendario real
+
+| Comprobación | Resultado |
+|---|---|
+| `findAvailableSlots` (freebusy) | **15 huecos** de 40 min · primero a las 9:00 |
+| `isSlotFree` antes de crear | **true** |
+| `createEvent` | creado · **jueves 6 de agosto, 10:00 a. m.** — la hora pedida, sin corrimiento |
+| `isSlotFree` después | **false** — el hueco queda ocupado |
+| Por el gateway conversacional | `consultar_agenda` **ok** en 818 ms contra Google |
+
+La hora sin corrimiento es lo que más importa: «citas creadas con fecha, hora o profesional incorrectos = 0» es criterio bloqueante de la Tabla 14.
+
+**Nota sobre la idempotencia.** Repetir `createEvent` con los mismos datos no llega a ejercitar la ruta del 409: la doble verificación previa a escribir (control C7) detecta que el hueco ya está ocupado y aborta antes. Es el comportamiento correcto, pero significa que la idempotencia por SHA-256 sigue **sin probarse en vivo** — solo se activaría si la respuesta de Google se perdiera por red tras una escritura con éxito.
 
 ---
 

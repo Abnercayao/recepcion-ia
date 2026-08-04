@@ -128,7 +128,19 @@ function sustituir(texto: string, valores: Record<string, string>): string {
   });
 }
 
-/** Fecha y hora en la zona de la clinica. Sin esto el agente agenda mal (iteracion v0.5). */
+/**
+ * Fecha y hora en la zona de la clinica, MAS el calendario de los proximos
+ * siete dias ya resuelto.
+ *
+ * El dia de la semana solo no basta. Medido con haiku-4.5: un martes 4 de
+ * agosto, ante "el jueves mas proximo", el modelo consulto la agenda del 7 --
+ * que era viernes-- y se lo ofrecio al paciente como jueves. "Citas creadas
+ * con fecha, hora o profesional incorrectos = 0" es criterio BLOQUEANTE de la
+ * Tabla 14, asi que la aritmetica de fechas no puede quedar en manos del
+ * modelo: se le da hecha.
+ *
+ * Cuesta unas pocas decenas de tokens y elimina toda una clase de error.
+ */
 function formatearFechaHora(fecha: Date, timezone: string): string {
   try {
     const fmt = new Intl.DateTimeFormat('es-PE', {
@@ -136,7 +148,23 @@ function formatearFechaHora(fecha: Date, timezone: string): string {
       dateStyle: 'full',
       timeStyle: 'short',
     });
-    return `${fmt.format(fecha)} (${timezone})`;
+
+    const dia = new Intl.DateTimeFormat('es-PE', {
+      timeZone: timezone,
+      weekday: 'long',
+      day: 'numeric',
+      month: 'numeric',
+    });
+
+    const proximos: string[] = [];
+    for (let i = 1; i <= 7; i += 1) {
+      proximos.push(dia.format(new Date(fecha.getTime() + i * 86_400_000)));
+    }
+
+    return (
+      `${fmt.format(fecha)} (${timezone})\n` +
+      `Proximos dias, ya calculados -- usa ESTOS, no los deduzcas: ${proximos.join(' · ')}.`
+    );
   } catch {
     // Una zona invalida no puede tumbar el turno: se degrada a ISO y se sigue.
     return `${fecha.toISOString()} (UTC; zona "${timezone}" invalida)`;

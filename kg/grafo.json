@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "ca15732b2849aa33",
+  "huella": "1269ec451e7472ab",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -315,7 +315,7 @@
       "id": "control:C7",
       "tipo": "control",
       "nombre": "C7",
-      "resumen": "- Doble verificación de hueco libre inmediatamente antes de escribir (control C7).",
+      "resumen": "la doble verificación previa a escribir (control C7) detecta que el hueco ya está ocupado y aborta antes.",
       "meta": {
         "clase": "etico",
         "definicionInferida": true
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 218,
+        "lineas": 233,
         "capa": "documentacion"
       }
     },
@@ -749,7 +749,7 @@
       "ruta": "docs/PUESTA_EN_MARCHA_CALENDAR.md",
       "resumen": "Google Calendar — puesta en marcha del agendamiento",
       "meta": {
-        "lineas": 131,
+        "lineas": 143,
         "capa": "documentacion"
       }
     },
@@ -1175,7 +1175,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 241,
+        "lineas": 269,
         "capa": "nucleo"
       }
     },
@@ -4174,7 +4174,7 @@
       "tipo": "simbolo",
       "nombre": "PromptBuilder",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 193,
+      "linea": 221,
       "meta": {
         "clase": "class"
       }
@@ -7227,13 +7227,13 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:216"
+      "origen": "docs/ESTADO.md:231"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "menciona",
       "hacia": "control:C8",
-      "origen": "docs/ESTADO.md:195"
+      "origen": "docs/ESTADO.md:210"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -7359,7 +7359,7 @@
       "desde": "modulo:docs/PUESTA_EN_MARCHA_CALENDAR.md",
       "relacion": "menciona",
       "hacia": "control:C7",
-      "origen": "docs/PUESTA_EN_MARCHA_CALENDAR.md:130"
+      "origen": "docs/PUESTA_EN_MARCHA_CALENDAR.md:31"
     },
     {
       "desde": "modulo:docs/PUESTA_EN_MARCHA_CALENDAR.md",
@@ -9183,7 +9183,7 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/core/claude/prompt.builder.ts:193"
+      "origen": "src/core/claude/prompt.builder.ts:221"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
@@ -9225,7 +9225,7 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "menciona",
       "hacia": "control:C9",
-      "origen": "src/core/claude/prompt.builder.ts:149"
+      "origen": "src/core/claude/prompt.builder.ts:177"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",

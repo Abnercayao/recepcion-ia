@@ -164,7 +164,22 @@ Detalle completo en `decisiones.md`. Los principales:
 
     `eleven_flash_v2_5` es más rápido y más estable, pero **no soporta modo expresivo**: un PATCH que lo pida sobre ese modelo devuelve 200 y lo deja en `false`, sin avisar. Si algún día pesa más la latencia que la expresividad, ése es el cambio.
 
-12. **haiku-4.5 tuteaba al paciente**, contra el trato de usted que define la clínica. Reforzado explícitamente en `prompts/estilo.voz.md`, con ejemplos de la forma correcta e incorrecta. Verificado después: «¿En qué **le** puedo ayudar?». Es un recordatorio de que un modelo más rápido cumple peor las reglas de estilo, y de que las reglas hay que hacerlas explícitas cuando el modelo es más pequeño.
+12. **haiku-4.5 no es apto para el canal de voz.** Se probó por velocidad y acumuló tres fallos, en orden de gravedad creciente:
+
+    1. **Tuteaba al paciente**, contra el trato de usted que define la clínica. Se corrigió haciendo la regla explícita en `prompts/estilo.voz.md`.
+    2. **Se equivocaba de fecha.** Un martes 4 de agosto, ante «el jueves más próximo», consultó la agenda del **7** —que era viernes— y se lo ofreció al paciente como jueves. Corregido dándole el calendario de los siete días siguientes ya resuelto en el bloque de sesión, en vez de pedirle que lo calcule.
+    3. **Leía mal el resultado de las herramientas.** `consultar_agenda` devolvió un hueco libre a las 11:00 y el modelo respondió que **no había disponibilidad**, ofreciendo otra hora. Esto no se arregla con prompt: es comprensión.
+
+    Comparación directa, misma pregunta y mismo calendario:
+
+    | Modelo | Tiempo | Respuesta |
+    |---|---|---|
+    | haiku-4.5 | 4,3 s | «a las once no hay disponibilidad… tengo a las cuatro» ❌ |
+    | sonnet-5 | 9,5 s | «El jueves seis a las once hay disponibilidad. ¿Confirmo?» ✅ |
+
+    **`CLAUDE_MODEL_VOZ` queda en `claude-sonnet-5`.** Negarle a un paciente una cita que sí existe no es un problema de estilo: «citas creadas con fecha, hora o profesional incorrectos = 0» es criterio bloqueante de la Tabla 14, y un modelo que malinterpreta la disponibilidad lo incumple por el lado que no se ve.
+
+    El coste es la latencia: se vuelve a ~9 s por turno en los turnos con herramientas. Es la tensión de fondo de este canal y no está resuelta — solo decidida hacia el lado seguro.
 
 *(Resuelto: `scripts/demo.ts`, `migrate.ts` y `seed.ts` no importaban `dotenv`, así que no leían el `.env` que la guía manda rellenar. Los tres lo hacen ya.)*
 
