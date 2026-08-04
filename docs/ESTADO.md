@@ -99,7 +99,22 @@ Detalle completo en `decisiones.md`. Los principales:
 1. **RLS vs `SUPABASE_SERVICE_KEY`** — decidido para v1 con deuda reconocida; el `audit_log` inalterable sí queda resuelto de verdad.
 2. **`CalendarPort` sin sede ni profesional** — la clínica tiene dos sedes y especialistas que no atienden en ambas.
 3. **Falta herramienta de cancelación** — y las fuentes se contradicen: la Tabla 13 la exige, el anti-patrón 10 fija cinco herramientas.
-4. ~~**Umbral del RAG en 0.75, sin calibrar**~~ — **resuelto y medido.** Con voyage-3 el fragmento correcto puntuaba 0.41–0.71, así que con 0.75 el RAG devolvía lista vacía **siempre**. Y el modo de fallo no era el silencio prudente que se buscaba: sin fragmentos, el modelo rellenaba (llegó a afirmar que la clínica «solo cuenta con una sede única»). Bajado a **0.35**. Sigue siendo una calibración sobre pocas consultas: si cambia el modelo de embeddings o crece mucho la base, hay que volver a medirlo.
+4. ~~**Umbral del RAG en 0.75, sin calibrar**~~ — **resuelto, y el modelo de embeddings también.**
+
+   Con 0.75 el RAG devolvía lista vacía **siempre**, y el modo de fallo no era el silencio prudente que se buscaba: sin fragmentos el modelo rellenaba (llegó a afirmar que la clínica «solo cuenta con una sede única»).
+
+   Comparados los cuatro modelos disponibles con consultas reales de esta clínica, midiendo el fragmento correcto frente a otro del mismo dominio pero de otro tema:
+
+   | Modelo | Latencia | Correcto | Incorrecto (máx) |
+   |---|---|---|---|
+   | voyage-3 | 2972 ms | 0.366 – 0.784 | 0.280 |
+   | voyage-3.5-lite | 974 ms | 0.519 – 0.724 | 0.340 |
+   | voyage-3.5 | 1514 ms | 0.517 – 0.803 | 0.371 |
+   | **voyage-3-large** | **1100 ms** | **0.575 – 0.839** | 0.446 |
+
+   `voyage-3` era el más lento **y** el más frágil: su peor acierto quedaba en 0.366, a un pelo del umbral. Migrado a **`voyage-3-large`** con umbral **0.45**, y la base entera re-embebida — consulta y documentos tienen que venir del mismo modelo o la similitud no significa nada.
+
+   Verificado contra la base real: las cinco consultas de prueba recuperan el fragmento correcto en primera posición, con 0.546 a 0.645 sobre un umbral de 0.45. Hay margen por los dos lados.
 5. **Riesgo de doble locución al escalar por voz** — solo detectable con telefonía real.
 6. **Revelación en WhatsApp sobre memoria de proceso** — frágil para un criterio bloqueante.
 7. **No hay medida del sobre-escalamiento.** Ver el fallo del clasificador descrito arriba.
@@ -143,7 +158,11 @@ Detalle completo en `decisiones.md`. Los principales:
 
     **Lo que queda por debajo.** El modelo aporta ~1,2 s y el RAG ~1,7 s cuando toca consultarlo. Bajar de ~3 s exigiría cachear los embeddings de consulta, que no está hecho. El objetivo declarado de 1200 ms se fijó sin medir y no se alcanza ni con todo lo anterior: conviene revisarlo con datos antes de tratarlo como criterio de aceptación.
 
-11. **El acento de la voz derivaba.** Con `eleven_v3_conversational` y `expressive_mode`, la voz peruana (`Nelly - Warm Peruvian Spanish`, `accent: peruvian`) sonaba a español de España. Corregido pasando a `eleven_flash_v2_5`, `expressive_mode: false`, `stability: 0.75` y `similarity_boost: 0.9`. El `voice_id` no había cambiado nunca: el problema era el modelo de síntesis, no la voz.
+11. **El acento de la voz derivaba.** La voz peruana (`Nelly - Warm Peruvian Spanish`, `accent: peruvian`) sonaba a español de España. El `voice_id` no había cambiado nunca: el problema era la combinación de `eleven_v3_conversational` + `expressive_mode` + `stability: 0.5`.
+
+    Se mantiene `expressive_mode` activo por decisión de producto —y con él `eleven_v3_conversational`, que es el único modelo que lo admite—, pero con **`stability: 0.75`** y `similarity_boost: 0.9`. Es la estabilidad la que sujeta el acento; bajarla vuelve a soltarlo.
+
+    `eleven_flash_v2_5` es más rápido y más estable, pero **no soporta modo expresivo**: un PATCH que lo pida sobre ese modelo devuelve 200 y lo deja en `false`, sin avisar. Si algún día pesa más la latencia que la expresividad, ése es el cambio.
 
 12. **haiku-4.5 tuteaba al paciente**, contra el trato de usted que define la clínica. Reforzado explícitamente en `prompts/estilo.voz.md`, con ejemplos de la forma correcta e incorrecta. Verificado después: «¿En qué **le** puedo ayudar?». Es un recordatorio de que un modelo más rápido cumple peor las reglas de estilo, y de que las reglas hay que hacerlas explícitas cuando el modelo es más pequeño.
 

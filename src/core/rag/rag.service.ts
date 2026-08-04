@@ -6,7 +6,28 @@
  * Decisiones de diseno tomadas en esta rama (no fijadas por la especificacion,
  * documentadas tambien en el informe final):
  *
- * 1. UMBRAL DE SIMILITUD (0.35, calibrado; antes 0.75 sin calibrar).
+ * 1. UMBRAL DE SIMILITUD (0.45 con voyage-3-large; 0.35 con voyage-3; 0.75
+ *    antes, sin calibrar).
+ *
+ *    OJO: el umbral depende del MODELO DE EMBEDDINGS. Comparados los cuatro
+ *    disponibles con consultas reales de esta clinica, midiendo el fragmento
+ *    correcto frente a uno del mismo dominio pero de otro tema:
+ *
+ *      modelo            latencia   correcto        incorrecto (max)
+ *      voyage-3           2972 ms   0.366 - 0.784   0.280
+ *      voyage-3.5-lite     974 ms   0.519 - 0.724   0.340
+ *      voyage-3.5         1514 ms   0.517 - 0.803   0.371
+ *      voyage-3-large     1100 ms   0.575 - 0.839   0.446
+ *
+ *    `voyage-3` era el mas lento Y el mas fragil: su peor acierto quedaba en
+ *    0.366, a un pelo del umbral de 0.35. `voyage-3-large` sube ese suelo a
+ *    0.575 y es 2,7 veces mas rapido, asi que separa mucho mejor.
+ *
+ *    Con voyage-3-large, 0.45 deja fuera todos los incorrectos medidos (max
+ *    0.446) y admite todos los correctos (min 0.575), con holgura por los dos
+ *    lados. Si se cambia el modelo hay que volver a medir Y re-embeber la base
+ *    entera: consulta y documentos tienen que venir del MISMO modelo o la
+ *    similitud no significa nada.
  *
  *    El valor original se eligio a ojo, razonando que en este dominio una
  *    recuperacion equivocada es peor que un "no dispongo del dato" de mas. El
@@ -74,7 +95,7 @@ export interface RagServiceOptions {
 }
 
 const DEFAULT_LIMITE_FRAGMENTOS = 5;
-const DEFAULT_UMBRAL_SIMILITUD = 0.35;
+const DEFAULT_UMBRAL_SIMILITUD = 0.45;
 
 /**
  * Mensajes de pura cortesia: saludos, despedidas y agradecimientos SIN

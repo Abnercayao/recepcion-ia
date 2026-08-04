@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "ecc8f392e5e26872",
+  "huella": "4d0c98269a198082",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 191,
+        "lineas": 199,
         "capa": "documentacion"
       }
     },
@@ -1241,7 +1241,7 @@
       "ruta": "src/core/rag/rag.service.ts",
       "resumen": "Implementacion de RagPort: recupera fragmentos aprobados y activos de la",
       "meta": {
-        "lineas": 197,
+        "lineas": 218,
         "capa": "nucleo"
       }
     },
@@ -4588,7 +4588,7 @@
       "tipo": "simbolo",
       "nombre": "esPuraCortesia",
       "ruta": "src/core/rag/rag.service.ts",
-      "linea": 95,
+      "linea": 116,
       "resumen": "True si el mensaje es solo cortesia y no pide ningun dato.",
       "meta": {
         "clase": "function"
@@ -4599,7 +4599,7 @@
       "tipo": "simbolo",
       "nombre": "RagService",
       "ruta": "src/core/rag/rag.service.ts",
-      "linea": 106,
+      "linea": 127,
       "meta": {
         "clase": "class"
       }
@@ -4609,7 +4609,7 @@
       "tipo": "simbolo",
       "nombre": "RagServiceOptions",
       "ruta": "src/core/rag/rag.service.ts",
-      "linea": 69,
+      "linea": 90,
       "meta": {
         "clase": "interface"
       }
@@ -7216,13 +7216,13 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:189"
+      "origen": "docs/ESTADO.md:197"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "menciona",
       "hacia": "control:C8",
-      "origen": "docs/ESTADO.md:168"
+      "origen": "docs/ESTADO.md:176"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -9544,31 +9544,31 @@
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#esPuraCortesia",
-      "origen": "src/core/rag/rag.service.ts:95"
+      "origen": "src/core/rag/rag.service.ts:116"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/core/rag/rag.service.ts:106"
+      "origen": "src/core/rag/rag.service.ts:127"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagServiceOptions",
-      "origen": "src/core/rag/rag.service.ts:69"
+      "origen": "src/core/rag/rag.service.ts:90"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/rag/knowledge.repository.ts",
-      "origen": "src/core/rag/rag.service.ts:66"
+      "origen": "src/core/rag/rag.service.ts:87"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/types/index.ts",
-      "origen": "src/core/rag/rag.service.ts:65"
+      "origen": "src/core/rag/rag.service.ts:86"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
@@ -13390,7 +13390,7 @@
       "desde": "simbolo:src/core/rag/rag.service.ts#RagService",
       "relacion": "implementa",
       "hacia": "puerto:RagPort",
-      "origen": "src/core/rag/rag.service.ts:106"
+      "origen": "src/core/rag/rag.service.ts:127"
     },
     {
       "desde": "simbolo:src/core/rag/rag.service.ts#RagService",

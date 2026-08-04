@@ -117,14 +117,14 @@ describe('RagService.retrieve', () => {
   // el RAG devolvia lista vacia siempre. El modo de fallo no era el silencio
   // prudente que se buscaba, sino el modelo rellenando el hueco. Ver la
   // cabecera de rag.service.ts.
-  it('usa los valores por defecto: 5 fragmentos y umbral de similitud 0.35', async () => {
+  it('usa los valores por defecto: 5 fragmentos y umbral de similitud 0.45', async () => {
     const embeddings = new FakeEmbeddingPort(async () => [[0, 0, 0]]);
     const repo = new FakeKnowledgeRepository(async () => []);
     const service = new RagService(embeddings, repo, new FakeLogger());
 
     await service.retrieve(CLINIC_A, 'consulta cualquiera');
 
-    expect(repo.calls[0]).toMatchObject({ limit: 5, minSimilarity: 0.35 });
+    expect(repo.calls[0]).toMatchObject({ limit: 5, minSimilarity: 0.45 });
   });
 
   it('permite sobreescribir el limite de fragmentos por llamada', async () => {
