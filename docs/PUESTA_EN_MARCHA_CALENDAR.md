@@ -2,15 +2,29 @@
 
 Guía operativa para dejar `crear_cita` y `consultar_agenda` funcionando contra un calendario real.
 
-> **Estado: bloqueado en el paso 0.** La cuenta de Google usada tiene el acceso a Google Cloud restringido: *«Se bloqueó el acceso a Google Cloud. A partir del 13 de mayo de 2025, Google Cloud comenzó a aplicar la verificación en 2 pasos»*. Sin resolver eso no se puede crear la cuenta de servicio.
+> **Estado: hecho todo salvo la clave privada.** Falta el paso 3, que es del titular de la cuenta.
+
+## Lo que ya está montado
+
+| | |
+|---|---|
+| Proyecto | `My First Project` · `calcium-post-365206` |
+| Google Calendar API | **habilitada** |
+| Cuenta de servicio | `recepcion-ia-agenda@calcium-post-365206.iam.gserviceaccount.com` · sin roles de IAM |
+| Calendario | «Clinica Aurora - agenda» · zona horaria **(GMT-05:00) Perú** |
+| ID del calendario | `723a5338e4b21175d26cd7aebf4a26666ab1123b9ca02a1e920d48cd58d9cd8b@group.calendar.google.com` |
+| Compartido con | la cuenta de servicio, con **«Hacer cambios (ver eventos privados como libre/ocupado)»** |
+| `clinica.json` y fila `clinics` | actualizados con ese ID, sin `googleImpersonateSubject` |
+
+Sobre el permiso elegido: es el **más restrictivo que permite escribir**. La cuenta de servicio puede crear citas pero no leer el detalle de los eventos privados de otros. Encaja con el diseño, que usa `freebusy.query` justamente para que no exista la ruta por la que ver datos de otros pacientes.
 
 ---
 
 ## 0. Desbloquear Google Cloud
 
-Activa la verificación en dos pasos en la cuenta de Google, o entra con una que ya la tenga.
+Google Cloud exige verificación en dos pasos desde el 13 de mayo de 2025. Sin ella la consola bloquea el acceso al proyecto.
 
-Es un cambio de seguridad de la cuenta y requiere tu teléfono: hazlo tú, en [myaccount.google.com/security](https://myaccount.google.com/security). Los cambios tardan unos minutos en propagarse.
+Es un cambio de seguridad de la cuenta y requiere tu teléfono: se hace en [myaccount.google.com/security](https://myaccount.google.com/security). Los cambios tardan unos minutos en propagarse.
 
 ---
 

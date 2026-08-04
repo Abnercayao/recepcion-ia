@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "1fd2f77dba5cb30d",
+  "huella": "ca15732b2849aa33",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -315,7 +315,7 @@
       "id": "control:C7",
       "tipo": "control",
       "nombre": "C7",
-      "resumen": "Es la doble verificacion previa a escribir (control C7) — si se cacheara, dos citas podrian colarse en el mismo hueco entre el momento en que se ofrecio el horario al paciente y e…",
+      "resumen": "- Doble verificación de hueco libre inmediatamente antes de escribir (control C7).",
       "meta": {
         "clase": "etico",
         "definicionInferida": true
@@ -739,6 +739,17 @@
       "resumen": "Plantilla de consentimiento informado — captura de voz para la auditoría de equidad (Fase 7)",
       "meta": {
         "lineas": 198,
+        "capa": "documentacion"
+      }
+    },
+    {
+      "id": "modulo:docs/PUESTA_EN_MARCHA_CALENDAR.md",
+      "tipo": "documento",
+      "nombre": "PUESTA_EN_MARCHA_CALENDAR.md",
+      "ruta": "docs/PUESTA_EN_MARCHA_CALENDAR.md",
+      "resumen": "Google Calendar — puesta en marcha del agendamiento",
+      "meta": {
+        "lineas": 131,
         "capa": "documentacion"
       }
     },
@@ -7343,6 +7354,18 @@
       "relacion": "pertenece_a",
       "hacia": "capa:documentacion",
       "origen": "docs/plantillas/consentimiento-informado.md"
+    },
+    {
+      "desde": "modulo:docs/PUESTA_EN_MARCHA_CALENDAR.md",
+      "relacion": "menciona",
+      "hacia": "control:C7",
+      "origen": "docs/PUESTA_EN_MARCHA_CALENDAR.md:130"
+    },
+    {
+      "desde": "modulo:docs/PUESTA_EN_MARCHA_CALENDAR.md",
+      "relacion": "pertenece_a",
+      "hacia": "capa:documentacion",
+      "origen": "docs/PUESTA_EN_MARCHA_CALENDAR.md"
     },
     {
       "desde": "modulo:docs/PUESTA_EN_MARCHA.md",
