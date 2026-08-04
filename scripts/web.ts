@@ -50,21 +50,53 @@ const TIPOS: Record<string, string> = {
   '.svg': 'image/svg+xml',
 };
 
+/**
+ * Escalamientos recibidos, en memoria.
+ *
+ * El control O5 dice que el modo de fallo del sistema es la REVERSION A
+ * OPERACION MANUAL, nunca el silencio. Eso exige que alguien reciba el aviso.
+ * `NotificationClient` lo manda a `N8N_WEBHOOK_URL`, y sin esa variable la
+ * herramienta `escalar_humano` devuelve error y nadie se entera.
+ *
+ * Esto es el destino de demostracion: recibe la carga, la guarda y la muestra
+ * en /recepcion. NO sustituye a n8n en produccion —se pierde al reiniciar y no
+ * avisa a ningun humano de verdad—, pero cierra el lazo y hace visible lo que
+ * antes se perdia.
+ */
+const escalamientos: Array<Record<string, unknown> & { recibidoEn: string }> = [];
+const MAX_ESCALAMIENTOS = 100;
+
 async function main(): Promise<void> {
   const { servicio, clinica, rag, dobles, modelo } = await montarNucleoDeDemostracion();
 
   const app = Fastify({ logger: false });
 
   // --- Estaticos. Lista blanca explicita: sin recorrido de rutas posible. ---
-  const ESTATICOS = ['index.html', 'estilos.css', 'chat.js'] as const;
+  const ESTATICOS = ['index.html', 'estilos.css', 'chat.js', 'recepcion.html'] as const;
   for (const archivo of ESTATICOS) {
-    const ruta = archivo === 'index.html' ? '/' : `/${archivo}`;
+    const ruta =
+      archivo === 'index.html' ? '/' : archivo === 'recepcion.html' ? '/recepcion' : `/${archivo}`;
     const extension = archivo.slice(archivo.lastIndexOf('.'));
     app.get(ruta, async (_peticion, respuesta) => {
       const contenido = await readFile(join(DIR_WEB, archivo), 'utf8');
       return respuesta.type(TIPOS[extension] ?? 'text/plain').send(contenido);
     });
   }
+
+  // --- Destino de las notificaciones de escalamiento (control O5) ----------
+  app.post('/api/escalamientos', async (peticion, respuesta) => {
+    const carga = (peticion.body ?? {}) as Record<string, unknown>;
+    escalamientos.unshift({ ...carga, recibidoEn: new Date().toISOString() });
+    if (escalamientos.length > MAX_ESCALAMIENTOS) escalamientos.length = MAX_ESCALAMIENTOS;
+
+    console.log(
+      `\n  [ESCALAMIENTO RECIBIDO] motivo=${String(carga['motivo'])} ` +
+        `prioridad=${String(carga['prioridad'])} canal=${String(carga['canal'])}`,
+    );
+    return respuesta.code(200).send({ recibido: true });
+  });
+
+  app.get('/api/escalamientos', async () => ({ total: escalamientos.length, escalamientos }));
 
   app.get('/api/estado', async () => ({
     clinica: clinica.nombre,
@@ -99,6 +131,23 @@ async function main(): Promise<void> {
         const herramientas = dobles.toolCalls.filas
           .slice(antes)
           .map((l) => ({ nombre: l.herramienta, estado: l.estado }));
+
+        // El arnes de la web usa dobles, asi que no pasa por
+        // `NotificationClient`. Se anota aqui para que el panel de recepcion
+        // vea tambien los escalamientos del chat de texto y no solo los de voz.
+        if (turno.escalate) {
+          escalamientos.unshift({
+            clinicaNombre: clinica.nombre,
+            motivo: turno.escalate.reason,
+            prioridad: turno.escalate.priority,
+            resumenParaRecepcion: turno.escalate.summaryForAgent,
+            telefonoPaciente: telefonoDe(sesion),
+            canal: 'whatsapp',
+            ocurridoEn: new Date().toISOString(),
+            recibidoEn: new Date().toISOString(),
+          });
+          if (escalamientos.length > MAX_ESCALAMIENTOS) escalamientos.length = MAX_ESCALAMIENTOS;
+        }
 
         return {
           texto: turno.text,

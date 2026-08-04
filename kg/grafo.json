@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "1c952796e257abbd",
+  "huella": "cef361aea9da8957",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 156,
+        "lineas": 160,
         "capa": "documentacion"
       }
     },
@@ -950,7 +950,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 144,
+        "lineas": 193,
         "capa": "scripts"
       }
     },
@@ -7183,13 +7183,19 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:154"
+      "origen": "docs/ESTADO.md:158"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "menciona",
       "hacia": "control:C8",
-      "origen": "docs/ESTADO.md:133"
+      "origen": "docs/ESTADO.md:137"
+    },
+    {
+      "desde": "modulo:docs/ESTADO.md",
+      "relacion": "menciona",
+      "hacia": "control:O5",
+      "origen": "docs/ESTADO.md:107"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -7682,6 +7688,12 @@
       "relacion": "importa",
       "hacia": "modulo:scripts/nucleo-demo.ts",
       "origen": "scripts/web.ts:23"
+    },
+    {
+      "desde": "modulo:scripts/web.ts",
+      "relacion": "menciona",
+      "hacia": "control:O5",
+      "origen": "scripts/web.ts:56"
     },
     {
       "desde": "modulo:scripts/web.ts",

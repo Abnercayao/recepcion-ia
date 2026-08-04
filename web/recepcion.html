@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recepción — escalamientos · Clínica Aurora</title>
+    <link rel="stylesheet" href="/estilos.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔔</text></svg>"
+    />
+    <style>
+      .panel {
+        padding: 2rem 0 4rem;
+      }
+      .panel__cabecera {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.5rem;
+      }
+      .contador {
+        font-size: 0.85rem;
+        color: var(--gris);
+      }
+      .vacio {
+        background: var(--gris-claro);
+        border: 1px dashed var(--borde);
+        border-radius: var(--radio);
+        padding: 3rem 1.5rem;
+        text-align: center;
+        color: var(--gris);
+      }
+      .aviso {
+        background: var(--blanco);
+        border: 1px solid var(--borde);
+        border-left: 4px solid var(--alarma);
+        border-radius: 12px;
+        padding: 1rem 1.15rem;
+        margin-bottom: 0.85rem;
+        box-shadow: 0 1px 2px rgba(9, 30, 90, 0.05);
+      }
+      .aviso--normal {
+        border-left-color: var(--azul);
+      }
+      .aviso__fila {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.5rem;
+      }
+      .chip {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        background: var(--azul-suave);
+        color: var(--azul-oscuro);
+      }
+      .chip--urgente {
+        background: var(--alarma-fondo);
+        color: var(--alarma);
+      }
+      .aviso__hora {
+        margin-left: auto;
+        font-size: 0.78rem;
+        color: var(--gris);
+      }
+      .aviso__resumen {
+        margin: 0 0 0.5rem;
+        font-size: 0.95rem;
+      }
+      .aviso__meta {
+        font-size: 0.8rem;
+        color: var(--gris);
+        font-family: "Cascadia Mono", Consolas, monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="aviso-demo" role="note">
+      <strong>Panel de demostración.</strong> Sustituye a n8n mientras no haya workspace. Se pierde
+      al reiniciar el servidor.
+    </div>
+
+    <header class="cabecera">
+      <div class="contenedor cabecera__fila">
+        <a class="marca" href="/">
+          <span class="marca__simbolo" aria-hidden="true">🔔</span>
+          <span class="marca__texto">
+            <strong>Recepción Aurora</strong>
+            <small>Escalamientos</small>
+          </span>
+        </a>
+        <nav class="nav" aria-label="Principal">
+          <a class="nav__cta" href="/">Ver la web</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="panel">
+      <div class="contenedor">
+        <div class="panel__cabecera">
+          <h1>Avisos para recepción</h1>
+          <p class="contador" id="contador">Actualizando…</p>
+        </div>
+        <p class="seccion__entrada">
+          Cada vez que el agente deriva una conversación a una persona —por urgencia médica o
+          porque el paciente lo pide— el aviso llega aquí. Es el control O5: el modo de fallo del
+          sistema es la reversión a operación manual, nunca el silencio.
+        </p>
+        <div id="lista"></div>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        var lista = document.getElementById('lista');
+        var contador = document.getElementById('contador');
+
+        function escapar(t) {
+          var d = document.createElement('div');
+          d.textContent = t == null ? '' : String(t);
+          return d.innerHTML;
+        }
+
+        function hora(iso) {
+          try {
+            return new Date(iso).toLocaleString('es-PE', { timeZone: 'America/Lima' });
+          } catch (e) {
+            return iso || '';
+          }
+        }
+
+        function pintar(datos) {
+          contador.textContent =
+            datos.total === 0 ? 'Sin avisos' : datos.total + ' aviso' + (datos.total === 1 ? '' : 's');
+
+          if (!datos.escalamientos.length) {
+            lista.innerHTML =
+              '<div class="vacio">Todavía no ha llegado ningún escalamiento.<br>' +
+              'Escribe «me sangra mucho la encía y no para» en el chat para provocar uno.</div>';
+            return;
+          }
+
+          lista.innerHTML = datos.escalamientos
+            .map(function (e) {
+              var urgente = e.prioridad === 'urgente';
+              return (
+                '<article class="aviso' + (urgente ? '' : ' aviso--normal') + '">' +
+                '<div class="aviso__fila">' +
+                '<span class="chip' + (urgente ? ' chip--urgente' : '') + '">' +
+                escapar(e.prioridad || 'normal') + '</span>' +
+                '<span class="chip">' + escapar(e.motivo || '—') + '</span>' +
+                '<span class="chip">' + escapar(e.canal || '—') + '</span>' +
+                '<span class="aviso__hora">' + escapar(hora(e.recibidoEn)) + '</span>' +
+                '</div>' +
+                '<p class="aviso__resumen">' + escapar(e.resumenParaRecepcion || '') + '</p>' +
+                '<p class="aviso__meta">paciente ' + escapar(e.telefonoPaciente || '—') +
+                ' · ' + escapar(e.clinicaNombre || '') + '</p>' +
+                '</article>'
+              );
+            })
+            .join('');
+        }
+
+        function refrescar() {
+          fetch('/api/escalamientos')
+            .then(function (r) { return r.json(); })
+            .then(pintar)
+            .catch(function () {
+              contador.textContent = 'Sin conexión con el servidor';
+            });
+        }
+
+        refrescar();
+        setInterval(refrescar, 3000);
+      })();
+    </script>
+  </body>
+</html>

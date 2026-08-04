@@ -104,7 +104,9 @@ Detalle completo en `decisiones.md`. Los principales:
 6. **Revelación en WhatsApp sobre memoria de proceso** — frágil para un criterio bloqueante.
 7. **No hay medida del sobre-escalamiento.** Ver el fallo del clasificador descrito arriba.
 
-8. **`escalar_humano` no tiene a quién notificar.** `N8N_WEBHOOK_URL` está vacío, así que `NotificationClient` se queda sin canal y la herramienta devuelve `error` con «no se pudo notificar a recepción». El escalamiento se registra en `tool_calls` y en `audit_log`, y por voz la transferencia telefónica sí ocurre — pero **nadie del equipo recibe el aviso**. Contradice el control O5, que exige que el modo de fallo sea la reversión a operación manual y nunca el silencio. Se arregla apuntando `N8N_WEBHOOK_URL` a cualquier endpoint HTTPS que reciba JSON; el flujo previsto está en `n8n/F4_notificar_escalamiento.json`.
+8. **`escalar_humano` notifica a un panel local, no a n8n.** Con `N8N_WEBHOOK_URL` vacío la herramienta devolvía `error` y el escalamiento no llegaba a nadie — contra el control O5. Resuelto **para la demostración**: `npm run demo:web` expone `POST /api/escalamientos` y lo muestra en `/recepcion`. Verificado por los dos canales: `escalar_humano` pasa de `error` a `ok` y el aviso aparece con motivo, prioridad, canal, teléfono y resumen.
+
+   **No es una solución de producción**: vive en memoria, se pierde al reiniciar y no avisa a ninguna persona de verdad. El destino real previsto es `n8n/F4_notificar_escalamiento.json`, que hoy no puede desplegarse porque la cuenta de n8n Cloud no tiene workspace activo. Cuando lo tenga, basta cambiar `N8N_WEBHOOK_URL`.
 
 9. **Plan gratuito de Voyage: 3 peticiones por minuto.** Cada turno con RAG consume una. En una conversación real el límite se alcanza enseguida y el RAG empieza a fallar — de forma silenciosa para el paciente, por el fail-safe. Requiere añadir método de pago en el panel de Voyage.
 
