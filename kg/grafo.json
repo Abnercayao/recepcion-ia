@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "d5bc65a4bcecdf30",
+  "huella": "799c11a9b4822e59",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -345,7 +345,7 @@
       "id": "control:O2",
       "tipo": "control",
       "nombre": "O2",
-      "resumen": "La base real exige el formulario maestro de una clínica y la **aprobación escrita del profesional responsable** (control O2), que es un acto humano, no técnico.",
+      "resumen": "00000000-0000-4000-8000-000000000001",
       "meta": {
         "clase": "operativo",
         "definicionInferida": true
@@ -609,7 +609,7 @@
       "nombre": "clinica.json",
       "ruta": "db/seed/clinica-demo/clinica.json",
       "meta": {
-        "lineas": 31,
+        "lineas": 45,
         "capa": "datos"
       }
     },
@@ -619,7 +619,7 @@
       "nombre": "faqs.md",
       "ruta": "db/seed/clinica-demo/faqs.md",
       "meta": {
-        "lineas": 79,
+        "lineas": 69,
         "capa": "datos"
       }
     },
@@ -629,7 +629,7 @@
       "nombre": "formulario-maestro.md",
       "ruta": "db/seed/clinica-demo/formulario-maestro.md",
       "meta": {
-        "lineas": 92,
+        "lineas": 123,
         "capa": "datos"
       }
     },
@@ -716,7 +716,7 @@
       "ruta": "docs/fase5-elevenlabs.md",
       "resumen": "Fase 5 — Puesta en marcha del agente en ElevenLabs",
       "meta": {
-        "lineas": 363,
+        "lineas": 378,
         "capa": "documentacion"
       }
     },
@@ -7055,6 +7055,12 @@
     },
     {
       "desde": "modulo:db/seed/clinica-demo/clinica.json",
+      "relacion": "menciona",
+      "hacia": "control:O2",
+      "origen": "db/seed/clinica-demo/clinica.json:2"
+    },
+    {
+      "desde": "modulo:db/seed/clinica-demo/clinica.json",
       "relacion": "pertenece_a",
       "hacia": "capa:datos",
       "origen": "db/seed/clinica-demo/clinica.json"
@@ -7069,7 +7075,13 @@
       "desde": "modulo:db/seed/clinica-demo/formulario-maestro.md",
       "relacion": "menciona",
       "hacia": "control:O2",
-      "origen": "db/seed/clinica-demo/formulario-maestro.md:7"
+      "origen": "db/seed/clinica-demo/formulario-maestro.md:8"
+    },
+    {
+      "desde": "modulo:db/seed/clinica-demo/formulario-maestro.md",
+      "relacion": "menciona",
+      "hacia": "control:O5",
+      "origen": "db/seed/clinica-demo/formulario-maestro.md:61"
     },
     {
       "desde": "modulo:db/seed/clinica-demo/formulario-maestro.md",
@@ -7189,7 +7201,7 @@
       "desde": "modulo:docs/fase5-elevenlabs.md",
       "relacion": "cubre_fase",
       "hacia": "fase:4",
-      "origen": "docs/fase5-elevenlabs.md:59"
+      "origen": "docs/fase5-elevenlabs.md:74"
     },
     {
       "desde": "modulo:docs/fase5-elevenlabs.md",
@@ -7201,25 +7213,25 @@
       "desde": "modulo:docs/fase5-elevenlabs.md",
       "relacion": "cubre_fase",
       "hacia": "fase:7",
-      "origen": "docs/fase5-elevenlabs.md:337"
+      "origen": "docs/fase5-elevenlabs.md:352"
     },
     {
       "desde": "modulo:docs/fase5-elevenlabs.md",
       "relacion": "menciona",
       "hacia": "control:C8",
-      "origen": "docs/fase5-elevenlabs.md:151"
+      "origen": "docs/fase5-elevenlabs.md:166"
     },
     {
       "desde": "modulo:docs/fase5-elevenlabs.md",
       "relacion": "menciona",
       "hacia": "control:C9",
-      "origen": "docs/fase5-elevenlabs.md:108"
+      "origen": "docs/fase5-elevenlabs.md:123"
     },
     {
       "desde": "modulo:docs/fase5-elevenlabs.md",
       "relacion": "menciona",
       "hacia": "control:O5",
-      "origen": "docs/fase5-elevenlabs.md:134"
+      "origen": "docs/fase5-elevenlabs.md:149"
     },
     {
       "desde": "modulo:docs/fase5-elevenlabs.md",

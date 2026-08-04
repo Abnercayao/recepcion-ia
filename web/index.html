@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Clínica Dental Aurora — Miraflores y San Isidro</title>
+    <title>Clínica Aurora — Todas las especialidades odontológicas</title>
     <meta
       name="description"
-      content="Clínica dental en Miraflores y San Isidro. Agenda tu cita, consulta precios de referencia y resuelve tus dudas."
+      content="Centro odontológico con todas las especialidades en un mismo lugar. Aceptamos EPS y seguros privados. Agenda por chat o por voz."
     />
     <link rel="stylesheet" href="/estilos.css" />
     <link
@@ -16,55 +16,63 @@
   </head>
   <body>
     <div class="aviso-demo" role="note">
-      <strong>Demostración.</strong> Clínica ficticia, datos de prueba. Las citas no se agendan de
+      <strong>Demostración técnica.</strong> Sistema Recepción-IA. Las citas no se agendan de
       verdad.
     </div>
 
     <header class="cabecera">
       <div class="contenedor cabecera__fila">
         <a class="marca" href="#inicio">
-          <span class="marca__icono" aria-hidden="true">🦷</span>
+          <span class="marca__simbolo" aria-hidden="true">
+            <svg viewBox="0 0 32 32" width="30" height="30">
+              <path
+                d="M16 4c-3 0-4.5 1.2-7 1.2S4 4.4 4 8.5c0 4.4 1.4 7 2.4 10.4.9 3 1.2 8.1 3.4 8.1 2 0 2.2-4.6 3-7.3.5-1.7 1.4-2.6 3.2-2.6s2.7.9 3.2 2.6c.8 2.7 1 7.3 3 7.3 2.2 0 2.5-5.1 3.4-8.1C26.6 15.5 28 12.9 28 8.5c0-4.1-2.5-3.3-5-3.3S19 4 16 4z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
           <span class="marca__texto">
-            <strong>Clínica Dental Aurora</strong>
-            <small>Miraflores · San Isidro</small>
+            <strong>Clínica Aurora</strong>
+            <small>Centro Odontológico</small>
           </span>
         </a>
         <nav class="nav" aria-label="Principal">
-          <a href="#servicios">Servicios</a>
-          <a href="#horarios">Horarios</a>
+          <a href="#especialidades">Especialidades</a>
+          <a href="#seguros">Seguros y EPS</a>
           <a href="#sedes">Sedes</a>
-          <a class="nav__cta" href="#chat">Agendar cita</a>
+          <a class="nav__cta" href="#chat">Reservar cita</a>
         </nav>
       </div>
     </header>
 
     <main id="inicio">
       <!-- ------------------------------------------------------------- -->
-      <!-- Portada: el chat es el centro, no un accesorio en una esquina -->
+      <!-- Portada. El chat es el centro: es el producto, no un adorno.   -->
       <!-- ------------------------------------------------------------- -->
       <section class="portada">
         <div class="contenedor portada__rejilla">
           <div class="portada__texto">
-            <p class="etiqueta">Atención en el día</p>
-            <h1>Tu cita, resuelta en una conversación.</h1>
+            <p class="etiqueta">Reserva por chat o por voz</p>
+            <h1>Tu sonrisa es tu mejor carta de presentación.</h1>
             <p class="entradilla">
-              Pregunta por precios de referencia, horarios o disponibilidad y agenda sin llamar.
-              Te atiende nuestro asistente virtual, y si hace falta te pasamos con una persona
-              del equipo.
+              Todas las especialidades odontológicas en un mismo centro. Consulta precios de
+              referencia, horarios y disponibilidad, y agenda sin llamar — escribiendo o hablando.
             </p>
-            <ul class="lista-marcas">
-              <li>Respuesta inmediata, todos los días</li>
-              <li>Precios de referencia antes de venir</li>
-              <li>Urgencias derivadas de inmediato</li>
-            </ul>
+
+            <div class="cifras">
+              <div><strong>34+</strong><span>años atendiendo</span></div>
+              <div><strong>15,000</strong><span>pacientes al mes</span></div>
+              <div><strong>24</strong><span>sedes en Lima</span></div>
+            </div>
+
             <p class="portada__nota">
-              ¿Prefieres hablar? <strong>(01) 700-0000</strong> · Urgencias
-              <strong>+51 999 000 001</strong>
+              ¿Prefieres hablar con una persona? Urgencias
+              <strong>+51 995 542 938</strong>
             </p>
           </div>
 
           <!-- Chat ------------------------------------------------------ -->
-          <section class="chat" id="chat" aria-label="Chat con recepción">
+          <section class="chat" id="chat" aria-label="Reserva por chat">
             <header class="chat__cabecera">
               <div class="chat__identidad">
                 <span class="chat__avatar" aria-hidden="true">🦷</span>
@@ -99,16 +107,16 @@
             </div>
 
             <div class="chat__sugerencias" id="sugerencias">
-              <button type="button" data-texto="¿Cuánto cuesta un implante dental?">
-                Precio de un implante
+              <button type="button" data-texto="¿Trabajan con mi EPS?">¿Aceptan mi EPS?</button>
+              <button type="button" data-texto="¿Cuánto cuesta una ortodoncia invisible?">
+                Precio de ortodoncia
               </button>
-              <button type="button" data-texto="Quiero agendar una limpieza">
-                Agendar una limpieza
+              <button type="button" data-texto="Quiero agendar una limpieza dental">
+                Agendar limpieza
               </button>
-              <button type="button" data-texto="¿A qué hora atienden los sábados?">
-                Horario del sábado
+              <button type="button" data-texto="¿Qué sedes tienen y en qué horario atienden?">
+                Sedes y horarios
               </button>
-              <button type="button" data-texto="¿Atienden niños?">¿Atienden niños?</button>
             </div>
 
             <form class="chat__formulario" id="formulario">
@@ -124,122 +132,257 @@
               />
               <button type="submit" id="enviar" aria-label="Enviar mensaje">
                 <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-                  <path
-                    d="M3.4 20.4 21 12 3.4 3.6 3.4 10.2 15 12 3.4 13.8z"
-                    fill="currentColor"
-                  />
+                  <path d="M3.4 20.4 21 12 3.4 3.6 3.4 10.2 15 12 3.4 13.8z" fill="currentColor" />
                 </svg>
               </button>
             </form>
+
+            <!-- Voz. El widget del proveedor se ancla flotante en la esquina
+                 inferior derecha, no dentro de este bloque: por eso aquí solo
+                 va el cartel que lo señala. -->
+            <div class="chat__voz">
+              <span class="chat__voz-icono" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20">
+                  <path
+                    d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+              <div class="chat__voz-texto">
+                <strong>¿Prefieres hablar?</strong>
+                <span>
+                  Pulsa <em>Iniciar llamada</em>, abajo a la derecha. Es la misma recepción, por
+                  voz.
+                </span>
+              </div>
+            </div>
+            <div id="anfitrion-voz"></div>
           </section>
         </div>
       </section>
 
-      <!-- Servicios ---------------------------------------------------- -->
-      <section class="seccion" id="servicios">
+      <!-- Pilares ------------------------------------------------------- -->
+      <section class="seccion seccion--clara">
         <div class="contenedor">
-          <h2>Qué hacemos</h2>
+          <h2 class="centrado">Reservar cita es garantía de</h2>
+          <div class="pilares">
+            <article>
+              <span class="pilar__icono" aria-hidden="true">◎</span>
+              <h3>Todo en un solo lugar</h3>
+              <p>Todas las especialidades odontológicas en un mismo centro.</p>
+            </article>
+            <article>
+              <span class="pilar__icono" aria-hidden="true">☾</span>
+              <h3>Dolor mínimo</h3>
+              <p>Tecnología y materiales que reducen el dolor y la incomodidad.</p>
+            </article>
+            <article>
+              <span class="pilar__icono" aria-hidden="true">◇</span>
+              <h3>Transparencia total</h3>
+              <p>Información clara y honesta sobre tratamientos y costos.</p>
+            </article>
+            <article>
+              <span class="pilar__icono" aria-hidden="true">✓</span>
+              <h3>Calidad garantizada</h3>
+              <p>Odontólogos actualizados que aseguran diagnósticos precisos.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Especialidades ------------------------------------------------ -->
+      <section class="seccion" id="especialidades">
+        <div class="contenedor">
+          <h2>Especialidades</h2>
           <p class="seccion__entrada">
-            Los precios son rangos de referencia. El importe final siempre depende de la
-            valoración del profesional.
+            El precio final de cualquier tratamiento que requiera valoración lo determina el
+            profesional en consulta. Lo que ves aquí son rangos de referencia.
           </p>
           <div class="tarjetas">
             <article class="tarjeta">
-              <h3>Consulta de evaluación</h3>
-              <p class="tarjeta__precio">S/ 50 – 80</p>
-              <p>Se descuenta del tratamiento si este empieza dentro de los 30 días.</p>
-            </article>
-            <article class="tarjeta">
-              <h3>Limpieza dental</h3>
-              <p class="tarjeta__precio">40 – 60 min</p>
-              <p>Profilaxis y control. El precio se confirma en la valoración.</p>
+              <h3>Ortodoncia</h3>
+              <p class="tarjeta__lista">Brackets metálicos y estéticos · Ortodoncia invisible</p>
+              <p class="tarjeta__precio">desde S/ 600 de cuota inicial</p>
             </article>
             <article class="tarjeta">
               <h3>Implantes</h3>
-              <p class="tarjeta__precio">S/ 3,000 – 5,500</p>
-              <p>Implante unitario con corona incluida. Admite pago fraccionado.</p>
+              <p class="tarjeta__lista">Implantes unitarios y múltiples</p>
+              <p class="tarjeta__precio">S/ 3,000 – 5,500 con corona</p>
             </article>
             <article class="tarjeta">
-              <h3>Ortodoncia</h3>
-              <p class="tarjeta__precio">Pago en partes</p>
-              <p>Plan acordado en la consulta de valoración, sin intereses.</p>
+              <h3>Estética dental</h3>
+              <p class="tarjeta__lista">Blanqueamiento · Carillas · Diseño de sonrisa</p>
+              <p class="tarjeta__precio">S/ 450 – 1,800</p>
             </article>
             <article class="tarjeta">
-              <h3>Blanqueamiento</h3>
-              <p class="tarjeta__precio">≈ 1 hora</p>
-              <p>Sesión en consultorio. La duración del resultado varía por persona.</p>
+              <h3>Endodoncia</h3>
+              <p class="tarjeta__lista">Tratamiento de conductos</p>
+              <p class="tarjeta__precio">S/ 400 – 900</p>
+            </article>
+            <article class="tarjeta">
+              <h3>Rehabilitación</h3>
+              <p class="tarjeta__lista">
+                Coronas · Prótesis fijas, removibles, híbridas y sobredentaduras
+              </p>
+              <p class="tarjeta__precio">S/ 700 – 1,600</p>
+            </article>
+            <article class="tarjeta">
+              <h3>Cirugía</h3>
+              <p class="tarjeta__lista">Muelas del juicio · Cirugía de encías</p>
+              <p class="tarjeta__precio">requiere valoración</p>
             </article>
             <article class="tarjeta">
               <h3>Odontopediatría</h3>
-              <p class="tarjeta__precio">Miraflores</p>
-              <p>Con la Dra. Ana Quispe, en horario de mañana, con apoderado.</p>
+              <p class="tarjeta__lista">Atención infantil · Sedación consciente</p>
+              <p class="tarjeta__precio">con apoderado presente</p>
+            </article>
+            <article class="tarjeta">
+              <h3>Odontología general</h3>
+              <p class="tarjeta__lista">Evaluación · Limpieza · Curaciones · Extracciones</p>
+              <p class="tarjeta__precio">consulta S/ 50 – 80</p>
             </article>
           </div>
         </div>
       </section>
 
-      <!-- Horarios y sedes --------------------------------------------- -->
-      <section class="seccion seccion--alterna" id="horarios">
-        <div class="contenedor rejilla-dos">
+      <!-- Seguros -------------------------------------------------------- -->
+      <section class="franja" id="seguros">
+        <div class="contenedor franja__caja">
           <div>
-            <h2>Horarios</h2>
-            <table class="tabla">
-              <tbody>
-                <tr><th scope="row">Lunes a viernes</th><td>9:00 – 13:00 · 15:00 – 20:00</td></tr>
-                <tr><th scope="row">Sábado</th><td>9:00 – 14:00 <small>(solo Miraflores)</small></td></tr>
-                <tr><th scope="row">Domingo</th><td>Cerrado</td></tr>
-              </tbody>
-            </table>
-            <p class="nota">
-              Cancela o reprograma sin costo hasta <strong>4 horas antes</strong>. Si el retraso
-              supera los 15 minutos puede que haya que mover la cita.
+            <h2>Aceptamos EPS y seguros privados</h2>
+            <p>
+              Trabajamos con la mayor cantidad de EPS, seguros y autoseguros del país. Pregúntale a
+              recepción por el tuyo: te confirma la cobertura antes de que vengas.
             </p>
           </div>
-          <div id="sedes">
-            <h2>Sedes</h2>
-            <article class="sede">
-              <h3>Miraflores</h3>
-              <p>Av. Larco 1234</p>
-              <p class="nota">Playas de estacionamiento cercanas, no propias.</p>
+          <a class="boton" href="#chat">Consultar mi seguro</a>
+        </div>
+      </section>
+
+      <!-- Sedes ---------------------------------------------------------- -->
+      <section class="seccion seccion--clara" id="sedes">
+        <div class="contenedor">
+          <h2>Varias sedes. Los mismos valores.</h2>
+          <p class="seccion__entrada">
+            <strong>Lunes a viernes</strong> de 9:00 a 13:00 y de 14:00 a 19:00 ·
+            <strong>Sábados</strong> de 9:00 a 13:00 · Domingos cerrado.
+          </p>
+
+          <h3 class="subtitulo">Sedes propias</h3>
+          <div class="sedes">
+            <article><strong>Barranco</strong><span>Av. Almte. Miguel Grau 713</span></article>
+            <article><strong>Callao</strong><span>Av. Guardia Chalaca 1362</span></article>
+            <article>
+              <strong>Comas</strong><span>Av. El Maestro Peruano 430, Urb. Villa Hiper</span>
             </article>
-            <article class="sede">
-              <h3>San Isidro</h3>
-              <p>Calle Las Begonias 456</p>
-              <p class="nota">Con estacionamiento para pacientes.</p>
+            <article><strong>Javier Prado</strong><span>Av. Javier Prado Este 1692</span></article>
+            <article><strong>Jesús María</strong><span>Jr. Huiracocha 1486</span></article>
+            <article>
+              <strong>La Molina · San Felipe</strong
+              ><span>C. El Sauce 235, 3.º piso, Urb. La Rinconada</span>
             </article>
-            <p class="nota">
-              Atención particular. No se trabaja con seguros ni reembolso de EPS. Aceptamos
-              efectivo, tarjetas, Yape y Plin.
-            </p>
+            <article><strong>Lima Centro</strong><span>Jr. Camaná 780, piso 508</span></article>
+            <article><strong>Los Olivos</strong><span>Av. Carlos Izaguirre 1268</span></article>
+            <article><strong>Miraflores</strong><span>Av. Benavides 2027</span></article>
+            <article><strong>Pueblo Libre</strong><span>Av. Pablo Fernandini 1573</span></article>
+            <article><strong>San Isidro</strong><span>Av. Petit Thouars 3470</span></article>
+            <article>
+              <strong>SJL · Los Jardines</strong
+              ><span>Av. Los Jardines Oeste 498, Mz. D Lt. 11</span>
+            </article>
+            <article>
+              <strong>SJL · Zárate</strong><span>Calle Las Chulpas 296, of. 201</span>
+            </article>
+            <article>
+              <strong>San Juan de Miraflores</strong><span>Av. Guillermo Billinghurst 619</span>
+            </article>
+            <article>
+              <strong>Santa Catalina</strong><span>Av. San Eugenio 631, Urb. Santa Catalina</span>
+            </article>
+            <article><strong>Surco</strong><span>Av. Caminos del Inca 1554</span></article>
+          </div>
+
+          <h3 class="subtitulo">Franquicias</h3>
+          <div class="sedes">
+            <article><strong>Chorrillos</strong><span>Av. Alameda San Marcos 446</span></article>
+            <article>
+              <strong>La Molina · Los Frutales</strong
+              ><span>Calle Santa Magdalena Sofía 109</span>
+            </article>
+            <article>
+              <strong>Primavera</strong><span>Av. Primavera 643, int. 503, Urb. Chacarilla</span>
+            </article>
+            <article><strong>San Borja</strong><span>Av. Joaquín Madrid 235</span></article>
+            <article>
+              <strong>San Miguel · El Campillo</strong
+              ><span>Calle Ayarza de Morales 237</span>
+            </article>
+            <article>
+              <strong>San Miguel · La Marina</strong><span>Calle Monseñor Dintilhac 717</span>
+            </article>
+            <article><strong>Surquillo</strong><span>Calle Las Tiendas 331, dpto. 101</span></article>
+            <article>
+              <strong>Ventanilla</strong><span>Av. Los Licenciados Mz. O5 Lt. 25, 2.º piso</span>
+            </article>
           </div>
         </div>
       </section>
 
-      <!-- Urgencias ----------------------------------------------------- -->
-      <section class="urgencias">
+      <!-- Urgencias ------------------------------------------------------ -->
+      <section class="seccion">
         <div class="contenedor urgencias__caja">
           <div>
             <h2>¿Es una urgencia?</h2>
             <p>
-              Si tienes sangrado que no para, dificultad para respirar o tragar, un golpe fuerte
-              o dolor que no aguantas, no escribas: llama.
+              Si tienes sangrado que no para, dificultad para respirar o tragar, un golpe fuerte o
+              dolor que no aguantas, no escribas: llama.
             </p>
           </div>
-          <a class="boton-urgencia" href="tel:+51999000001">+51 999 000 001</a>
+          <a class="boton-urgencia" href="tel:+51995542938">+51 995 542 938</a>
         </div>
       </section>
     </main>
 
     <footer class="pie">
-      <div class="contenedor pie__fila">
-        <p><strong>Clínica Dental Aurora</strong> · Miraflores y San Isidro, Lima</p>
+      <div class="contenedor">
+        <p><strong>Clínica Aurora</strong> · Centro odontológico · Lima, Perú</p>
         <p class="nota">
-          Clínica ficticia creada para demostrar el sistema Recepción-IA. Ningún dato de esta
-          página corresponde a un establecimiento real.
+          Página de demostración del sistema Recepción-IA. «Aurora» es un nombre de trabajo. Las
+          citas no se agendan de verdad y ningún contenido de esta página ha sido aprobado por un
+          profesional sanitario.
         </p>
       </div>
     </footer>
 
     <script src="/chat.js"></script>
+
+    <!-- Widget de voz del proveedor. Habla con NUESTRO Custom LLM, así que
+         atraviesa el mismo prompt maestro, los mismos guardrails y las mismas
+         cinco herramientas que el chat de texto. Las variables dinámicas son
+         las que el gateway necesita para resolver el contexto. -->
+    <script>
+      (function () {
+        var sesion = sessionStorage.getItem('aurora-sesion') || 'web-' + Date.now().toString(36);
+        var el = document.createElement('elevenlabs-convai');
+        el.setAttribute('agent-id', 'agent_3001kyfz28j4f728rxkp7a3bnerp');
+        el.setAttribute(
+          'dynamic-variables',
+          JSON.stringify({
+            clinic_id: '00000000-0000-4000-8000-000000000001',
+            session_id: 'voz-' + sesion,
+            phone: '+51999111222',
+            clinica: 'Clinica Aurora',
+          }),
+        );
+        document.getElementById('anfitrion-voz').appendChild(el);
+
+        var s = document.createElement('script');
+        s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+        s.async = true;
+        s.type = 'text/javascript';
+        document.body.appendChild(s);
+      })();
+    </script>
   </body>
 </html>

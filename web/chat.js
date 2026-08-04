@@ -188,9 +188,9 @@
   // que es un asistente virtual queda dicha antes del primer mensaje.
   burbuja(
     'burbuja--agente',
-    '¡Hola! 👋 Soy el asistente virtual de <strong>Clínica Dental Aurora</strong>. ' +
-      'Puedo darte precios de referencia, horarios y ayudarte a agendar.<br><br>' +
-      '¿En qué te ayudo?',
+    '¡Hola! 👋 Soy el asistente virtual de <strong>Clínica Aurora</strong>. ' +
+      'Puedo confirmarte coberturas de EPS, precios de referencia, sedes y horarios, ' +
+      'y ayudarte a agendar.<br><br>¿En qué te ayudo?',
   );
 
   entrada.focus();
