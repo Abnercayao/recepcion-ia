@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "6c0e6a684b0b988b",
+  "huella": "375a08316635fa04",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -1041,7 +1041,7 @@
           "node:crypto",
           "node:stream"
         ],
-        "lineas": 621,
+        "lineas": 730,
         "capa": "canales"
       }
     },
@@ -3162,7 +3162,7 @@
       "tipo": "simbolo",
       "nombre": "autenticar",
       "ruta": "src/channels/voice/voice-gateway.controller.ts",
-      "linea": 161,
+      "linea": 163,
       "resumen": "Las TRES vias del §2 del contrato del proveedor. Si el secreto esperado esta",
       "meta": {
         "clase": "function"
@@ -3173,7 +3173,7 @@
       "tipo": "simbolo",
       "nombre": "comparacionSegura",
       "ruta": "src/channels/voice/voice-gateway.controller.ts",
-      "linea": 130,
+      "linea": 132,
       "resumen": "Comparacion en tiempo constante.",
       "meta": {
         "clase": "function"
@@ -3184,7 +3184,7 @@
       "tipo": "simbolo",
       "nombre": "CredencialesEntrantes",
       "ruta": "src/channels/voice/voice-gateway.controller.ts",
-      "linea": 150,
+      "linea": 152,
       "meta": {
         "clase": "interface"
       }
@@ -3194,10 +3194,21 @@
       "tipo": "simbolo",
       "nombre": "MODELO_POR_DEFECTO",
       "ruta": "src/channels/voice/voice-gateway.controller.ts",
-      "linea": 102,
+      "linea": 104,
       "resumen": "Modelo que se declara en los chunks si el request no trae uno.",
       "meta": {
         "clase": "const"
+      }
+    },
+    {
+      "id": "simbolo:src/channels/voice/voice-gateway.controller.ts#resolverExtraBody",
+      "tipo": "simbolo",
+      "nombre": "resolverExtraBody",
+      "ruta": "src/channels/voice/voice-gateway.controller.ts",
+      "linea": 653,
+      "resumen": "Devuelve el `elevenlabs_extra_body` que se usara para resolver el contexto.",
+      "meta": {
+        "clase": "function"
       }
     },
     {
@@ -3205,7 +3216,7 @@
       "tipo": "simbolo",
       "nombre": "ResultadoDeAutenticacion",
       "ruta": "src/channels/voice/voice-gateway.controller.ts",
-      "linea": 115,
+      "linea": 117,
       "meta": {
         "clase": "interface"
       }
@@ -3215,7 +3226,7 @@
       "tipo": "simbolo",
       "nombre": "TEXTO_PUENTE",
       "ruta": "src/channels/voice/voice-gateway.controller.ts",
-      "linea": 99,
+      "linea": 101,
       "resumen": "Expresion puente ante latencia (§5, paso 7).",
       "meta": {
         "clase": "const"
@@ -3226,7 +3237,7 @@
       "tipo": "simbolo",
       "nombre": "tokenDeBearer",
       "ruta": "src/channels/voice/voice-gateway.controller.ts",
-      "linea": 141,
+      "linea": 143,
       "resumen": "Extrae el token de un header `Authorization: Bearer <token>`.",
       "meta": {
         "clase": "function"
@@ -3237,7 +3248,7 @@
       "tipo": "simbolo",
       "nombre": "ViaDeAutenticacion",
       "ruta": "src/channels/voice/voice-gateway.controller.ts",
-      "linea": 113,
+      "linea": 115,
       "meta": {
         "clase": "type"
       }
@@ -3247,7 +3258,7 @@
       "tipo": "simbolo",
       "nombre": "VoiceGatewayDeps",
       "ruta": "src/channels/voice/voice-gateway.controller.ts",
-      "linea": 190,
+      "linea": 192,
       "meta": {
         "clase": "interface"
       }
@@ -3257,7 +3268,7 @@
       "tipo": "simbolo",
       "nombre": "voiceGatewayPlugin",
       "ruta": "src/channels/voice/voice-gateway.controller.ts",
-      "linea": 603,
+      "linea": 709,
       "resumen": "Plugin Fastify del gateway de voz.",
       "meta": {
         "clase": "const"
@@ -8317,61 +8328,67 @@
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#autenticar",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:161"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:163"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#comparacionSegura",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:130"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:132"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#CredencialesEntrantes",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:150"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:152"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#MODELO_POR_DEFECTO",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:102"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:104"
+    },
+    {
+      "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#resolverExtraBody",
+      "origen": "src/channels/voice/voice-gateway.controller.ts:653"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#ResultadoDeAutenticacion",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:115"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:117"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#TEXTO_PUENTE",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:99"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:101"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#tokenDeBearer",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:141"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:143"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#ViaDeAutenticacion",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:113"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:115"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#VoiceGatewayDeps",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:190"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:192"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#voiceGatewayPlugin",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:603"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:709"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
@@ -8413,19 +8430,19 @@
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_BUFFER_WORD_MS",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:199"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:201"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_GATEWAY_SECRET",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:197"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:199"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "menciona",
       "hacia": "control:O5",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:314"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:316"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",

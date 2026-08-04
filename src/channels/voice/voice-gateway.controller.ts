@@ -79,6 +79,8 @@ import {
   ultimoMensajeDeUsuario,
   voiceChatCompletionRequestSchema,
   type ContextoDeChunk,
+  type ElevenlabsExtraBody,
+  type VoiceChatCompletionRequest,
 } from './voice.types.js';
 
 // ---------------------------------------------------------------------------
@@ -521,7 +523,7 @@ async function manejarChatCompletions(
   request: FastifyRequest,
   reply: FastifyReply,
 ): Promise<FastifyReply> {
-  const params = request.params as { secret?: string } | undefined;
+  const params = request.params as { secret?: string; clinicId?: string } | undefined;
   const credenciales: CredencialesEntrantes = {};
   const authorization = cabecera(request.headers.authorization);
   const gatewaySecretHeader = cabecera(request.headers['x-gateway-secret']);
@@ -554,7 +556,8 @@ async function manejarChatCompletions(
   }
 
   const cuerpo = parsed.data;
-  const resolucion = await deps.sessions.resolverContexto(cuerpo.elevenlabs_extra_body);
+  const extra = resolverExtraBody(cuerpo, request, params, deps.logger);
+  const resolucion = await deps.sessions.resolverContexto(extra);
   if (!resolucion.ok) {
     return responderSse(reply, generarRespaldo(deps, chunkCtx, [], resolucion.motivo));
   }
@@ -593,6 +596,109 @@ async function manejarChatCompletions(
   );
 }
 
+// ---------------------------------------------------------------------------
+// Resolucion del contexto cuando el proveedor no manda `elevenlabs_extra_body`
+// ---------------------------------------------------------------------------
+
+/**
+ * Identificadores de conversacion plausibles en la peticion del proveedor. El
+ * nombre no esta documentado, asi que se prueban varios en vez de apostar.
+ */
+const CAMPOS_DE_CONVERSACION = [
+  'conversation_id',
+  'conversationId',
+  'user_id',
+  'session_id',
+  'call_sid',
+] as const;
+
+/** Telefono sintetico y ESTABLE derivado de un identificador de conversacion. */
+function telefonoSintetico(semilla: string): string {
+  let h = 2166136261;
+  for (let i = 0; i < semilla.length; i += 1) {
+    h ^= semilla.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  const ocho = String(Math.abs(h) % 100000000).padStart(8, '0');
+  // +51 9XXXXXXXX: movil peruano valido, en un rango reservado a demostracion.
+  return `+519${ocho}`;
+}
+
+/**
+ * Devuelve el `elevenlabs_extra_body` que se usara para resolver el contexto.
+ *
+ * ASUNCION CAIDA: `docs/fase5-elevenlabs.md` §1 daba por resuelto el problema
+ * del contexto en llamada entrante con el webhook de iniciacion. Lo resuelve
+ * para telefonia, pero **el widget web NO envia `elevenlabs_extra_body`**: sus
+ * `dynamic-variables` no llegan al Custom LLM. Comprobado contra el widget
+ * real, con `motivo: "sin_extra_body"` en cada turno y el mensaje de respaldo
+ * por respuesta.
+ *
+ * La correccion es dejar de depender de que el proveedor reenvie nada:
+ *
+ *   1. La CLINICA viaja en NUESTRA URL (`/v1/g/:secret/c/:clinicId/...`). Es el
+ *      dato que no puede faltar —sin el no hay ni prompt ni RAG ni whitelist— y
+ *      es enteramente nuestro: un agente atiende a una clinica.
+ *   2. La SESION se toma del identificador de conversacion que venga en el
+ *      cuerpo, para que los turnos de una misma conversacion se agrupen.
+ *   3. El TELEFONO, cuando no hay ninguno, se deriva de esa sesion. En el
+ *      widget web no existe un numero real, y el nucleo necesita una identidad
+ *      estable para dar continuidad dentro de la conversacion.
+ *
+ * El telefono sintetico crea un paciente que no corresponde a nadie. Es
+ * aceptable en una demostracion por web y NO lo es en telefonia, donde el
+ * numero real llega por el webhook de iniciacion y debe primar — por eso este
+ * respaldo solo actua si no vino `elevenlabs_extra_body`.
+ */
+export function resolverExtraBody(
+  cuerpo: VoiceChatCompletionRequest,
+  request: FastifyRequest,
+  params: { secret?: string; clinicId?: string } | undefined,
+  logger: Logger,
+): ElevenlabsExtraBody | undefined {
+  if (cuerpo.elevenlabs_extra_body) return cuerpo.elevenlabs_extra_body;
+
+  const clinicId = params?.clinicId;
+  if (!clinicId) {
+    // Sin clinica no hay nada que hacer, pero al menos queda dicho QUE llego,
+    // para poder ajustar los campos con una peticion real delante. Solo las
+    // claves de primer nivel: los valores pueden llevar PII.
+    logger.warn(
+      {
+        componente: 'voice-gateway',
+        clavesDelCuerpo:
+          typeof request.body === 'object' && request.body !== null
+            ? Object.keys(request.body as Record<string, unknown>)
+            : [],
+      },
+      'sin `elevenlabs_extra_body` y sin clinica en la ruta: usa /v1/g/:secret/c/:clinicId/chat/completions',
+    );
+    return undefined;
+  }
+
+  const bruto = (request.body ?? {}) as Record<string, unknown>;
+  let sesion: string | undefined;
+  for (const campo of CAMPOS_DE_CONVERSACION) {
+    const valor = bruto[campo];
+    if (typeof valor === 'string' && valor.trim() !== '') {
+      sesion = valor.trim();
+      break;
+    }
+  }
+  sesion ??= `web-${clinicId.slice(0, 8)}`;
+
+  logger.info(
+    { componente: 'voice-gateway', sessionId: sesion, via: 'ruta' },
+    'contexto reconstruido sin `elevenlabs_extra_body`: clinica de la ruta, identidad derivada',
+  );
+
+  return {
+    clinic_id: clinicId,
+    session_id: sesion,
+    phone: telefonoSintetico(sesion),
+  };
+}
+
 /**
  * Plugin Fastify del gateway de voz.
  *
@@ -617,4 +723,7 @@ export const voiceGatewayPlugin: FastifyPluginAsync<VoiceGatewayDeps> = async (a
   // Via 3 del §2: el secreto viaja en la ruta. Es la unica que funciona con
   // certeza si el proveedor no envia ningun header.
   app.post('/v1/g/:secret/chat/completions', manejador);
+  // Ademas del secreto, la CLINICA. Necesario para el widget web, que no manda
+  // `elevenlabs_extra_body`: ver `resolverExtraBody`.
+  app.post('/v1/g/:secret/c/:clinicId/chat/completions', manejador);
 };

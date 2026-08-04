@@ -307,7 +307,19 @@ select evento, detalle from audit_log
 
 Todo lo de esta sección está construido según lo que la documentación oficial dice o —cuando no dice nada— según una asunción **declarada**. Ninguna de estas cosas se confirma sin una llamada telefónica real. Están ordenadas por lo que más duele si la asunción es falsa.
 
-### 1. ~~De dónde sale `elevenlabs_extra_body` en una llamada entrante~~ — RESUELTO
+### 1. ~~De dónde sale `elevenlabs_extra_body`~~ — RESUELTO por dos vías distintas
+
+**El widget web NO envía `elevenlabs_extra_body`.** Sus `dynamic-variables` no llegan al Custom LLM: comprobado contra el widget real, con `motivo: "sin_extra_body"` en cada turno y el mensaje de respaldo por respuesta. Es decir, el chat de voz de la web contestaba siempre «tuve un problema para atenderle».
+
+Corregido dejando de depender de que el proveedor reenvíe nada: **la clínica viaja en nuestra URL**.
+
+```
+https://TU-DOMINIO/v1/g/<SECRETO>/c/<CLINIC_ID>
+```
+
+Es el dato que no puede faltar —sin él no hay prompt, ni RAG, ni lista blanca— y es enteramente nuestro: un agente atiende a una clínica. La sesión se toma del identificador de conversación que venga en el cuerpo, y si no hay teléfono se deriva uno sintético y estable de esa sesión, porque el núcleo necesita una identidad para dar continuidad. Ese teléfono sintético crea un paciente que no corresponde a nadie: es aceptable en la web y **no** lo es en telefonía, donde el número real llega por el webhook de iniciación — por eso el respaldo solo actúa si no vino `elevenlabs_extra_body`.
+
+Para **telefonía** sigue valiendo lo de abajo.
 
 **La vía existe: el webhook de iniciación.** El panel lo ofrece como *«Añadir un webhook para recuperar `conversation_initiation_client_data` cuando se inicia una llamada de Twilio»*. ElevenLabs lo llama al entrar la llamada, antes de que el agente hable, y usa la respuesta como datos de iniciación de esa conversación.
 
@@ -357,7 +369,9 @@ Si ninguna acierta, el webhook responderá 200 (correctamente: la firma era vál
 ## Resumen de una página
 
 1. Túnel arriba → apuntar las **tres** URLs del panel a él.
-2. Custom LLM con la URL **base** `/v1/g/<VOICE_GATEWAY_SECRET>` — sin `/chat/completions`, que lo añade el proveedor. **Comprueba que el agente quedó en Custom LLM**: si `llm` sigue con un modelo del proveedor, el núcleo entero —prompt maestro, guardrails y herramientas— no interviene en la llamada.
+2. Custom LLM con la URL **base** `/v1/g/<VOICE_GATEWAY_SECRET>/c/<CLINIC_ID>` — sin `/chat/completions`, que lo añade el proveedor. **Comprueba que el agente quedó en Custom LLM**: si `llm` sigue con un modelo del proveedor, el núcleo entero —prompt maestro, guardrails y herramientas— no interviene en la llamada.
+
+2b. **Desactiva el LLM de respaldo** (`backup_llm_config.preference = "disabled"`). El panel lo trae activado y desaconseja quitarlo, con razón general: si el LLM principal cae, la conversación termina de golpe. Aquí la razón contraria pesa más. Un modelo de respaldo del proveedor contesta **sin** el prompt maestro, sin las tres capas de guardrails, sin la base de conocimiento aprobada y sin el protocolo de urgencia: exactamente el escenario que el sistema entero existe para impedir. Además la caída no queda desatendida — el gateway emite su propio mensaje hablable y escala a una persona (control O5).
 3. Webhook de iniciación en `/webhooks/elevenlabs/g/<VOICE_GATEWAY_SECRET>/conversation-initiation`. Sin él no hay canal de voz entrante.
 4. `first_message` = guion de la §7, **literal**. System prompt del agente **vacío**.
 5. Los **cuatro** system tools; ninguna herramienta de negocio; whitelist en el panel = `TRANSFER_WHITELIST`.
