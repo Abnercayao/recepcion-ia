@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "56cf576a05ef4b49",
+  "huella": "4d5a050d89351faf",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -651,6 +651,17 @@
       "resumen": "Batería de pruebas adversariales",
       "meta": {
         "lineas": 285,
+        "capa": "documentacion"
+      }
+    },
+    {
+      "id": "modulo:docs/CONTINUAR.md",
+      "tipo": "documento",
+      "nombre": "CONTINUAR.md",
+      "ruta": "docs/CONTINUAR.md",
+      "resumen": "Continuar aquí",
+      "meta": {
+        "lineas": 164,
         "capa": "documentacion"
       }
     },
@@ -7221,6 +7232,24 @@
       "relacion": "pertenece_a",
       "hacia": "capa:documentacion",
       "origen": "docs/bateria-adversarial.md"
+    },
+    {
+      "desde": "modulo:docs/CONTINUAR.md",
+      "relacion": "menciona",
+      "hacia": "control:C7",
+      "origen": "docs/CONTINUAR.md:142"
+    },
+    {
+      "desde": "modulo:docs/CONTINUAR.md",
+      "relacion": "menciona",
+      "hacia": "control:O2",
+      "origen": "docs/CONTINUAR.md:159"
+    },
+    {
+      "desde": "modulo:docs/CONTINUAR.md",
+      "relacion": "pertenece_a",
+      "hacia": "capa:documentacion",
+      "origen": "docs/CONTINUAR.md"
     },
     {
       "desde": "modulo:docs/CONTRATO_DE_CONSTRUCCION.md",
