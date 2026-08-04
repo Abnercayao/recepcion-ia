@@ -52,6 +52,7 @@ import { WhatsappAdapter } from './channels/whatsapp/whatsapp.adapter.js';
 import type { WhatsappClinicRouting } from './channels/whatsapp/whatsapp.types.js';
 import { voiceGatewayPlugin } from './channels/voice/voice-gateway.controller.js';
 import { postCallWebhookPlugin } from './channels/voice/post-call.controller.js';
+import { conversationInitiationPlugin } from './channels/voice/conversation-initiation.controller.js';
 import { VoiceSessionService } from './channels/voice/voice-session.service.js';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
@@ -188,6 +189,31 @@ export async function construirServidor(config: Config) {
       logger,
       gatewaySecret: config.VOICE_GATEWAY_SECRET ?? '',
       bufferWordMs: config.VOICE_BUFFER_WORD_MS,
+    });
+
+    // Webhook de iniciacion: lo llama ElevenLabs al entrar la llamada y de su
+    // respuesta salen `clinic_id`, `session_id` y el telefono. Sin el, el
+    // gateway no resuelve contexto y deriva a una persona en cada llamada.
+    const clinicIdVoz = process.env['CLINIC_ID'] ?? process.env['VOICE_CLINIC_ID'];
+    if (!clinicIdVoz) {
+      throw new Error(
+        'VOICE_ENABLED=true requiere CLINIC_ID: sin el, el webhook de iniciacion no sabe a que clinica pertenece una llamada entrante.',
+      );
+    }
+    const clinicaDeVoz = await clinics.findById(clinicIdVoz);
+    if (!clinicaDeVoz) {
+      throw new Error(`CLINIC_ID=${clinicIdVoz} no existe en la tabla clinics.`);
+    }
+
+    await app.register(conversationInitiationPlugin, {
+      router,
+      calls,
+      audit,
+      logger,
+      gatewaySecret: config.VOICE_GATEWAY_SECRET ?? '',
+      clinicId: clinicIdVoz,
+      clinica: clinicaDeVoz,
+      ...(config.SIP_PROVIDER ? { proveedorSip: config.SIP_PROVIDER } : {}),
     });
 
     // Webhook post-llamada. Secreto DISTINTO del del gateway (contrato §2 vs §7):

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "934f9b81dd65552e",
+  "huella": "f41965444ee7cd7a",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -972,6 +972,21 @@
       }
     },
     {
+      "id": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "tipo": "modulo",
+      "nombre": "conversation-initiation.controller.ts",
+      "ruta": "src/channels/voice/conversation-initiation.controller.ts",
+      "resumen": "Webhook de INICIACION de conversacion.",
+      "meta": {
+        "externas": [
+          "fastify",
+          "node:crypto"
+        ],
+        "lineas": 256,
+        "capa": "canales"
+      }
+    },
+    {
       "id": "modulo:src/channels/voice/openai-sse.mapper.ts",
       "tipo": "modulo",
       "nombre": "openai-sse.mapper.ts",
@@ -1637,7 +1652,7 @@
           "node:path",
           "node:url"
         ],
-        "lineas": 250,
+        "lineas": 276,
         "capa": "composicion"
       }
     },
@@ -2549,6 +2564,46 @@
       "linea": 381,
       "meta": {
         "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/channels/voice/conversation-initiation.controller.ts#ConversationInitiationDeps",
+      "tipo": "simbolo",
+      "nombre": "ConversationInitiationDeps",
+      "ruta": "src/channels/voice/conversation-initiation.controller.ts",
+      "linea": 34,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/channels/voice/conversation-initiation.controller.ts#conversationInitiationPlugin",
+      "tipo": "simbolo",
+      "nombre": "conversationInitiationPlugin",
+      "ruta": "src/channels/voice/conversation-initiation.controller.ts",
+      "linea": 147,
+      "meta": {
+        "clase": "const"
+      }
+    },
+    {
+      "id": "simbolo:src/channels/voice/conversation-initiation.controller.ts#RUTA_INICIACION",
+      "tipo": "simbolo",
+      "nombre": "RUTA_INICIACION",
+      "ruta": "src/channels/voice/conversation-initiation.controller.ts",
+      "linea": 30,
+      "meta": {
+        "clase": "const"
+      }
+    },
+    {
+      "id": "simbolo:src/channels/voice/conversation-initiation.controller.ts#RUTA_INICIACION_CON_SECRETO",
+      "tipo": "simbolo",
+      "nombre": "RUTA_INICIACION_CON_SECRETO",
+      "ruta": "src/channels/voice/conversation-initiation.controller.ts",
+      "linea": 31,
+      "meta": {
+        "clase": "const"
       }
     },
     {
@@ -5782,7 +5837,7 @@
       "tipo": "simbolo",
       "nombre": "construirServidor",
       "ruta": "src/server.ts",
-      "linea": 61,
+      "linea": 62,
       "meta": {
         "clase": "function"
       }
@@ -7777,6 +7832,60 @@
       "relacion": "pertenece_a",
       "hacia": "capa:scripts",
       "origen": "scripts/wer.ts"
+    },
+    {
+      "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/channels/voice/conversation-initiation.controller.ts#ConversationInitiationDeps",
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:34"
+    },
+    {
+      "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/channels/voice/conversation-initiation.controller.ts#conversationInitiationPlugin",
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:147"
+    },
+    {
+      "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/channels/voice/conversation-initiation.controller.ts#RUTA_INICIACION",
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:30"
+    },
+    {
+      "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/channels/voice/conversation-initiation.controller.ts#RUTA_INICIACION_CON_SECRETO",
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:31"
+    },
+    {
+      "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/channels/voice/voice.types.ts",
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:27"
+    },
+    {
+      "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/message.router.ts",
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:26"
+    },
+    {
+      "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:24"
+    },
+    {
+      "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:canales",
+      "origen": "src/channels/voice/conversation-initiation.controller.ts"
+    },
+    {
+      "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "relacion": "sirve_canal",
+      "hacia": "canal:voz",
+      "origen": "src/channels/voice/conversation-initiation.controller.ts"
     },
     {
       "desde": "modulo:src/channels/voice/openai-sse.mapper.ts",
@@ -11010,7 +11119,13 @@
       "desde": "modulo:src/server.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/server.ts#construirServidor",
-      "origen": "src/server.ts:61"
+      "origen": "src/server.ts:62"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "origen": "src/server.ts:54"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -11028,7 +11143,7 @@
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
       "hacia": "modulo:src/channels/voice/voice-session.service.ts",
-      "origen": "src/server.ts:54"
+      "origen": "src/server.ts:55"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -11178,127 +11293,133 @@
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ANTHROPIC_API_KEY",
-      "origen": "src/server.ts:94"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
-      "origen": "src/server.ts:96"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
-      "origen": "src/server.ts:110"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "lee_variable",
-      "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
       "origen": "src/server.ts:95"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
+      "origen": "src/server.ts:97"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
+      "origen": "src/server.ts:111"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
+      "origen": "src/server.ts:96"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
       "hacia": "variable_entorno:DEFAULT_PHONE_REGION",
-      "origen": "src/server.ts:129"
+      "origen": "src/server.ts:130"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ELEVENLABS_WEBHOOK_SECRET",
-      "origen": "src/server.ts:200"
+      "origen": "src/server.ts:226"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:EMBEDDING_DIMENSIONS",
-      "origen": "src/server.ts:87"
+      "origen": "src/server.ts:88"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:EMBEDDING_MODEL",
-      "origen": "src/server.ts:86"
+      "origen": "src/server.ts:87"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:N8N_WEBHOOK_URL",
-      "origen": "src/server.ts:79"
+      "origen": "src/server.ts:80"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:PORT",
-      "origen": "src/server.ts:222"
+      "origen": "src/server.ts:248"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:RETENCION_AUDIO_DIAS",
-      "origen": "src/server.ts:201"
+      "origen": "src/server.ts:227"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
+      "hacia": "variable_entorno:SIP_PROVIDER",
+      "origen": "src/server.ts:216"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VENTANA_CONTINUIDAD_HORAS",
-      "origen": "src/server.ts:128"
+      "origen": "src/server.ts:129"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_BUFFER_WORD_MS",
-      "origen": "src/server.ts:190"
+      "origen": "src/server.ts:191"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_ENABLED",
-      "origen": "src/server.ts:144"
+      "origen": "src/server.ts:145"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_GATEWAY_SECRET",
-      "origen": "src/server.ts:189"
+      "origen": "src/server.ts:190"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOYAGE_API_KEY",
-      "origen": "src/server.ts:85"
+      "origen": "src/server.ts:86"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_APP_SECRET",
-      "origen": "src/server.ts:170"
+      "origen": "src/server.ts:171"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_BSP_TOKEN",
-      "origen": "src/server.ts:153"
+      "origen": "src/server.ts:154"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_ENABLED",
-      "origen": "src/server.ts:144"
+      "origen": "src/server.ts:145"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_PHONE_ID",
-      "origen": "src/server.ts:152"
+      "origen": "src/server.ts:153"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_WEBHOOK_SECRET",
-      "origen": "src/server.ts:168"
+      "origen": "src/server.ts:169"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -13044,13 +13165,13 @@
       "desde": "simbolo:src/channels/voice/voice-session.service.ts#VoiceSessionService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/call.repository.ts#SupabaseCallRepository",
-      "origen": "src/server.ts:182"
+      "origen": "src/server.ts:183"
     },
     {
       "desde": "simbolo:src/channels/voice/voice-session.service.ts#VoiceSessionService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/transcript.repository.ts#SupabaseTranscriptRepository",
-      "origen": "src/server.ts:182"
+      "origen": "src/server.ts:183"
     },
     {
       "desde": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
@@ -13098,85 +13219,85 @@
       "desde": "simbolo:src/core/claude/guardrails.ts#GuardrailService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:104"
+      "origen": "src/server.ts:105"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:135"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/guardrails.ts#GuardrailService",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:135"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:135"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:135"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:135"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:135"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:135"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:135"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/message.repository.ts#SupabaseMessageRepository",
-      "origen": "src/server.ts:134"
+      "origen": "src/server.ts:135"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/clinic.repository.ts#SupabaseClinicRepository",
-      "origen": "src/server.ts:125"
+      "origen": "src/server.ts:126"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/conversation.repository.ts#SupabaseConversationRepository",
-      "origen": "src/server.ts:125"
+      "origen": "src/server.ts:126"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/message.repository.ts#SupabaseMessageRepository",
-      "origen": "src/server.ts:125"
+      "origen": "src/server.ts:126"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/patient.repository.ts#SupabasePatientRepository",
-      "origen": "src/server.ts:125"
+      "origen": "src/server.ts:126"
     },
     {
       "desde": "simbolo:src/core/rag/embedding.service.ts#VoyageEmbeddingService",
@@ -13194,7 +13315,7 @@
       "desde": "simbolo:src/core/rag/rag.service.ts#RagService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/embedding.service.ts#VoyageEmbeddingService",
-      "origen": "src/server.ts:89"
+      "origen": "src/server.ts:90"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
@@ -13206,13 +13327,13 @@
       "desde": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:116"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:116"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-rag.tool.ts#ConsultarRagTool",
@@ -13224,13 +13345,13 @@
       "desde": "simbolo:src/core/tools/consultar-rag.tool.ts#ConsultarRagTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/server.ts:117"
+      "origen": "src/server.ts:118"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-rag.tool.ts#ConsultarRagTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:117"
+      "origen": "src/server.ts:118"
     },
     {
       "desde": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
@@ -13242,13 +13363,13 @@
       "desde": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/server.ts:116"
+      "origen": "src/server.ts:117"
     },
     {
       "desde": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:116"
+      "origen": "src/server.ts:117"
     },
     {
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
@@ -13260,19 +13381,19 @@
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/notification.client.ts#NotificationClient",
-      "origen": "src/server.ts:119"
+      "origen": "src/server.ts:120"
     },
     {
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/conversation.repository.ts#SupabaseConversationRepository",
-      "origen": "src/server.ts:119"
+      "origen": "src/server.ts:120"
     },
     {
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:119"
+      "origen": "src/server.ts:120"
     },
     {
       "desde": "simbolo:src/core/tools/guardar-lead.tool.ts#GuardarLeadTool",
@@ -13284,61 +13405,61 @@
       "desde": "simbolo:src/core/tools/guardar-lead.tool.ts#GuardarLeadTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:118"
+      "origen": "src/server.ts:119"
     },
     {
       "desde": "simbolo:src/core/tools/guardar-lead.tool.ts#GuardarLeadTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:118"
+      "origen": "src/server.ts:119"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/server.ts:113"
+      "origen": "src/server.ts:114"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/server.ts:113"
+      "origen": "src/server.ts:114"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/notification.client.ts#NotificationClient",
-      "origen": "src/server.ts:113"
+      "origen": "src/server.ts:114"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:113"
+      "origen": "src/server.ts:114"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/conversation.repository.ts#SupabaseConversationRepository",
-      "origen": "src/server.ts:113"
+      "origen": "src/server.ts:114"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:113"
+      "origen": "src/server.ts:114"
     },
     {
       "desde": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
-      "origen": "src/server.ts:106"
+      "origen": "src/server.ts:107"
     },
     {
       "desde": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/server.ts:106"
+      "origen": "src/server.ts:107"
     },
     {
       "desde": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
@@ -13350,7 +13471,7 @@
       "desde": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/clinic.repository.ts#SupabaseClinicRepository",
-      "origen": "src/server.ts:76"
+      "origen": "src/server.ts:77"
     },
     {
       "desde": "simbolo:src/infra/notification.client.ts#NotificationClient",
