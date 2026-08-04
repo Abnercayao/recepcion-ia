@@ -42,17 +42,32 @@ AUDIO_RETENTION=false
 
 Panel → **Agents** → *Create agent* → en la sección de LLM elige **Custom LLM**.
 
-**URL a poner (la que funciona con certeza):**
+**URL a poner — es una URL BASE, sin `/chat/completions` al final:**
 
 ```
-https://TU-DOMINIO/v1/g/EL-VALOR-DE-VOICE_GATEWAY_SECRET/chat/completions
+https://TU-DOMINIO/v1/g/EL-VALOR-DE-VOICE_GATEWAY_SECRET
 ```
 
 Ejemplo con un túnel de desarrollo y el secreto `s3cr3t-de-desarrollo`:
 
 ```
-https://tu-tunel.trycloudflare.com/v1/g/s3cr3t-de-desarrollo/chat/completions
+https://tu-tunel.trycloudflare.com/v1/g/s3cr3t-de-desarrollo
 ```
+
+⚠ **El proveedor añade `/chat/completions` él mismo.** Es el mismo criterio que sus guías para proveedores OpenAI-compatibles: la de Together AI indica literalmente `https://api.together.xyz/v1`, y la petición sale contra `https://api.together.xyz/v1/chat/completions`.
+
+Si pones la ruta completa, la llamada acaba en `.../chat/completions/chat/completions` y el gateway responde **404** en cada turno. Este documento lo dijo mal hasta que se comprobó contra el panel real: la versión anterior incluía la ruta final.
+
+Verificación rápida de que la URL base es la buena — **añádele tú `/chat/completions`** y comprueba que responde:
+
+```bash
+curl -N -X POST https://TU-DOMINIO/v1/g/<SECRETO>/chat/completions \
+  -H 'content-type: application/json' \
+  -d '{"model":"x","stream":true,"messages":[{"role":"user","content":"Hola"}],
+       "elevenlabs_extra_body":{"clinic_id":"<UUID>","session_id":"p1","phone":"+51987654321"}}'
+```
+
+Contra la URL base **sin** esa ruta, un 404 es lo esperado y no indica ningún problema.
 
 ### Por qué el secreto va en la ruta
 
@@ -342,7 +357,7 @@ Si ninguna acierta, el webhook responderá 200 (correctamente: la firma era vál
 ## Resumen de una página
 
 1. Túnel arriba → apuntar las **tres** URLs del panel a él.
-2. Custom LLM en `/v1/g/<VOICE_GATEWAY_SECRET>/chat/completions`. **Comprueba que el agente quedó en Custom LLM**: si `llm` sigue con un modelo del proveedor, el núcleo entero —prompt maestro, guardrails y herramientas— no interviene en la llamada.
+2. Custom LLM con la URL **base** `/v1/g/<VOICE_GATEWAY_SECRET>` — sin `/chat/completions`, que lo añade el proveedor. **Comprueba que el agente quedó en Custom LLM**: si `llm` sigue con un modelo del proveedor, el núcleo entero —prompt maestro, guardrails y herramientas— no interviene en la llamada.
 3. Webhook de iniciación en `/webhooks/elevenlabs/g/<VOICE_GATEWAY_SECRET>/conversation-initiation`. Sin él no hay canal de voz entrante.
 4. `first_message` = guion de la §7, **literal**. System prompt del agente **vacío**.
 5. Los **cuatro** system tools; ninguna herramienta de negocio; whitelist en el panel = `TRANSFER_WHITELIST`.
