@@ -211,6 +211,18 @@ Todo ello también a través de un túnel público, no solo en `localhost`.
 
 Bien: el `first_message` sí lleva el guion de revelación completo —menciona que es una IA y que la llamada se graba— y el system prompt del agente está prácticamente vacío, como debe.
 
+13. **DEFECTO ABIERTO: el modelo sigue inventando cuando el RAG no recupera.** Ante «vivo por Magdalena», respondió **«trabajamos con sede única»** — la clínica tiene 24. Reproducible: en otra pasada sí recuperó y contestó bien («la más cercana es Pueblo Libre»).
+
+    La causa no es el dato: está en la base, en la guía de sedes por zona. Es que una consulta con poca señal —un nombre de distrito suelto, dentro de una frase con el nombre del paciente— no siempre supera el umbral, y cuando no recupera nada **el modelo rellena** en vez de decir que no lo sabe.
+
+    Es la misma raíz que el caso de «solo cuenta con una sede única» de antes: **«nunca inventar datos ausentes de la base» no tiene control automático en capa 2**. Solo la vigila el prompt, y el prompt no basta.
+
+    Dos vías, ninguna hecha:
+    - **Meter las sedes en el bloque de sesión del prompt**, no en el RAG. Son 24 líneas de datos de la clínica que ya están cargadas en `clinic.config`: no deberían depender de una búsqueda semántica que puede fallar.
+    - **Un control de capa 2 para esta línea roja**, que es lo que la haría un control y no una expectativa. Es trabajo de diseño, no de una tarde.
+
+    Mientras tanto, el riesgo real es que el agente niegue una sede que existe y pierda al paciente.
+
 ## Demostración
 
 Dos arneses sobre el **mismo** montaje del núcleo (`scripts/nucleo-demo.ts`), para que no puedan divergir:

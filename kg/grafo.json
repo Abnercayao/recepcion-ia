@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "1269ec451e7472ab",
+  "huella": "47def018402c4deb",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -619,7 +619,7 @@
       "nombre": "faqs.md",
       "ruta": "db/seed/clinica-demo/faqs.md",
       "meta": {
-        "lineas": 69,
+        "lineas": 72,
         "capa": "datos"
       }
     },
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 233,
+        "lineas": 245,
         "capa": "documentacion"
       }
     },
@@ -842,7 +842,7 @@
       "nombre": "estilo.voz.md",
       "ruta": "prompts/estilo.voz.md",
       "meta": {
-        "lineas": 12,
+        "lineas": 31,
         "capa": "prompts",
         "bloques": []
       }
@@ -854,7 +854,7 @@
       "ruta": "prompts/maestro.md",
       "resumen": "ROL",
       "meta": {
-        "lineas": 91,
+        "lineas": 95,
         "capa": "prompts",
         "bloques": [
           "ROL",
@@ -1186,7 +1186,7 @@
       "ruta": "src/core/conversation/conversation.service.ts",
       "resumen": "EL servicio de conversacion. Uno solo, comun a los dos canales.",
       "meta": {
-        "lineas": 845,
+        "lineas": 862,
         "capa": "nucleo"
       }
     },
@@ -4258,7 +4258,7 @@
       "tipo": "simbolo",
       "nombre": "ConversationServiceImpl",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 367,
+      "linea": 369,
       "meta": {
         "clase": "class"
       }
@@ -7111,6 +7111,12 @@
     },
     {
       "desde": "modulo:db/seed/clinica-demo/faqs.md",
+      "relacion": "menciona",
+      "hacia": "control:O5",
+      "origen": "db/seed/clinica-demo/faqs.md:47"
+    },
+    {
+      "desde": "modulo:db/seed/clinica-demo/faqs.md",
       "relacion": "pertenece_a",
       "hacia": "capa:datos",
       "origen": "db/seed/clinica-demo/faqs.md"
@@ -7227,7 +7233,7 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:231"
+      "origen": "docs/ESTADO.md:243"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -9249,7 +9255,7 @@
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
-      "origen": "src/core/conversation/conversation.service.ts:367"
+      "origen": "src/core/conversation/conversation.service.ts:369"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",

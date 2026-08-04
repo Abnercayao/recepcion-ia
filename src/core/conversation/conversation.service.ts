@@ -358,6 +358,8 @@ export interface ConversationServiceOptions {
   maxTokensVoz?: number;
   /** Frases de retardo antes de emitir. 0 = emitir en cuanto el prefijo pasa. */
   retardoDeFrases?: number;
+  /** Retardo SOLO en voz. Por defecto 0: alli el retardo se oye como silencio. */
+  retardoDeFrasesVoz?: number;
   maxIteracionesDeHerramientas?: number;
   limiteFragmentosRag?: number;
 }
@@ -374,7 +376,11 @@ export class ConversationServiceImpl implements ConversationService {
     opciones: ConversationServiceOptions = {},
   ) {
     this.logger = deps.logger.child({ componente: 'conversation.service' });
-    this.opciones = { ...opciones, retardoDeFrases: opciones.retardoDeFrases ?? RETARDO_DE_FRASES_POR_DEFECTO };
+    this.opciones = {
+      ...opciones,
+      retardoDeFrases: opciones.retardoDeFrases ?? RETARDO_DE_FRASES_POR_DEFECTO,
+      retardoDeFrasesVoz: opciones.retardoDeFrasesVoz ?? 0,
+    };
   }
 
   /**
@@ -452,7 +458,18 @@ export class ConversationServiceImpl implements ConversationService {
       ctx,
       this.deps.guardrails,
       () => evidencia,
-      this.opciones.retardoDeFrases,
+      // En VOZ el retardo se paga en silencio audible: la frase 1 no sale
+      // hasta que llega la 2, asi que el paciente espera un turno entero de
+      // generacion antes de oir nada. Con retardo 0 se emite en cuanto el
+      // prefijo pasa la capa 2.
+      //
+      // No es un agujero: una violacion RECUPERABLE sigue provocando
+      // RETENCION, no emision. Lo que se pierde es streaming en ese tramo
+      // -- se degrada a esperar-- no la garantia. Lo que si baja es el margen
+      // para patrones que se completan en la frase siguiente; en texto, donde
+      // el retardo no se oye, se mantiene en 1.
+      (ctx.channel === 'voice' ? this.opciones.retardoDeFrasesVoz : undefined) ??
+        this.opciones.retardoDeFrases,
     );
 
     let emitido = '';
