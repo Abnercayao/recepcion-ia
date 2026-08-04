@@ -106,6 +106,34 @@ Detalle completo en `decisiones.md`. Los principales:
 
 *(Resuelto: `scripts/demo.ts`, `migrate.ts` y `seed.ts` no importaban `dotenv`, así que no leían el `.env` que la guía manda rellenar. Los tres lo hacen ya.)*
 
+## Canal de voz — mitad local verificada, mitad del proveedor sin configurar
+
+**Lo nuestro funciona y está comprobado contra la base real:**
+
+| Comprobación | Resultado |
+|---|---|
+| `GET /health` con `VOICE_ENABLED=true` | 200 · `{"voz":true}` |
+| Gateway sin secreto / con secreto erróneo | **401** |
+| Gateway con secreto válido | 200 · `text/event-stream` · respuesta real · cierra en `data: [DONE]` |
+| Webhook de iniciación sin secreto | **401** |
+| Webhook de iniciación con secreto | 200 · devuelve `dynamic_variables` y crea la fila de `calls` |
+| Webhook post-llamada: firma válida / inválida / caducada | **200 / 401 / 401** |
+| Encadenado iniciación → turno | `calls`, `transcripts` (2 líneas), `latency_metrics`, `audio_events` |
+
+Todo ello también a través de un túnel público, no solo en `localhost`.
+
+**El hueco «más grande» de `fase5-elevenlabs.md` está cerrado.** La vía para inyectar contexto en una llamada entrante existe: es el webhook de iniciación, implementado en `src/channels/voice/conversation-initiation.controller.ts`. Queda por verificar el último tramo —que ElevenLabs entregue esas variables al Custom LLM dentro de `elevenlabs_extra_body`—, y eso solo lo dice una llamada real.
+
+**Lo que falta está todo del lado del proveedor**, y hasta que se resuelva no hay llamada posible:
+
+- **Ningún número de teléfono.** Ni en la cuenta de Twilio (Trial, 0 números) ni en ElevenLabs (`/v1/convai/phone-numbers` devuelve `[]`).
+- **El agente no está en Custom LLM**: `prompt.custom_llm` es `null` y `llm` apunta a un modelo del proveedor. Mientras siga así, el núcleo entero —prompt maestro, las tres capas de guardrails, las cinco herramientas y el RAG— **no interviene en la llamada**.
+- **Los cuatro system tools sin habilitar**, así que no hay `transfer_to_number`: una urgencia no se podría derivar por teléfono.
+- **Los dos webhooks sin dar de alta** en el agente.
+- **`retention_days = -1`, es decir retención ILIMITADA, con `record_voice = true`.** Contradice `RETENCION_AUDIO_DIAS=0` y `AUDIO_RETENTION=false`, y va en contra del control C8: el audio es dato biométrico asociado a dato de salud.
+
+Bien: el `first_message` sí lleva el guion de revelación completo —menciona que es una IA y que la llamada se graba— y el system prompt del agente está prácticamente vacío, como debe.
+
 ## Demostración
 
 Dos arneses sobre el **mismo** montaje del núcleo (`scripts/nucleo-demo.ts`), para que no puedan divergir:

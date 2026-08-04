@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "f41965444ee7cd7a",
+  "huella": "d5bc65a4bcecdf30",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -325,7 +325,7 @@
       "id": "control:C8",
       "tipo": "control",
       "nombre": "C8",
-      "resumen": "es una contradicción y el audio es dato biométrico asociado a dato de salud (control C8), así que se decide explícitamente o no se arranca.",
+      "resumen": "- **`retention_days = -1`, es decir retención ILIMITADA, con `record_voice = true`.** Contradice `RETENCION_AUDIO_DIAS=0` y `AUDIO_RETENTION=false`, y va en contra del control C8:",
       "meta": {
         "clase": "etico",
         "definicionInferida": true
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 128,
+        "lineas": 156,
         "capa": "documentacion"
       }
     },
@@ -716,7 +716,7 @@
       "ruta": "docs/fase5-elevenlabs.md",
       "resumen": "Fase 5 — Puesta en marcha del agente en ElevenLabs",
       "meta": {
-        "lineas": 324,
+        "lineas": 363,
         "capa": "documentacion"
       }
     },
@@ -7171,7 +7171,13 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:126"
+      "origen": "docs/ESTADO.md:154"
+    },
+    {
+      "desde": "modulo:docs/ESTADO.md",
+      "relacion": "menciona",
+      "hacia": "control:C8",
+      "origen": "docs/ESTADO.md:133"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -7195,7 +7201,7 @@
       "desde": "modulo:docs/fase5-elevenlabs.md",
       "relacion": "cubre_fase",
       "hacia": "fase:7",
-      "origen": "docs/fase5-elevenlabs.md:310"
+      "origen": "docs/fase5-elevenlabs.md:337"
     },
     {
       "desde": "modulo:docs/fase5-elevenlabs.md",

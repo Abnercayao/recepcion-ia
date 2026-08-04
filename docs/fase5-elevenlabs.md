@@ -176,6 +176,33 @@ Qué hace nuestro endpoint con cada uno de los tres payloads documentados (`cont
 
 Comportamiento de seguridad, sin excepciones: **firma inválida, malformada, ausente o con timestamp fuera de la ventana de tolerancia (5 min por defecto) → 401 y no se procesa nada.** Si el despliegue no tiene `ELEVENLABS_WEBHOOK_SECRET`, el endpoint rechaza *todo* con 401 y lo grita en el arranque en nivel `fatal` — falla cerrado, pero ruidoso.
 
+## 6b. Webhook de iniciación — sin esto no hay canal de voz entrante
+
+Panel → en la sección de webhooks del agente, **«Añadir webhook»** para recuperar `conversation_initiation_client_data` al iniciarse una llamada de Twilio.
+
+```
+POST https://TU-DOMINIO/webhooks/elevenlabs/g/<VOICE_GATEWAY_SECRET>/conversation-initiation
+```
+
+Mismo secreto y mismas tres vías que el Custom LLM: los dos endpoints protegen la misma frontera y en la misma dirección. No hace falta añadir encabezados si el secreto va en la ruta.
+
+**Es la pieza que hace funcionar el canal.** El gateway necesita `clinic_id` y el teléfono para resolver el contexto; en una llamada entrante no hay SDK cliente que los inyecte, y este webhook es la única vía. Sin él, cada llamada acaba en el mensaje de respaldo y en una derivación a recepción.
+
+Nuestro endpoint responde:
+
+```json
+{
+  "type": "conversation_initiation_client_data",
+  "dynamic_variables": {
+    "clinic_id": "…", "session_id": "…", "phone": "+51…", "clinica": "Clínica Dental Aurora"
+  }
+}
+```
+
+`clinica` alimenta el `{{clinica}}` del `first_message`. `session_id` lo generamos nosotros: es la clave con la que el gateway encuentra la llamada en cada turno, y con la que se crea la fila de `calls`.
+
+Requiere `CLINIC_ID` en el entorno. Con `VOICE_ENABLED=true` y sin ella, el sistema **no arranca**: una llamada entrante que no se puede atribuir a una clínica no se debe atender.
+
 ### Recomendación: no te suscribas al webhook de audio
 
 Si la retención de audio está desactivada (que es la configuración correcta aquí), **no suscribas el evento de audio en el panel**. Dos razones:
@@ -265,13 +292,13 @@ select evento, detalle from audit_log
 
 Todo lo de esta sección está construido según lo que la documentación oficial dice o —cuando no dice nada— según una asunción **declarada**. Ninguna de estas cosas se confirma sin una llamada telefónica real. Están ordenadas por lo que más duele si la asunción es falsa.
 
-### 1. De dónde sale `elevenlabs_extra_body` en una llamada entrante — el hueco más grande
+### 1. ~~De dónde sale `elevenlabs_extra_body` en una llamada entrante~~ — RESUELTO
 
-El gateway obtiene `clinic_id`, `session_id` y el teléfono del campo `elevenlabs_extra_body`, cuyo nombre **sí está confirmado**. Lo que el contrato dice también es que se configura *«desde el SDK al iniciar la conversación (`ConversationConfig(extra_body=...)`), no como campo estático del panel»*.
+**La vía existe: el webhook de iniciación.** El panel lo ofrece como *«Añadir un webhook para recuperar `conversation_initiation_client_data` cuando se inicia una llamada de Twilio»*. ElevenLabs lo llama al entrar la llamada, antes de que el agente hable, y usa la respuesta como datos de iniciación de esa conversación.
 
-**En una llamada telefónica entrante no hay SDK cliente**: la conversación la inicia la telefonía de ElevenLabs, no una aplicación nuestra. No está verificado que exista una vía equivalente (variables dinámicas del agente, datos de iniciación del SIP trunk) para inyectar esos tres valores. Si no la hay, el gateway resolverá el contexto por la vía de respaldo (buscar la llamada por `session_id`) y, sin `session_id`, no podrá: emitirá el mensaje hablable de respaldo y derivará a una persona.
+Implementado en `src/channels/voice/conversation-initiation.controller.ts` (paso 6b de esta guía). Devuelve `clinic_id`, `session_id`, `phone` y `clinica` como `dynamic_variables`, y de paso crea la fila de `calls` —lo único que permite persistir transcripción y latencias—.
 
-**Es lo primero que hay que probar**, y probablemente lo primero que haya que resolver. Sin esto, no hay canal de voz entrante.
+**Lo que sigue sin verificar** es el último tramo: que ElevenLabs entregue esas `dynamic_variables` al Custom LLM **dentro de `elevenlabs_extra_body`**. Es lo primero que hay que mirar en la primera llamada real. Si no llegan ahí, el arreglo es local: leerlas de donde vengan, en `voice-session.service.resolverContexto`.
 
 ### 2. Doble locución al escalar (`decisiones.md`, vacío abierto 6)
 
@@ -314,10 +341,22 @@ Si ninguna acierta, el webhook responderá 200 (correctamente: la firma era vál
 
 ## Resumen de una página
 
-1. Túnel arriba → apuntar las **dos** URLs del panel a él.
-2. Custom LLM en `/v1/g/<VOICE_GATEWAY_SECRET>/chat/completions`.
-3. `first_message` = guion de la §7, **literal**. System prompt del agente **vacío**.
-4. Los **cuatro** system tools; ninguna herramienta de negocio; whitelist en el panel = `TRANSFER_WHITELIST`.
-5. `retention_days = 0`; Zero Retention Mode solo si el plan es Enterprise.
-6. Webhook post-llamada → `/webhooks/elevenlabs/post-call`, secreto a `ELEVENLABS_WEBHOOK_SECRET`. Sin suscribir el evento de audio.
-7. Llamar, colgar, y **mirar la base**: `disclosure_ejecutada`, `transcripts` sin duplicados, `latency_metrics`, `audit_log`.
+1. Túnel arriba → apuntar las **tres** URLs del panel a él.
+2. Custom LLM en `/v1/g/<VOICE_GATEWAY_SECRET>/chat/completions`. **Comprueba que el agente quedó en Custom LLM**: si `llm` sigue con un modelo del proveedor, el núcleo entero —prompt maestro, guardrails y herramientas— no interviene en la llamada.
+3. Webhook de iniciación en `/webhooks/elevenlabs/g/<VOICE_GATEWAY_SECRET>/conversation-initiation`. Sin él no hay canal de voz entrante.
+4. `first_message` = guion de la §7, **literal**. System prompt del agente **vacío**.
+5. Los **cuatro** system tools; ninguna herramienta de negocio; whitelist en el panel = `TRANSFER_WHITELIST`.
+6. `retention_days = 0`. **`-1` es retención ilimitada**: en un contexto sanitario es lo contrario de lo que pide el control C8. Zero Retention Mode solo si el plan es Enterprise.
+7. Webhook post-llamada → `/webhooks/elevenlabs/post-call`, secreto a `ELEVENLABS_WEBHOOK_SECRET`. Sin suscribir el evento de audio.
+8. Llamar, colgar, y **mirar la base**: `disclosure_ejecutada`, `transcripts` sin duplicados, `latency_metrics`, `audit_log`.
+
+### Comprobar la configuración sin abrir el panel
+
+La API de ElevenLabs devuelve el agente entero. Merece la pena mirarlo antes de llamar, porque el panel es fácil de dejar a medias:
+
+```bash
+curl -s -H "xi-api-key: $ELEVENLABS_API_KEY" \
+  https://api.elevenlabs.io/v1/convai/agents/$ELEVENLABS_AGENT_ID
+```
+
+Lo que tiene que salir: `prompt.custom_llm` **no nulo**, `platform_settings.privacy.retention_days` en `0`, los cuatro `built_in_tools` habilitados, y `conversation_initiation_client_data_webhook` y `post_call_webhook_id` **con valor**. Y en `/v1/convai/phone-numbers`, el número dado de alta y asignado a este agente.
