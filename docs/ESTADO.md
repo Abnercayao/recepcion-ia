@@ -117,6 +117,10 @@ Detalle completo en `decisiones.md`. Los principales:
 
 9. **Plan gratuito de Voyage: 3 peticiones por minuto.** Cada turno con RAG consume una. En una conversación real el límite se alcanza enseguida y el RAG empieza a fallar — de forma silenciosa para el paciente, por el fail-safe. Requiere añadir método de pago en el panel de Voyage.
 
+   Mitigado a medias: el 429 ya **no se reintenta**. Reintentar dentro del turno no sirve —la ventana del límite se mide en minutos— y el backoff empujaba el turno por encima del tiempo de espera del proveedor, que lo mataba con un error de cascada. Ahora falla rápido y el prompt declara que no dispone del dato. El límite sigue ahí: con él, parte de las respuestas salen sin conocimiento de la base.
+
+10. **Latencia por turno de voz: 5,6 a 6,9 s.** Medido sobre el gateway real. El objetivo declarado es `VOICE_LATENCIA_OBJETIVO_MS=1200`, así que se está **cuatro o cinco veces por encima**, y por eso la expresión puente («Un momento, por favor… ») suena en todos los turnos. Cabe dentro del máximo de ElevenLabs —`cascade_timeout_seconds`, que solo admite hasta 15 s— pero sin holgura: cualquier degradación del modelo o de la red vuelve a producir `LLM Cascade Error`. Optimizarlo está sin abordar.
+
 *(Resuelto: `scripts/demo.ts`, `migrate.ts` y `seed.ts` no importaban `dotenv`, así que no leían el `.env` que la guía manda rellenar. Los tres lo hacen ya.)*
 
 ## Canal de voz — mitad local verificada, mitad del proveedor sin configurar

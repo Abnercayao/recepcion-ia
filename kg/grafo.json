@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "375a08316635fa04",
+  "huella": "45334366a4d697ee",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -716,7 +716,7 @@
       "ruta": "docs/fase5-elevenlabs.md",
       "resumen": "Fase 5 — Puesta en marcha del agente en ElevenLabs",
       "meta": {
-        "lineas": 378,
+        "lineas": 392,
         "capa": "documentacion"
       }
     },
@@ -1215,7 +1215,7 @@
           "p-retry",
           "zod"
         ],
-        "lineas": 161,
+        "lineas": 170,
         "capa": "nucleo"
       }
     },
@@ -7230,7 +7230,7 @@
       "desde": "modulo:docs/fase5-elevenlabs.md",
       "relacion": "cubre_fase",
       "hacia": "fase:7",
-      "origen": "docs/fase5-elevenlabs.md:352"
+      "origen": "docs/fase5-elevenlabs.md:364"
     },
     {
       "desde": "modulo:docs/fase5-elevenlabs.md",

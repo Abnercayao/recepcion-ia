@@ -121,9 +121,18 @@ export class VoyageEmbeddingService implements EmbeddingPort {
     if (!response.ok) {
       const cuerpo = await response.text().catch(() => '');
       const mensaje = `Voyage AI respondio ${response.status} ${response.statusText}: ${cuerpo.slice(0, 500)}`;
-      // 4xx (salvo 429, limite de tasa) es un error de peticion que no se
-      // arregla reintentando: clave invalida, modelo inexistente, etc.
-      if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+      // 4xx es un error de peticion que no se arregla reintentando: clave
+      // invalida, modelo inexistente, etc.
+      //
+      // El 429 se trata IGUAL, y es deliberado. Reintentar dentro del mismo
+      // turno no sirve: la ventana del limite de tasa se mide en minutos y los
+      // reintentos solo anaden segundos a una respuesta que el paciente esta
+      // esperando. En voz eso es peor que no recuperar: medido con el plan
+      // gratuito de Voyage (3 peticiones por minuto), el backoff empujaba el
+      // turno por encima del tiempo de espera del proveedor y la llamada
+      // moria con un error de cascada. Fallar rapido deja que el prompt
+      // declare que no dispone del dato, que es un modo de fallo previsto.
+      if (response.status >= 400 && response.status < 500) {
         throw new AbortError(mensaje);
       }
       throw new Error(mensaje);
