@@ -46,6 +46,17 @@ const envSchema = z
     ANTHROPIC_API_KEY: z.string().min(1, 'requerida: el nucleo no funciona sin el modelo'),
     CLAUDE_MODEL_CONVERSACION: z.string().min(1),
     CLAUDE_MODEL_CLASIFICACION: z.string().min(1),
+    /**
+     * Modelo y tope de tokens del canal de VOZ. Opcionales: sin ellos, voz usa
+     * los mismos que texto. Ver `ConversationServiceOptions.modelVoz` para las
+     * medidas de latencia que justifican poder separarlos.
+     */
+    CLAUDE_MODEL_VOZ: z.string().optional(),
+    CLAUDE_MAX_TOKENS_VOZ: z
+      .string()
+      .optional()
+      .transform((v) => (v === undefined || v.trim() === '' ? undefined : Number(v)))
+      .pipe(z.number().int().positive().optional()),
     CLAUDE_TEMPERATURE: z
       .string()
       .optional()

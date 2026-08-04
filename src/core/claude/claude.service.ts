@@ -347,7 +347,7 @@ export class ClaudeService implements ClaudePort {
     const params: Anthropic.Messages.MessageCreateParams = {
       model,
       max_tokens: opts.maxTokens ?? this.config.maxTokens,
-      system: opts.system,
+      system: this.construirSystem(opts),
       messages: opts.messages.map((m) => ({ role: m.role, content: m.content })),
     };
     if (opts.tools && opts.tools.length > 0) {
@@ -362,6 +362,32 @@ export class ClaudeService implements ClaudePort {
       params.temperature = temperature;
     }
     return params;
+  }
+
+  /**
+   * `system` como uno o dos bloques, segun haya prefijo cacheable.
+   *
+   * Con prefijo, el bloque estable lleva `cache_control` y el resto —contexto
+   * RAG, variables de sesion y estilo del canal— va aparte, porque cambia en
+   * cada turno y cachearlo seria un fallo de cache garantizado.
+   *
+   * El ahorro no es solo entre turnos: dentro de UN turno, el bucle de
+   * herramientas vuelve a llamar al modelo con el mismo `system` cada vez.
+   */
+  private construirSystem(
+    opts: ClaudeCallOptions,
+  ): Anthropic.Messages.MessageCreateParams['system'] {
+    const prefijo = opts.systemPrefijoCacheable;
+    if (!prefijo || prefijo.length === 0 || !opts.system.startsWith(prefijo)) {
+      return opts.system;
+    }
+
+    const resto = opts.system.slice(prefijo.length);
+    const bloques: Anthropic.Messages.TextBlockParam[] = [
+      { type: 'text', text: prefijo, cache_control: { type: 'ephemeral' } },
+    ];
+    if (resto.length > 0) bloques.push({ type: 'text', text: resto });
+    return bloques;
   }
 
   private conReintentos<T>(operacion: string, fn: () => Promise<T>): Promise<T> {

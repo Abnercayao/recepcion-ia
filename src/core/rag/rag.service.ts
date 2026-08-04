@@ -96,20 +96,65 @@ export class RagService implements RagPort {
     const consulta = query.trim();
     if (consulta.length === 0) return [];
 
+    const limiteEfectivo = limit ?? this.limiteFragmentos;
+
     try {
       const [vector] = await this.embeddings.embed([consulta], 'query');
-      if (!vector) return [];
-
-      const limiteEfectivo = limit ?? this.limiteFragmentos;
-      return await this.repository.matchKnowledge(clinicId, vector, limiteEfectivo, this.umbralSimilitud);
-    } catch (err) {
-      // Fail-safe deliberado: ver punto 3 del comentario de cabecera.
-      this.logger.error(
-        {
+      if (vector) {
+        const vectorial = await this.repository.matchKnowledge(
           clinicId,
-          error: err instanceof Error ? err.message : String(err),
-        },
-        'fallo en recuperacion RAG; se devuelve lista vacia para que el prompt declare que no dispone del dato',
+          vector,
+          limiteEfectivo,
+          this.umbralSimilitud,
+        );
+        if (vectorial.length > 0) return vectorial;
+      }
+    } catch (err) {
+      // No se devuelve lista vacia todavia: primero se intenta el lexico.
+      this.logger.warn(
+        { clinicId, error: err instanceof Error ? err.message : String(err) },
+        'fallo la busqueda vectorial; se intenta el respaldo lexico',
+      );
+    }
+
+    return this.respaldoLexico(clinicId, consulta, limiteEfectivo);
+  }
+
+  /**
+   * Respaldo cuando el vectorial no da nada, sea porque fallo o porque no
+   * supero el umbral.
+   *
+   * Existe por un modo de fallo medido: con el plan gratuito de Voyage (3
+   * peticiones por minuto) el embedding devolvia 429 en casi todos los turnos y
+   * la recuperacion quedaba vacia. El resultado NO era un "no dispongo del
+   * dato" prudente — era el modelo rellenando: llego a decirle a un paciente
+   * que la clinica "solo tiene una sede". La linea roja "nunca inventar datos
+   * ausentes de la base" no tiene control automatico en capa 2, asi que la
+   * unica defensa real es no dejar el prompt sin contexto.
+   *
+   * Recupera peor que el vectorial y no pretende sustituirlo. Pero devuelve
+   * contenido APROBADO de la clinica, que es infinitamente mejor que nada.
+   */
+  private async respaldoLexico(
+    clinicId: string,
+    consulta: string,
+    limite: number,
+  ): Promise<KnowledgeChunk[]> {
+    try {
+      const lexico = await this.repository.buscarPorPalabras(clinicId, consulta, limite);
+      if (lexico.length > 0) {
+        this.logger.info(
+          { clinicId, fragmentos: lexico.length },
+          'recuperacion resuelta por el respaldo lexico',
+        );
+      }
+      return lexico;
+    } catch (err) {
+      // Aqui si: agotadas las dos vias, lista vacia y el prompt declara la
+      // ausencia. Nivel error para que un fallo persistente sea visible.
+      this.logger.error(
+        { clinicId, error: err instanceof Error ? err.message : String(err) },
+        'fallo tambien el respaldo lexico; se devuelve lista vacia',
       );
       return [];
     }

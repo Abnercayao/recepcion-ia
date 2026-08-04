@@ -134,7 +134,12 @@ export async function construirServidor(config: Config) {
   // UN solo servicio de conversacion para los dos canales.
   const conversationService = new ConversationServiceImpl(
     { router, claude, promptBuilder, rag, urgency, guardrails, tools, messages, logger, audit },
-    { model: config.CLAUDE_MODEL_CONVERSACION, maxTokens: config.CLAUDE_MAX_TOKENS },
+    {
+      model: config.CLAUDE_MODEL_CONVERSACION,
+      maxTokens: config.CLAUDE_MAX_TOKENS,
+      ...(config.CLAUDE_MODEL_VOZ ? { modelVoz: config.CLAUDE_MODEL_VOZ } : {}),
+      ...(config.CLAUDE_MAX_TOKENS_VOZ ? { maxTokensVoz: config.CLAUDE_MAX_TOKENS_VOZ } : {}),
+    },
   );
 
   // --- Servidor -----------------------------------------------------------

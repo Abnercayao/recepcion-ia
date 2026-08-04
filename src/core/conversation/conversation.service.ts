@@ -333,6 +333,29 @@ export interface ConversationServiceOptions {
   /** Modelo de CONVERSACION. Si falta, decide el `ClaudePort`. */
   model?: string;
   maxTokens?: number;
+  /**
+   * Modelo y tope de tokens SOLO para el canal de voz. Si no se fijan, se usan
+   * los generales.
+   *
+   * Existen por una medida, no por gusto. Con el prompt maestro real y una
+   * pregunta corriente, una unica llamada tarda:
+   *
+   *     sonnet-5,  1024 tokens, sin cache : 8395 / 6623 / 3568 ms
+   *     sonnet-5,  1024 tokens, con cache : 5379 / 4446 / 3821 ms
+   *     sonnet-5,   250 tokens, con cache : 3384 / 4344 / 4155 ms
+   *     haiku-4.5,  250 tokens, con cache : 1042 / 1547 / 1170 ms
+   *
+   * En texto, esperar cuatro segundos es aceptable. En una llamada telefonica
+   * no lo es: el objetivo declarado son 1200 ms, ElevenLabs corta a los 15 s, y
+   * por encima de dos o tres segundos la conversacion deja de parecer una
+   * conversacion. El coste es que en voz responde un modelo menos capaz.
+   *
+   * Lo que NO cambia al cambiar de modelo: las tres capas de guardrails, el
+   * detector de urgencia, la validacion de las herramientas y el contexto del
+   * RAG. Los controles no dependen de que el modelo se porte bien.
+   */
+  modelVoz?: string;
+  maxTokensVoz?: number;
   /** Frases de retardo antes de emitir. 0 = emitir en cuanto el prefijo pasa. */
   retardoDeFrases?: number;
   maxIteracionesDeHerramientas?: number;
@@ -442,11 +465,20 @@ export class ConversationServiceImpl implements ConversationService {
       const prompt = this.deps.promptBuilder.build({ ctx, fragmentos });
       const opciones: ClaudeCallOptions = {
         system: prompt.system,
+        // Bloques 1-7: identicos en todos los turnos y en ambos canales, y
+        // reenviados en cada iteracion del bucle de herramientas. Es el tramo
+        // que vale la pena cachear; lo que va detras (contexto RAG, sesion y
+        // estilo) cambia y se deja fuera a proposito.
+        systemPrefijoCacheable: prompt.segments.invariable,
         messages: historialAMensajes(ctx.history, input.text),
         tools: this.deps.tools.toClaudeToolDefinitions(),
       };
-      if (this.opciones.model !== undefined) opciones.model = this.opciones.model;
-      if (this.opciones.maxTokens !== undefined) opciones.maxTokens = this.opciones.maxTokens;
+      // El canal decide el modelo. Ver `modelVoz` para el porque y las medidas.
+      const esVoz = ctx.channel === 'voice';
+      const modelo = (esVoz ? this.opciones.modelVoz : undefined) ?? this.opciones.model;
+      const tope = (esVoz ? this.opciones.maxTokensVoz : undefined) ?? this.opciones.maxTokens;
+      if (modelo !== undefined) opciones.model = modelo;
+      if (tope !== undefined) opciones.maxTokens = tope;
 
       const ejecutar = async (toolUse: ClaudeToolUse): Promise<ToolLoopResult> => {
         const resultado = await this.ejecutarHerramienta(toolUse, ctx, log);

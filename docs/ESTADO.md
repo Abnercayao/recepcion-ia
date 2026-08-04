@@ -119,7 +119,25 @@ Detalle completo en `decisiones.md`. Los principales:
 
    Mitigado a medias: el 429 ya **no se reintenta**. Reintentar dentro del turno no sirve —la ventana del límite se mide en minutos— y el backoff empujaba el turno por encima del tiempo de espera del proveedor, que lo mataba con un error de cascada. Ahora falla rápido y el prompt declara que no dispone del dato. El límite sigue ahí: con él, parte de las respuestas salen sin conocimiento de la base.
 
-10. **Latencia por turno de voz: 5,6 a 6,9 s.** Medido sobre el gateway real. El objetivo declarado es `VOICE_LATENCIA_OBJETIVO_MS=1200`, así que se está **cuatro o cinco veces por encima**, y por eso la expresión puente («Un momento, por favor… ») suena en todos los turnos. Cabe dentro del máximo de ElevenLabs —`cascade_timeout_seconds`, que solo admite hasta 15 s— pero sin holgura: cualquier degradación del modelo o de la red vuelve a producir `LLM Cascade Error`. Optimizarlo está sin abordar.
+10. **Latencia por turno de voz: mediana 4,0 s.** Sigue muy por encima del objetivo declarado (`VOICE_LATENCIA_OBJETIVO_MS=1200`), así que la expresión puente suena en todos los turnos.
+
+    **Dónde se va el tiempo.** Medido con el prompt maestro real, una única llamada al modelo:
+
+    | Configuración | Latencia (3 medidas) |
+    |---|---|
+    | sonnet-5, 1024 tokens, sin caché | 8395 / 6623 / 3568 ms |
+    | sonnet-5, 1024 tokens, con caché | 5379 / 4446 / 3821 ms |
+    | sonnet-5, 250 tokens, con caché | 3384 / 4344 / 4155 ms |
+    | haiku-4.5, 250 tokens, con caché | **1042 / 1547 / 1170 ms** |
+
+    El turno era, en esencia, **una sola llamada a Sonnet**. Hecho hasta ahora:
+
+    - **Caché del prompt** sobre los bloques 1–7, que son idénticos en todos los turnos y se reenviaban en cada iteración del bucle de herramientas. Unos 2565 tokens leídos de caché por llamada.
+    - **Modelo y tope de tokens propios del canal de voz** (`CLAUDE_MODEL_VOZ`, `CLAUDE_MAX_TOKENS_VOZ`). Con haiku-4.5 y 250 tokens la mediana baja de 5,7 s a 4,0 s.
+
+    **El coste de esa decisión, que no es gratis:** haiku cumple peor el bloque de estilo. En las pruebas tuteó al paciente («¿en qué puedo ayudarte?») cuando el prompt exige tratar de usted. Los controles no dependen del modelo —las tres capas, el detector de urgencia y la validación de herramientas siguen igual—, pero el tono sí. Volver a Sonnet es quitar una línea del `.env`.
+
+    **Lo que queda por debajo.** Con haiku el modelo aporta ~1,2 s; el resto es sobre todo el RAG (~1,7 s por consulta a Voyage). El suelo actual ronda los 3 s. Bajar de ahí exige cachear los embeddings de consulta o saltarse el RAG cuando no hace falta (un «hola» no necesita recuperar nada) — ninguna de las dos está hecha.
 
 *(Resuelto: `scripts/demo.ts`, `migrate.ts` y `seed.ts` no importaban `dotenv`, así que no leían el `.env` que la guía manda rellenar. Los tres lo hacen ya.)*
 

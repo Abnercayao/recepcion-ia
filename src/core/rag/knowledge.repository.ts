@@ -57,6 +57,17 @@ export interface KnowledgeRepository {
     limit: number,
     minSimilarity: number,
   ): Promise<KnowledgeChunk[]>;
+  /**
+   * Respaldo LEXICO, para cuando no hay embedding disponible.
+   *
+   * Mismo aislamiento que `matchKnowledge`: filtra por `clinic_id` Y por
+   * `activo = true`, y reafirma el `clinicId` desde el parametro, nunca desde
+   * la fila. Es peor que la busqueda vectorial —recupera menos y peor— pero es
+   * MUCHO mejor que devolver lista vacia: sin fragmentos el modelo rellena el
+   * hueco, y "nunca inventar datos ausentes de la base" no tiene control
+   * automatico en capa 2.
+   */
+  buscarPorPalabras(clinicId: string, query: string, limit: number): Promise<KnowledgeChunk[]>;
   /** Inserta un fragmento SIN activar (activo=false). Requiere `aprobar` para entrar en produccion (control O2). */
   insertPendiente(chunk: NuevoChunk): Promise<{ id: string }>;
   /** Activa un fragmento tras aprobacion escrita explicita, con fecha y responsable (3.1.3.B, control O2). */
@@ -94,6 +105,46 @@ export class SupabaseKnowledgeRepository implements KnowledgeRepository {
       contenido: fila.contenido,
       fuente: fila.fuente,
       similarity: fila.similarity,
+    }));
+  }
+
+  /**
+   * Busqueda por palabras. `websearch_to_tsquery` con el diccionario espanol,
+   * que ya hace la lematizacion y descarta las palabras vacias, asi que no hay
+   * que mantener una lista propia.
+   *
+   * El filtro `activo = true` y el `clinic_id` van en la MISMA consulta, igual
+   * que en `match_knowledge`: el aislamiento entre clinicas (C9) no depende de
+   * que el llamador se acuerde.
+   */
+  async buscarPorPalabras(
+    clinicId: string,
+    query: string,
+    limit: number,
+  ): Promise<KnowledgeChunk[]> {
+    const { data, error } = await this.client
+      .from('knowledge_chunks')
+      .select('id, contenido, fuente')
+      .eq('clinic_id', clinicId)
+      .eq('activo', true)
+      .textSearch('contenido', query, { type: 'websearch', config: 'spanish' })
+      .limit(limit);
+
+    if (error) {
+      throw new Error(`busqueda lexica fallo: ${error.message}`);
+    }
+
+    const filas = z
+      .array(z.object({ id: z.string(), contenido: z.string(), fuente: fuenteSchema }))
+      .parse(data ?? []);
+
+    return filas.map((fila) => ({
+      id: fila.id,
+      // Igual que en matchKnowledge: el clinicId sale del parametro, no de la
+      // fila. No hay ruta por la que se cuele un fragmento de otra clinica.
+      clinicId,
+      contenido: fila.contenido,
+      fuente: fila.fuente,
     }));
   }
 

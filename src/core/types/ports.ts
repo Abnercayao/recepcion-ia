@@ -56,6 +56,18 @@ export type ClaudeStreamChunk =
 
 export interface ClaudeCallOptions {
   system: string;
+  /**
+   * Prefijo ESTABLE de `system`, para cachearlo entre llamadas.
+   *
+   * Son los bloques 1-7 del prompt maestro: identicos en todos los turnos y en
+   * ambos canales. Sin esto, el prompt entero se reprocesa en cada iteracion
+   * del bucle de herramientas y en cada turno, que es donde se iba buena parte
+   * de la latencia del canal de voz.
+   *
+   * Tiene que ser un prefijo LITERAL de `system`: el adaptador parte la cadena
+   * por su longitud, no la concatena. Si no lo es, se ignora.
+   */
+  systemPrefijoCacheable?: string;
   messages: ClaudeMessage[];
   tools?: Array<{ name: string; description: string; input_schema: Record<string, unknown> }>;
   model?: string;

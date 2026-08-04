@@ -18,9 +18,11 @@ class FakeEmbeddingPort implements EmbeddingPort {
   }
 }
 
-/** Doble de KnowledgeRepository: solo matchKnowledge se ejercita desde RagService. */
+/** Doble de KnowledgeRepository: RagService usa matchKnowledge y buscarPorPalabras. */
 class FakeKnowledgeRepository implements KnowledgeRepository {
   readonly calls: Array<{ clinicId: string; embedding: number[]; limit: number; minSimilarity: number }> = [];
+  /** Llamadas al respaldo lexico, para poder afirmar CUANDO se recurre a el. */
+  readonly llamadasLexicas: Array<{ clinicId: string; query: string; limit: number }> = [];
 
   constructor(
     private readonly impl: (
@@ -29,6 +31,12 @@ class FakeKnowledgeRepository implements KnowledgeRepository {
       limit: number,
       minSimilarity: number,
     ) => Promise<KnowledgeChunk[]>,
+    /** Por defecto el lexico no devuelve nada: preserva el comportamiento que esperan los tests previos. */
+    private readonly implLexica: (
+      clinicId: string,
+      query: string,
+      limit: number,
+    ) => Promise<KnowledgeChunk[]> = async () => [],
   ) {}
 
   async matchKnowledge(
@@ -39,6 +47,15 @@ class FakeKnowledgeRepository implements KnowledgeRepository {
   ): Promise<KnowledgeChunk[]> {
     this.calls.push({ clinicId, embedding, limit, minSimilarity });
     return this.impl(clinicId, embedding, limit, minSimilarity);
+  }
+
+  async buscarPorPalabras(
+    clinicId: string,
+    query: string,
+    limit: number,
+  ): Promise<KnowledgeChunk[]> {
+    this.llamadasLexicas.push({ clinicId, query, limit });
+    return this.implLexica(clinicId, query, limit);
   }
 
   async insertPendiente(_chunk: NuevoChunk): Promise<{ id: string }> {
@@ -166,11 +183,75 @@ describe('RagService.retrieve', () => {
     expect(repo.calls).toHaveLength(0);
   });
 
-  it('fail-safe: si el embedding falla (p. ej. Voyage caido), devuelve lista vacia y registra el error', async () => {
+  it('si el embedding falla (p. ej. Voyage limitando), cae al respaldo lexico', async () => {
+    const chunk: KnowledgeChunk = {
+      id: 'k1',
+      clinicId: CLINIC_A,
+      contenido: 'Hay 24 sedes en Lima.',
+      fuente: 'faq',
+    };
+    const embeddings = new FakeEmbeddingPort(async () => {
+      throw new Error('Voyage AI respondio 429 Too Many Requests');
+    });
+    const repo = new FakeKnowledgeRepository(
+      async () => [],
+      async () => [chunk],
+    );
+    const logger = new FakeLogger();
+    const service = new RagService(embeddings, repo, logger);
+
+    const resultado = await service.retrieve(CLINIC_A, 'cuantas sedes tienen');
+
+    // Lo que importa: NO se queda sin contexto. Sin fragmentos el modelo
+    // rellena, y esa linea roja no tiene control automatico en capa 2.
+    expect(resultado).toEqual([chunk]);
+    expect(repo.llamadasLexicas).toHaveLength(1);
+    expect(repo.llamadasLexicas[0]).toMatchObject({ clinicId: CLINIC_A });
+    // El fallo vectorial es un aviso, no el final del camino.
+    expect(logger.errores).toHaveLength(0);
+  });
+
+  it('si el vectorial no supera el umbral, tambien intenta el lexico antes de rendirse', async () => {
+    const chunk: KnowledgeChunk = {
+      id: 'k2',
+      clinicId: CLINIC_A,
+      contenido: 'Los sabados se atiende de 9:00 a 13:00.',
+      fuente: 'faq',
+    };
+    const embeddings = new FakeEmbeddingPort(async () => [[0, 0, 0]]);
+    const repo = new FakeKnowledgeRepository(
+      async () => [],
+      async () => [chunk],
+    );
+    const service = new RagService(embeddings, repo, new FakeLogger());
+
+    expect(await service.retrieve(CLINIC_A, 'horario sabado')).toEqual([chunk]);
+    expect(repo.llamadasLexicas).toHaveLength(1);
+  });
+
+  it('el respaldo lexico recibe el clinicId del llamador (aislamiento C9)', async () => {
+    const otraClinica = '11111111-1111-4111-8111-111111111111';
+    const embeddings = new FakeEmbeddingPort(async () => {
+      throw new Error('429');
+    });
+    const repo = new FakeKnowledgeRepository(async () => []);
+    const service = new RagService(embeddings, repo, new FakeLogger());
+
+    await service.retrieve(otraClinica, 'consulta');
+
+    expect(repo.llamadasLexicas[0]?.clinicId).toBe(otraClinica);
+  });
+
+  it('fail-safe: si fallan las DOS vias, devuelve lista vacia y registra el error', async () => {
     const embeddings = new FakeEmbeddingPort(async () => {
       throw new Error('VOYAGE_API_KEY no esta configurada');
     });
-    const repo = new FakeKnowledgeRepository(async () => []);
+    const repo = new FakeKnowledgeRepository(
+      async () => [],
+      async () => {
+        throw new Error('conexion rechazada');
+      },
+    );
     const logger = new FakeLogger();
     const service = new RagService(embeddings, repo, logger);
 
@@ -179,19 +260,5 @@ describe('RagService.retrieve', () => {
     expect(resultado).toEqual([]);
     expect(logger.errores).toHaveLength(1);
     expect(logger.errores[0]?.obj).toMatchObject({ clinicId: CLINIC_A });
-  });
-
-  it('fail-safe: si el repositorio falla (p. ej. Supabase caido), devuelve lista vacia y registra el error', async () => {
-    const embeddings = new FakeEmbeddingPort(async () => [[0, 0, 0]]);
-    const repo = new FakeKnowledgeRepository(async () => {
-      throw new Error('conexion rechazada');
-    });
-    const logger = new FakeLogger();
-    const service = new RagService(embeddings, repo, logger);
-
-    const resultado = await service.retrieve(CLINIC_A, 'consulta');
-
-    expect(resultado).toEqual([]);
-    expect(logger.errores).toHaveLength(1);
   });
 });

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "45334366a4d697ee",
+  "huella": "ccfa8551dc6216e5",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 169,
+        "lineas": 173,
         "capa": "documentacion"
       }
     },
@@ -1138,7 +1138,7 @@
           "@anthropic-ai/sdk",
           "p-retry"
         ],
-        "lineas": 389,
+        "lineas": 415,
         "capa": "nucleo"
       }
     },
@@ -1175,7 +1175,7 @@
       "ruta": "src/core/conversation/conversation.service.ts",
       "resumen": "EL servicio de conversacion. Uno solo, comun a los dos canales.",
       "meta": {
-        "lineas": 813,
+        "lineas": 845,
         "capa": "nucleo"
       }
     },
@@ -1230,7 +1230,7 @@
           "@supabase/supabase-js",
           "zod"
         ],
-        "lineas": 136,
+        "lineas": 187,
         "capa": "nucleo"
       }
     },
@@ -1241,7 +1241,7 @@
       "ruta": "src/core/rag/rag.service.ts",
       "resumen": "Implementacion de RagPort: recupera fragmentos aprobados y activos de la",
       "meta": {
-        "lineas": 118,
+        "lineas": 163,
         "capa": "nucleo"
       }
     },
@@ -1390,7 +1390,7 @@
       "ruta": "src/core/types/ports.ts",
       "resumen": "PUERTOS: las fronteras del nucleo.",
       "meta": {
-        "lineas": 188,
+        "lineas": 200,
         "capa": "contratos"
       }
     },
@@ -1444,7 +1444,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 217,
+        "lineas": 228,
         "capa": "infraestructura"
       }
     },
@@ -1652,7 +1652,7 @@
           "node:path",
           "node:url"
         ],
-        "lineas": 276,
+        "lineas": 281,
         "capa": "composicion"
       }
     },
@@ -1892,7 +1892,7 @@
         "externas": [
           "vitest"
         ],
-        "lineas": 198,
+        "lineas": 265,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -2078,7 +2078,7 @@
       "tipo": "puerto",
       "nombre": "AuditRepository",
       "ruta": "src/core/types/ports.ts",
-      "linea": 185,
+      "linea": 197,
       "meta": {
         "metodos": [
           "log"
@@ -2090,7 +2090,7 @@
       "tipo": "puerto",
       "nombre": "CalendarPort",
       "ruta": "src/core/types/ports.ts",
-      "linea": 121,
+      "linea": 133,
       "meta": {
         "metodos": [
           "findAvailableSlots",
@@ -2105,7 +2105,7 @@
       "tipo": "puerto",
       "nombre": "ClaudePort",
       "ruta": "src/core/types/ports.ts",
-      "linea": 70,
+      "linea": 82,
       "resumen": "Puerto del modelo. Encapsular la invocacion aqui es lo que hace que sustituir",
       "meta": {
         "metodos": [
@@ -2119,7 +2119,7 @@
       "tipo": "puerto",
       "nombre": "ClinicRepository",
       "ruta": "src/core/types/ports.ts",
-      "linea": 147,
+      "linea": 159,
       "meta": {
         "metodos": [
           "findById"
@@ -2131,7 +2131,7 @@
       "tipo": "puerto",
       "nombre": "ConversationRepository",
       "ruta": "src/core/types/ports.ts",
-      "linea": 156,
+      "linea": 168,
       "meta": {
         "metodos": [
           "findActiveWithin",
@@ -2146,7 +2146,7 @@
       "tipo": "puerto",
       "nombre": "EmbeddingPort",
       "ruta": "src/core/types/ports.ts",
-      "linea": 89,
+      "linea": 101,
       "meta": {
         "metodos": [
           "embed"
@@ -2176,7 +2176,7 @@
       "tipo": "puerto",
       "nombre": "MessageRepository",
       "ruta": "src/core/types/ports.ts",
-      "linea": 164,
+      "linea": 176,
       "meta": {
         "metodos": [
           "append",
@@ -2189,7 +2189,7 @@
       "tipo": "puerto",
       "nombre": "NotificationPort",
       "ruta": "src/core/types/ports.ts",
-      "linea": 134,
+      "linea": 146,
       "meta": {
         "metodos": [
           "notifyEscalation"
@@ -2201,7 +2201,7 @@
       "tipo": "puerto",
       "nombre": "PatientRepository",
       "ruta": "src/core/types/ports.ts",
-      "linea": 151,
+      "linea": 163,
       "meta": {
         "metodos": [
           "upsert"
@@ -2213,7 +2213,7 @@
       "tipo": "puerto",
       "nombre": "RagPort",
       "ruta": "src/core/types/ports.ts",
-      "linea": 95,
+      "linea": 107,
       "meta": {
         "metodos": [
           "retrieve"
@@ -2225,7 +2225,7 @@
       "tipo": "puerto",
       "nombre": "ToolCallRepository",
       "ruta": "src/core/types/ports.ts",
-      "linea": 179,
+      "linea": 191,
       "meta": {
         "metodos": [
           "record",
@@ -4247,7 +4247,7 @@
       "tipo": "simbolo",
       "nombre": "ConversationServiceImpl",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 344,
+      "linea": 367,
       "meta": {
         "clase": "class"
       }
@@ -4578,7 +4578,7 @@
       "tipo": "simbolo",
       "nombre": "SupabaseKnowledgeRepository",
       "ruta": "src/core/rag/knowledge.repository.ts",
-      "linea": 66,
+      "linea": 77,
       "meta": {
         "clase": "class"
       }
@@ -5223,7 +5223,7 @@
       "tipo": "simbolo",
       "nombre": "CalendarEvent",
       "ruta": "src/core/types/ports.ts",
-      "linea": 113,
+      "linea": 125,
       "meta": {
         "clase": "interface"
       }
@@ -5233,7 +5233,7 @@
       "tipo": "simbolo",
       "nombre": "CalendarSlot",
       "ruta": "src/core/types/ports.ts",
-      "linea": 107,
+      "linea": 119,
       "meta": {
         "clase": "interface"
       }
@@ -5284,7 +5284,7 @@
       "tipo": "simbolo",
       "nombre": "KnowledgeChunk",
       "ruta": "src/core/types/ports.ts",
-      "linea": 81,
+      "linea": 93,
       "meta": {
         "clase": "interface"
       }
@@ -5546,7 +5546,7 @@
       "tipo": "simbolo",
       "nombre": "Config",
       "ruta": "src/infra/config.ts",
-      "linea": 181,
+      "linea": 192,
       "meta": {
         "clase": "type"
       }
@@ -5556,7 +5556,7 @@
       "tipo": "simbolo",
       "nombre": "ConfigError",
       "ruta": "src/infra/config.ts",
-      "linea": 183,
+      "linea": 194,
       "meta": {
         "clase": "class"
       }
@@ -5566,7 +5566,7 @@
       "tipo": "simbolo",
       "nombre": "getConfig",
       "ruta": "src/infra/config.ts",
-      "linea": 208,
+      "linea": 219,
       "resumen": "Configuracion del proceso, memoizada. Falla al primer uso si el entorno es invalido.",
       "meta": {
         "clase": "function"
@@ -5577,7 +5577,7 @@
       "tipo": "simbolo",
       "nombre": "loadConfig",
       "ruta": "src/infra/config.ts",
-      "linea": 197,
+      "linea": 208,
       "resumen": "Valida el entorno y devuelve la configuracion. Lanza ConfigError si falta algo.",
       "meta": {
         "clase": "function"
@@ -5588,7 +5588,7 @@
       "tipo": "simbolo",
       "nombre": "resetConfigCache",
       "ruta": "src/infra/config.ts",
-      "linea": 214,
+      "linea": 225,
       "resumen": "Solo para tests.",
       "meta": {
         "clase": "function"
@@ -6625,7 +6625,7 @@
       "tipo": "variable_entorno",
       "nombre": "AUDIO_RETENTION",
       "ruta": "src/infra/config.ts",
-      "linea": 92,
+      "linea": 103,
       "meta": {
         "obligatoria": true
       }
@@ -6635,7 +6635,7 @@
       "tipo": "variable_entorno",
       "nombre": "CLAUDE_MAX_TOKENS",
       "ruta": "src/infra/config.ts",
-      "linea": 54,
+      "linea": 65,
       "meta": {
         "obligatoria": true
       }
@@ -6661,11 +6661,22 @@
       }
     },
     {
+      "id": "variable_entorno:CLAUDE_MODEL_VOZ",
+      "tipo": "variable_entorno",
+      "nombre": "CLAUDE_MODEL_VOZ",
+      "ruta": "src/infra/config.ts",
+      "linea": 54,
+      "resumen": "Modelo y tope de tokens del canal de VOZ. Opcionales: sin ellos, voz usa",
+      "meta": {
+        "obligatoria": true
+      }
+    },
+    {
       "id": "variable_entorno:DEFAULT_PHONE_REGION",
       "tipo": "variable_entorno",
       "nombre": "DEFAULT_PHONE_REGION",
       "ruta": "src/infra/config.ts",
-      "linea": 120,
+      "linea": 131,
       "meta": {
         "obligatoria": true
       }
@@ -6675,7 +6686,7 @@
       "tipo": "variable_entorno",
       "nombre": "ELEVENLABS_AGENT_ID",
       "ruta": "src/infra/config.ts",
-      "linea": 77,
+      "linea": 88,
       "meta": {
         "obligatoria": true
       }
@@ -6685,7 +6696,7 @@
       "tipo": "variable_entorno",
       "nombre": "ELEVENLABS_API_KEY",
       "ruta": "src/infra/config.ts",
-      "linea": 76,
+      "linea": 87,
       "meta": {
         "obligatoria": true
       }
@@ -6695,7 +6706,7 @@
       "tipo": "variable_entorno",
       "nombre": "ELEVENLABS_MODEL",
       "ruta": "src/infra/config.ts",
-      "linea": 79,
+      "linea": 90,
       "meta": {
         "obligatoria": true
       }
@@ -6705,7 +6716,7 @@
       "tipo": "variable_entorno",
       "nombre": "ELEVENLABS_VOICE_ID",
       "ruta": "src/infra/config.ts",
-      "linea": 78,
+      "linea": 89,
       "meta": {
         "obligatoria": true
       }
@@ -6715,7 +6726,7 @@
       "tipo": "variable_entorno",
       "nombre": "ELEVENLABS_WEBHOOK_SECRET",
       "ruta": "src/infra/config.ts",
-      "linea": 88,
+      "linea": 99,
       "resumen": "Distinto del anterior: es el secreto con el que ElevenLabs FIRMA el",
       "meta": {
         "obligatoria": true
@@ -6726,7 +6737,7 @@
       "tipo": "variable_entorno",
       "nombre": "ELEVENLABS_WS_URL",
       "ruta": "src/infra/config.ts",
-      "linea": 80,
+      "linea": 91,
       "meta": {
         "obligatoria": true
       }
@@ -6736,7 +6747,7 @@
       "tipo": "variable_entorno",
       "nombre": "EMBEDDING_DIMENSIONS",
       "ruta": "src/infra/config.ts",
-      "linea": 59,
+      "linea": 70,
       "meta": {
         "obligatoria": true
       }
@@ -6746,7 +6757,7 @@
       "tipo": "variable_entorno",
       "nombre": "EMBEDDING_MODEL",
       "ruta": "src/infra/config.ts",
-      "linea": 58,
+      "linea": 69,
       "meta": {
         "obligatoria": true
       }
@@ -6756,7 +6767,7 @@
       "tipo": "variable_entorno",
       "nombre": "GOOGLE_CALENDAR_CREDENTIALS",
       "ruta": "src/infra/config.ts",
-      "linea": 115,
+      "linea": 126,
       "meta": {
         "obligatoria": true
       }
@@ -6776,7 +6787,7 @@
       "tipo": "variable_entorno",
       "nombre": "N8N_WEBHOOK_URL",
       "ruta": "src/infra/config.ts",
-      "linea": 116,
+      "linea": 127,
       "meta": {
         "obligatoria": true
       }
@@ -6806,7 +6817,7 @@
       "tipo": "variable_entorno",
       "nombre": "RETENCION_AUDIO_DIAS",
       "ruta": "src/infra/config.ts",
-      "linea": 72,
+      "linea": 83,
       "meta": {
         "obligatoria": true
       }
@@ -6816,7 +6827,7 @@
       "tipo": "variable_entorno",
       "nombre": "RETENCION_TRANSCRIPCION_DIAS",
       "ruta": "src/infra/config.ts",
-      "linea": 71,
+      "linea": 82,
       "meta": {
         "obligatoria": true
       }
@@ -6826,7 +6837,7 @@
       "tipo": "variable_entorno",
       "nombre": "SIP_PROVIDER",
       "ruta": "src/infra/config.ts",
-      "linea": 95,
+      "linea": 106,
       "meta": {
         "obligatoria": true
       }
@@ -6836,7 +6847,7 @@
       "tipo": "variable_entorno",
       "nombre": "SUPABASE_DB_URL",
       "ruta": "src/infra/config.ts",
-      "linea": 70,
+      "linea": 81,
       "resumen": "Cadena de conexion REAL de Postgres. No es lo mismo que SUPABASE_URL /",
       "meta": {
         "obligatoria": true
@@ -6847,7 +6858,7 @@
       "tipo": "variable_entorno",
       "nombre": "SUPABASE_SERVICE_KEY",
       "ruta": "src/infra/config.ts",
-      "linea": 63,
+      "linea": 74,
       "meta": {
         "obligatoria": true
       }
@@ -6857,7 +6868,7 @@
       "tipo": "variable_entorno",
       "nombre": "SUPABASE_URL",
       "ruta": "src/infra/config.ts",
-      "linea": 62,
+      "linea": 73,
       "meta": {
         "obligatoria": true
       }
@@ -6867,7 +6878,7 @@
       "tipo": "variable_entorno",
       "nombre": "TRANSFER_WHITELIST",
       "ruta": "src/infra/config.ts",
-      "linea": 99,
+      "linea": 110,
       "meta": {
         "obligatoria": true
       }
@@ -6877,7 +6888,7 @@
       "tipo": "variable_entorno",
       "nombre": "TWILIO_ACCOUNT_SID",
       "ruta": "src/infra/config.ts",
-      "linea": 96,
+      "linea": 107,
       "meta": {
         "obligatoria": true
       }
@@ -6887,7 +6898,7 @@
       "tipo": "variable_entorno",
       "nombre": "TWILIO_AUTH_TOKEN",
       "ruta": "src/infra/config.ts",
-      "linea": 97,
+      "linea": 108,
       "meta": {
         "obligatoria": true
       }
@@ -6897,7 +6908,7 @@
       "tipo": "variable_entorno",
       "nombre": "TWILIO_PHONE_NUMBER",
       "ruta": "src/infra/config.ts",
-      "linea": 98,
+      "linea": 109,
       "meta": {
         "obligatoria": true
       }
@@ -6907,7 +6918,7 @@
       "tipo": "variable_entorno",
       "nombre": "VENTANA_CONTINUIDAD_HORAS",
       "ruta": "src/infra/config.ts",
-      "linea": 119,
+      "linea": 130,
       "meta": {
         "obligatoria": true
       }
@@ -6917,7 +6928,7 @@
       "tipo": "variable_entorno",
       "nombre": "VOICE_BUFFER_WORD_MS",
       "ruta": "src/infra/config.ts",
-      "linea": 91,
+      "linea": 102,
       "resumen": "Umbral tras el cual el gateway emite una expresion puente. Ver anti-patron 7.",
       "meta": {
         "obligatoria": true
@@ -6928,7 +6939,7 @@
       "tipo": "variable_entorno",
       "nombre": "VOICE_ENABLED",
       "ruta": "src/infra/config.ts",
-      "linea": 75,
+      "linea": 86,
       "meta": {
         "obligatoria": true
       }
@@ -6938,7 +6949,7 @@
       "tipo": "variable_entorno",
       "nombre": "VOICE_GATEWAY_SECRET",
       "ruta": "src/infra/config.ts",
-      "linea": 83,
+      "linea": 94,
       "resumen": "Protege NUESTRO endpoint Custom LLM frente a peticiones no autorizadas.",
       "meta": {
         "obligatoria": true
@@ -6949,7 +6960,7 @@
       "tipo": "variable_entorno",
       "nombre": "VOICE_GATEWAY_URL",
       "ruta": "src/infra/config.ts",
-      "linea": 81,
+      "linea": 92,
       "meta": {
         "obligatoria": true
       }
@@ -6959,7 +6970,7 @@
       "tipo": "variable_entorno",
       "nombre": "VOICE_LATENCIA_OBJETIVO_MS",
       "ruta": "src/infra/config.ts",
-      "linea": 89,
+      "linea": 100,
       "meta": {
         "obligatoria": true
       }
@@ -6969,7 +6980,7 @@
       "tipo": "variable_entorno",
       "nombre": "VOYAGE_API_KEY",
       "ruta": "src/infra/config.ts",
-      "linea": 57,
+      "linea": 68,
       "meta": {
         "obligatoria": true
       }
@@ -6979,7 +6990,7 @@
       "tipo": "variable_entorno",
       "nombre": "WHATSAPP_APP_SECRET",
       "ruta": "src/infra/config.ts",
-      "linea": 111,
+      "linea": 122,
       "resumen": "App Secret de Meta: es la clave del HMAC de X-Hub-Signature-256, y es una",
       "meta": {
         "obligatoria": true
@@ -6990,7 +7001,7 @@
       "tipo": "variable_entorno",
       "nombre": "WHATSAPP_BSP_TOKEN",
       "ruta": "src/infra/config.ts",
-      "linea": 102,
+      "linea": 113,
       "meta": {
         "obligatoria": true
       }
@@ -7000,7 +7011,7 @@
       "tipo": "variable_entorno",
       "nombre": "WHATSAPP_ENABLED",
       "ruta": "src/infra/config.ts",
-      "linea": 112,
+      "linea": 123,
       "meta": {
         "obligatoria": true
       }
@@ -7010,7 +7021,7 @@
       "tipo": "variable_entorno",
       "nombre": "WHATSAPP_PHONE_ID",
       "ruta": "src/infra/config.ts",
-      "linea": 103,
+      "linea": 114,
       "meta": {
         "obligatoria": true
       }
@@ -7020,7 +7031,7 @@
       "tipo": "variable_entorno",
       "nombre": "WHATSAPP_WEBHOOK_SECRET",
       "ruta": "src/infra/config.ts",
-      "linea": 105,
+      "linea": 116,
       "resumen": "Token del challenge GET de verificacion del webhook (hub.verify_token).",
       "meta": {
         "obligatoria": true
@@ -7194,13 +7205,13 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:167"
+      "origen": "docs/ESTADO.md:171"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "menciona",
       "hacia": "control:C8",
-      "origen": "docs/ESTADO.md:146"
+      "origen": "docs/ESTADO.md:150"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -9204,7 +9215,7 @@
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
-      "origen": "src/core/conversation/conversation.service.ts:344"
+      "origen": "src/core/conversation/conversation.service.ts:367"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
@@ -9486,7 +9497,7 @@
       "desde": "modulo:src/core/rag/knowledge.repository.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/knowledge.repository.ts#SupabaseKnowledgeRepository",
-      "origen": "src/core/rag/knowledge.repository.ts:66"
+      "origen": "src/core/rag/knowledge.repository.ts:77"
     },
     {
       "desde": "modulo:src/core/rag/knowledge.repository.ts",
@@ -9516,7 +9527,7 @@
       "desde": "modulo:src/core/rag/knowledge.repository.ts",
       "relacion": "usa_tabla",
       "hacia": "tabla:knowledge_chunks",
-      "origen": "src/core/rag/knowledge.repository.ts:102"
+      "origen": "src/core/rag/knowledge.repository.ts:126"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
@@ -10224,37 +10235,37 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:AuditRepository",
-      "origen": "src/core/types/ports.ts:185"
+      "origen": "src/core/types/ports.ts:197"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:CalendarPort",
-      "origen": "src/core/types/ports.ts:121"
+      "origen": "src/core/types/ports.ts:133"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:ClaudePort",
-      "origen": "src/core/types/ports.ts:70"
+      "origen": "src/core/types/ports.ts:82"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:ClinicRepository",
-      "origen": "src/core/types/ports.ts:147"
+      "origen": "src/core/types/ports.ts:159"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:ConversationRepository",
-      "origen": "src/core/types/ports.ts:156"
+      "origen": "src/core/types/ports.ts:168"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:EmbeddingPort",
-      "origen": "src/core/types/ports.ts:89"
+      "origen": "src/core/types/ports.ts:101"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10266,67 +10277,67 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:MessageRepository",
-      "origen": "src/core/types/ports.ts:164"
+      "origen": "src/core/types/ports.ts:176"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:NotificationPort",
-      "origen": "src/core/types/ports.ts:134"
+      "origen": "src/core/types/ports.ts:146"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:PatientRepository",
-      "origen": "src/core/types/ports.ts:151"
+      "origen": "src/core/types/ports.ts:163"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:RagPort",
-      "origen": "src/core/types/ports.ts:95"
+      "origen": "src/core/types/ports.ts:107"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:ToolCallRepository",
-      "origen": "src/core/types/ports.ts:179"
+      "origen": "src/core/types/ports.ts:191"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:AuditRepository",
-      "origen": "src/core/types/ports.ts:185"
+      "origen": "src/core/types/ports.ts:197"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:CalendarPort",
-      "origen": "src/core/types/ports.ts:121"
+      "origen": "src/core/types/ports.ts:133"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:ClaudePort",
-      "origen": "src/core/types/ports.ts:70"
+      "origen": "src/core/types/ports.ts:82"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:ClinicRepository",
-      "origen": "src/core/types/ports.ts:147"
+      "origen": "src/core/types/ports.ts:159"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:ConversationRepository",
-      "origen": "src/core/types/ports.ts:156"
+      "origen": "src/core/types/ports.ts:168"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:EmbeddingPort",
-      "origen": "src/core/types/ports.ts:89"
+      "origen": "src/core/types/ports.ts:101"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10338,43 +10349,43 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:MessageRepository",
-      "origen": "src/core/types/ports.ts:164"
+      "origen": "src/core/types/ports.ts:176"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:NotificationPort",
-      "origen": "src/core/types/ports.ts:134"
+      "origen": "src/core/types/ports.ts:146"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:PatientRepository",
-      "origen": "src/core/types/ports.ts:151"
+      "origen": "src/core/types/ports.ts:163"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:RagPort",
-      "origen": "src/core/types/ports.ts:95"
+      "origen": "src/core/types/ports.ts:107"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:ToolCallRepository",
-      "origen": "src/core/types/ports.ts:179"
+      "origen": "src/core/types/ports.ts:191"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/types/ports.ts#CalendarEvent",
-      "origen": "src/core/types/ports.ts:113"
+      "origen": "src/core/types/ports.ts:125"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/types/ports.ts#CalendarSlot",
-      "origen": "src/core/types/ports.ts:107"
+      "origen": "src/core/types/ports.ts:119"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10404,7 +10415,7 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/types/ports.ts#KnowledgeChunk",
-      "origen": "src/core/types/ports.ts:81"
+      "origen": "src/core/types/ports.ts:93"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10440,19 +10451,19 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "menciona",
       "hacia": "control:C7",
-      "origen": "src/core/types/ports.ts:124"
+      "origen": "src/core/types/ports.ts:136"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "menciona",
       "hacia": "control:C9",
-      "origen": "src/core/types/ports.ts:98"
+      "origen": "src/core/types/ports.ts:110"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "menciona",
       "hacia": "control:O5",
-      "origen": "src/core/types/ports.ts:138"
+      "origen": "src/core/types/ports.ts:150"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10680,37 +10691,37 @@
       "desde": "modulo:src/infra/config.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/config.ts#Config",
-      "origen": "src/infra/config.ts:181"
+      "origen": "src/infra/config.ts:192"
     },
     {
       "desde": "modulo:src/infra/config.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/config.ts#ConfigError",
-      "origen": "src/infra/config.ts:183"
+      "origen": "src/infra/config.ts:194"
     },
     {
       "desde": "modulo:src/infra/config.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/config.ts#getConfig",
-      "origen": "src/infra/config.ts:208"
+      "origen": "src/infra/config.ts:219"
     },
     {
       "desde": "modulo:src/infra/config.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/config.ts#loadConfig",
-      "origen": "src/infra/config.ts:197"
+      "origen": "src/infra/config.ts:208"
     },
     {
       "desde": "modulo:src/infra/config.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/config.ts#resetConfigCache",
-      "origen": "src/infra/config.ts:214"
+      "origen": "src/infra/config.ts:225"
     },
     {
       "desde": "modulo:src/infra/config.ts",
       "relacion": "menciona",
       "hacia": "control:C8",
-      "origen": "src/infra/config.ts:170"
+      "origen": "src/infra/config.ts:181"
     },
     {
       "desde": "modulo:src/infra/config.ts",
@@ -11363,6 +11374,12 @@
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
+      "hacia": "variable_entorno:CLAUDE_MODEL_VOZ",
+      "origen": "src/server.ts:140"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "lee_variable",
       "hacia": "variable_entorno:DEFAULT_PHONE_REGION",
       "origen": "src/server.ts:130"
     },
@@ -11370,7 +11387,7 @@
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ELEVENLABS_WEBHOOK_SECRET",
-      "origen": "src/server.ts:226"
+      "origen": "src/server.ts:231"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -11394,19 +11411,19 @@
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:PORT",
-      "origen": "src/server.ts:248"
+      "origen": "src/server.ts:253"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:RETENCION_AUDIO_DIAS",
-      "origen": "src/server.ts:227"
+      "origen": "src/server.ts:232"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:SIP_PROVIDER",
-      "origen": "src/server.ts:216"
+      "origen": "src/server.ts:221"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -11418,19 +11435,19 @@
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_BUFFER_WORD_MS",
-      "origen": "src/server.ts:191"
+      "origen": "src/server.ts:196"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_ENABLED",
-      "origen": "src/server.ts:145"
+      "origen": "src/server.ts:150"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_GATEWAY_SECRET",
-      "origen": "src/server.ts:190"
+      "origen": "src/server.ts:195"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -11442,31 +11459,31 @@
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_APP_SECRET",
-      "origen": "src/server.ts:171"
+      "origen": "src/server.ts:176"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_BSP_TOKEN",
-      "origen": "src/server.ts:154"
+      "origen": "src/server.ts:159"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_ENABLED",
-      "origen": "src/server.ts:145"
+      "origen": "src/server.ts:150"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_PHONE_ID",
-      "origen": "src/server.ts:153"
+      "origen": "src/server.ts:158"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_WEBHOOK_SECRET",
-      "origen": "src/server.ts:169"
+      "origen": "src/server.ts:174"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -12792,7 +12809,7 @@
       "desde": "modulo:tests/unit/rag.service.test.ts",
       "relacion": "menciona",
       "hacia": "control:C9",
-      "origen": "tests/unit/rag.service.test.ts:136"
+      "origen": "tests/unit/rag.service.test.ts:153"
     },
     {
       "desde": "modulo:tests/unit/rag.service.test.ts",
@@ -12804,7 +12821,7 @@
       "desde": "modulo:tests/unit/rag.service.test.ts",
       "relacion": "verifica",
       "hacia": "control:C9",
-      "origen": "tests/unit/rag.service.test.ts:136"
+      "origen": "tests/unit/rag.service.test.ts:153"
     },
     {
       "desde": "modulo:tests/unit/rag.service.test.ts",
@@ -13212,13 +13229,13 @@
       "desde": "simbolo:src/channels/voice/voice-session.service.ts#VoiceSessionService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/call.repository.ts#SupabaseCallRepository",
-      "origen": "src/server.ts:183"
+      "origen": "src/server.ts:188"
     },
     {
       "desde": "simbolo:src/channels/voice/voice-session.service.ts#VoiceSessionService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/transcript.repository.ts#SupabaseTranscriptRepository",
-      "origen": "src/server.ts:183"
+      "origen": "src/server.ts:188"
     },
     {
       "desde": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
