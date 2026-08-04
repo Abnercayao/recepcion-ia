@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "4d0c98269a198082",
+  "huella": "1fd2f77dba5cb30d",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 199,
+        "lineas": 218,
         "capa": "documentacion"
       }
     },
@@ -7216,19 +7216,19 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:197"
+      "origen": "docs/ESTADO.md:216"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "menciona",
       "hacia": "control:C8",
-      "origen": "docs/ESTADO.md:176"
+      "origen": "docs/ESTADO.md:195"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "menciona",
       "hacia": "control:O5",
-      "origen": "docs/ESTADO.md:107"
+      "origen": "docs/ESTADO.md:122"
     },
     {
       "desde": "modulo:docs/ESTADO.md",

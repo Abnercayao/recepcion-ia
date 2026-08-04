@@ -8,8 +8,8 @@
   "transfer_whitelist": ["+51999000001", "+51999000002"],
   "config": {
     "_limitacion_v1": "CalendarPort no lleva parametro de sede: v1 agenda contra UN solo calendario. Las dos sedes existen en la base de conocimiento (informativo) pero el agendamiento real usa googleCalendarId. Ver docs/decisiones.md, vacio 6.",
-    "googleCalendarId": "aurora-miraflores@group.calendar.google.com",
-    "googleImpersonateSubject": "agenda@clinica-aurora-demo.pe",
+    "_calendario": "googleCalendarId es el ID del calendario real: Google Calendar -> Configuracion del calendario -> Integrar el calendario -> ID del calendario. googleImpersonateSubject se OMITE a proposito: solo hace falta con delegacion de dominio de Google Workspace. Sin dominio propio basta con compartir el calendario con el email de la cuenta de servicio, dandole permiso para 'Hacer cambios en los eventos'.",
+    "googleCalendarId": "PENDIENTE-pegar-el-id-del-calendario",
     "sedes_informativas": {
       "barranco": "Av. Almte. Miguel Grau 713",
       "callao": "Av. Guardia Chalaca 1362",
