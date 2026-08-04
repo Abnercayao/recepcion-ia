@@ -223,6 +223,36 @@ Bien: el `first_message` sí lleva el guion de revelación completo —menciona 
 
     Mientras tanto, el riesgo real es que el agente niegue una sede que existe y pierda al paciente.
 
+## Modo «modelo alojado»: velocidad a cambio de la capa 2
+
+El agente puede funcionar de dos maneras, y la diferencia **no es de rendimiento sino de dónde vive el control**.
+
+```bash
+npm run agente:alojado -- --tunel https://<dominio>     # modelo del proveedor
+npm run agente:alojado -- --revertir                     # vuelve al Custom LLM
+```
+
+| | Custom LLM | Modelo alojado |
+|---|---|---|
+| Quién razona | nuestro núcleo | el proveedor |
+| Capa 1 sobre la entrada | ✅ | ❌ |
+| **Capa 2 sobre la salida** | ✅ | ❌ **no existe hook de salida** |
+| Capa 3 (urgencia) en paralelo | ✅ | ❌ solo prompt |
+| Validación Zod de argumentos | ✅ | ✅ |
+| Invariantes de estado (C7, whitelist, C9) | ✅ | ✅ |
+| Registro en `tool_calls` | ✅ | ✅ |
+| Historial autoritativo propio | ✅ | ❌ |
+| Continuidad multicanal | ✅ | ❌ |
+| Latencia por turno | 12–14 s | por medir |
+
+**Lo que se pierde es el control, no una comodidad.** Sin capa 2, «nunca dar precios cerrados», «nunca afirmar ser humano» y «nunca hacer afirmaciones clínicas» vuelven a ser instrucciones que el modelo cumple o no. Se comprobó contra la documentación del proveedor que **no ofrece ningún mecanismo** para inspeccionar o filtrar el texto antes de sintetizarlo.
+
+**Lo que sobrevive** es que el modelo no puede *hacer* lo que quiera aunque pueda *decir* lo que quiera: las cinco herramientas siguen ejecutándose en nuestro servidor, validando con Zod antes de actuar, comprobando colisión de agenda, leyendo la lista blanca de la clínica y nunca del request, y filtrando por `clinic_id`. Todo queda en `tool_calls`.
+
+Los esquemas de las herramientas se derivan **del propio código** (`GET /v1/g/:secret/c/:clinicId/tools`), no se copian a mano: así no pueden desincronizarse de lo que las herramientas validan de verdad.
+
+**Sin medir todavía:** la latencia real de este modo, y —lo importante— si las líneas rojas aguantan sin capa 2. La batería adversarial está calibrada contra el prompt y los guardrails del núcleo; correrla contra este modo es lo que diría cuánto cuesta la velocidad. No se ha hecho.
+
 ## Demostración
 
 Dos arneses sobre el **mismo** montaje del núcleo (`scripts/nucleo-demo.ts`), para que no puedan divergir:

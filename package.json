@@ -24,6 +24,7 @@
     "db:seed": "tsx scripts/seed.ts",
     "demo": "tsx scripts/demo.ts",
     "demo:web": "tsx scripts/web.ts",
+    "agente:alojado": "tsx scripts/configurar-agente-alojado.ts",
     "wer": "tsx scripts/wer.ts"
   },
   "dependencies": {

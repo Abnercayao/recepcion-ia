@@ -53,6 +53,7 @@ import type { WhatsappClinicRouting } from './channels/whatsapp/whatsapp.types.j
 import { voiceGatewayPlugin } from './channels/voice/voice-gateway.controller.js';
 import { postCallWebhookPlugin } from './channels/voice/post-call.controller.js';
 import { conversationInitiationPlugin } from './channels/voice/conversation-initiation.controller.js';
+import { webhookToolsPlugin } from './channels/voice/webhook-tools.controller.js';
 import { VoiceSessionService } from './channels/voice/voice-session.service.js';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
@@ -209,6 +210,19 @@ export async function construirServidor(config: Config) {
     if (!clinicaDeVoz) {
       throw new Error(`CLINIC_ID=${clinicIdVoz} no existe en la tabla clinics.`);
     }
+
+    // Las cinco herramientas como webhooks, para un agente que razona con un
+    // modelo ALOJADO por el proveedor. Ver la cabecera de ese archivo: en ese
+    // modo NO hay capa 2, y lo que queda es que el modelo no pueda HACER lo
+    // que quiera aunque pueda DECIR lo que quiera.
+    await app.register(webhookToolsPlugin, {
+      router,
+      tools,
+      clinics,
+      audit,
+      logger,
+      gatewaySecret: config.VOICE_GATEWAY_SECRET ?? '',
+    });
 
     await app.register(conversationInitiationPlugin, {
       router,
