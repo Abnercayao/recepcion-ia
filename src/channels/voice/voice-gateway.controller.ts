@@ -342,7 +342,12 @@ async function* generarTurno(
           // BUFFER WORD (§5, paso 7). Se mide desde el inicio del turno y solo
           // hasta el PRIMER fragmento de texto: un `tool_call` no produce audio,
           // asi que el silencio percibido por el paciente sigue corriendo.
-          if (esperandoPrimerTexto && !puenteEmitido) {
+          // `bufferWordMs <= 0` desactiva el puente: el turno espera en
+          // silencio a la primera frase real. Se prefiere asi cuando la
+          // muletilla, al sonar en TODOS los turnos, deja de ser un puente y
+          // pasa a ser una coletilla que molesta. El evento `silencio` deja de
+          // registrarse porque deja de haberlo que registrar.
+          if (deps.bufferWordMs > 0 && esperandoPrimerTexto && !puenteEmitido) {
             const restante = deps.bufferWordMs - (Date.now() - inicio);
             if (await seAgotoLaEspera(pendiente, restante)) {
               puenteEmitido = true;

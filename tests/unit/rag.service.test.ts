@@ -242,6 +242,34 @@ describe('RagService.retrieve', () => {
     expect(repo.llamadasLexicas[0]?.clinicId).toBe(otraClinica);
   });
 
+  it('omite la recuperacion en mensajes de pura cortesia (un saludo no necesita contexto)', async () => {
+    const embeddings = new FakeEmbeddingPort(async () => [[0, 0, 0]]);
+    const repo = new FakeKnowledgeRepository(async () => []);
+    const service = new RagService(embeddings, repo, new FakeLogger());
+
+    for (const saludo of ['Hola', 'buenas tardes', 'Gracias', 'hasta luego']) {
+      expect(await service.retrieve(CLINIC_A, saludo)).toEqual([]);
+    }
+
+    // Ni una llamada a Voyage ni a la base: es todo el objetivo del atajo.
+    expect(embeddings.calls).toHaveLength(0);
+    expect(repo.calls).toHaveLength(0);
+    expect(repo.llamadasLexicas).toHaveLength(0);
+  });
+
+  it('NO omite la recuperacion si el saludo trae ademas una pregunta', async () => {
+    const embeddings = new FakeEmbeddingPort(async () => [[0, 0, 0]]);
+    const repo = new FakeKnowledgeRepository(async () => []);
+    const service = new RagService(embeddings, repo, new FakeLogger());
+
+    // El sesgo esta en no saltar: cualquier cosa mas que la cortesia, recupera.
+    for (const texto of ['Hola, ¿trabajan con EPS?', 'gracias, y el horario del sabado?']) {
+      await service.retrieve(CLINIC_A, texto);
+    }
+
+    expect(embeddings.calls).toHaveLength(2);
+  });
+
   it('fail-safe: si fallan las DOS vias, devuelve lista vacia y registra el error', async () => {
     const embeddings = new FakeEmbeddingPort(async () => {
       throw new Error('VOYAGE_API_KEY no esta configurada');

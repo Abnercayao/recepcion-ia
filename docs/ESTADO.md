@@ -137,7 +137,15 @@ Detalle completo en `decisiones.md`. Los principales:
 
     **El coste de esa decisión, que no es gratis:** haiku cumple peor el bloque de estilo. En las pruebas tuteó al paciente («¿en qué puedo ayudarte?») cuando el prompt exige tratar de usted. Los controles no dependen del modelo —las tres capas, el detector de urgencia y la validación de herramientas siguen igual—, pero el tono sí. Volver a Sonnet es quitar una línea del `.env`.
 
-    **Lo que queda por debajo.** Con haiku el modelo aporta ~1,2 s; el resto es sobre todo el RAG (~1,7 s por consulta a Voyage). El suelo actual ronda los 3 s. Bajar de ahí exige cachear los embeddings de consulta o saltarse el RAG cuando no hace falta (un «hola» no necesita recuperar nada) — ninguna de las dos está hecha.
+    **Segunda vuelta.** Añadido después: se **omite la recuperación en mensajes de pura cortesía** (un «hola» no necesita contexto y gastaba ~1,7 s de Voyage), se **desactiva la expresión puente** (`VOICE_BUFFER_WORD_MS=0`) porque al sonar en todos los turnos dejaba de ser un puente y era una coletilla, y el TTS pasa a `eleven_flash_v2_5` sin modo expresivo.
+
+    **Resultado: mediana 3153 ms, media 3679 ms** (desde 5709 / 6040). Un saludo baja a ~2,7 s.
+
+    **Lo que queda por debajo.** El modelo aporta ~1,2 s y el RAG ~1,7 s cuando toca consultarlo. Bajar de ~3 s exigiría cachear los embeddings de consulta, que no está hecho. El objetivo declarado de 1200 ms se fijó sin medir y no se alcanza ni con todo lo anterior: conviene revisarlo con datos antes de tratarlo como criterio de aceptación.
+
+11. **El acento de la voz derivaba.** Con `eleven_v3_conversational` y `expressive_mode`, la voz peruana (`Nelly - Warm Peruvian Spanish`, `accent: peruvian`) sonaba a español de España. Corregido pasando a `eleven_flash_v2_5`, `expressive_mode: false`, `stability: 0.75` y `similarity_boost: 0.9`. El `voice_id` no había cambiado nunca: el problema era el modelo de síntesis, no la voz.
+
+12. **haiku-4.5 tuteaba al paciente**, contra el trato de usted que define la clínica. Reforzado explícitamente en `prompts/estilo.voz.md`, con ejemplos de la forma correcta e incorrecta. Verificado después: «¿En qué **le** puedo ayudar?». Es un recordatorio de que un modelo más rápido cumple peor las reglas de estilo, y de que las reglas hay que hacerlas explícitas cuando el modelo es más pequeño.
 
 *(Resuelto: `scripts/demo.ts`, `migrate.ts` y `seed.ts` no importaban `dotenv`, así que no leían el `.env` que la guía manda rellenar. Los tres lo hacen ya.)*
 

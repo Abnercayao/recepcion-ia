@@ -76,6 +76,33 @@ export interface RagServiceOptions {
 const DEFAULT_LIMITE_FRAGMENTOS = 5;
 const DEFAULT_UMBRAL_SIMILITUD = 0.35;
 
+/**
+ * Mensajes de pura cortesia: saludos, despedidas y agradecimientos SIN
+ * pregunta. Recuperar para ellos gasta una llamada a Voyage (~1,7 s) sobre un
+ * turno que el paciente esta esperando, y no aporta un solo fragmento util.
+ *
+ * El sesgo esta puesto en NO saltar: solo se omite si el mensaje entero encaja
+ * en el patron. Basta con que lleve cualquier otra cosa —una palabra del
+ * dominio, un signo de interrogacion, un nombre de sede— para que se recupere
+ * con normalidad. Equivocarse saltando cuesta una respuesta sin contexto, que
+ * es justo el fallo que hace que el modelo invente; equivocarse recuperando
+ * solo cuesta tiempo.
+ */
+const CORTESIA =
+  /^(?:\s*(?:hola|holi|buenas|buen(?:os|as)?(?:\s+(?:dias|tardes|noches))?|que\s+tal|hey|alo|alo\?|gracias|muchas\s+gracias|mil\s+gracias|ok|okey|vale|listo|perfecto|de\s+acuerdo|entendido|adios|chau|hasta\s+luego|nos\s+vemos|buen\s+dia)\s*[.,!¡]*)+$/;
+
+/** True si el mensaje es solo cortesia y no pide ningun dato. */
+export function esPuraCortesia(texto: string): boolean {
+  const t = texto
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[¿?]/g, '')
+    .trim();
+  if (t.length === 0 || t.length > 40) return false;
+  return CORTESIA.test(t);
+}
+
 export class RagService implements RagPort {
   private readonly logger: Logger;
   private readonly limiteFragmentos: number;
@@ -95,6 +122,13 @@ export class RagService implements RagPort {
   async retrieve(clinicId: string, query: string, limit?: number): Promise<KnowledgeChunk[]> {
     const consulta = query.trim();
     if (consulta.length === 0) return [];
+
+    // Un saludo no necesita recuperar nada, y recuperarlo cuesta ~1,7 s de
+    // llamada a Voyage sobre un turno que el paciente esta esperando.
+    if (esPuraCortesia(consulta)) {
+      this.logger.debug({ clinicId }, 'consulta de cortesia: se omite la recuperacion');
+      return [];
+    }
 
     const limiteEfectivo = limit ?? this.limiteFragmentos;
 

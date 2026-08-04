@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "ccfa8551dc6216e5",
+  "huella": "ecc8f392e5e26872",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -705,7 +705,7 @@
       "ruta": "docs/ESTADO.md",
       "resumen": "Estado del proyecto",
       "meta": {
-        "lineas": 173,
+        "lineas": 191,
         "capa": "documentacion"
       }
     },
@@ -831,7 +831,7 @@
       "nombre": "estilo.voz.md",
       "ruta": "prompts/estilo.voz.md",
       "meta": {
-        "lineas": 9,
+        "lineas": 12,
         "capa": "prompts",
         "bloques": []
       }
@@ -1041,7 +1041,7 @@
           "node:crypto",
           "node:stream"
         ],
-        "lineas": 730,
+        "lineas": 735,
         "capa": "canales"
       }
     },
@@ -1241,7 +1241,7 @@
       "ruta": "src/core/rag/rag.service.ts",
       "resumen": "Implementacion de RagPort: recupera fragmentos aprobados y activos de la",
       "meta": {
-        "lineas": 163,
+        "lineas": 197,
         "capa": "nucleo"
       }
     },
@@ -1892,7 +1892,7 @@
         "externas": [
           "vitest"
         ],
-        "lineas": 265,
+        "lineas": 293,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -3205,7 +3205,7 @@
       "tipo": "simbolo",
       "nombre": "resolverExtraBody",
       "ruta": "src/channels/voice/voice-gateway.controller.ts",
-      "linea": 653,
+      "linea": 658,
       "resumen": "Devuelve el `elevenlabs_extra_body` que se usara para resolver el contexto.",
       "meta": {
         "clase": "function"
@@ -3268,7 +3268,7 @@
       "tipo": "simbolo",
       "nombre": "voiceGatewayPlugin",
       "ruta": "src/channels/voice/voice-gateway.controller.ts",
-      "linea": 709,
+      "linea": 714,
       "resumen": "Plugin Fastify del gateway de voz.",
       "meta": {
         "clase": "const"
@@ -4584,11 +4584,22 @@
       }
     },
     {
+      "id": "simbolo:src/core/rag/rag.service.ts#esPuraCortesia",
+      "tipo": "simbolo",
+      "nombre": "esPuraCortesia",
+      "ruta": "src/core/rag/rag.service.ts",
+      "linea": 95,
+      "resumen": "True si el mensaje es solo cortesia y no pide ningun dato.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
       "id": "simbolo:src/core/rag/rag.service.ts#RagService",
       "tipo": "simbolo",
       "nombre": "RagService",
       "ruta": "src/core/rag/rag.service.ts",
-      "linea": 79,
+      "linea": 106,
       "meta": {
         "clase": "class"
       }
@@ -7205,13 +7216,13 @@
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "cubre_fase",
       "hacia": "fase:1",
-      "origen": "docs/ESTADO.md:171"
+      "origen": "docs/ESTADO.md:189"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
       "relacion": "menciona",
       "hacia": "control:C8",
-      "origen": "docs/ESTADO.md:150"
+      "origen": "docs/ESTADO.md:168"
     },
     {
       "desde": "modulo:docs/ESTADO.md",
@@ -8363,7 +8374,7 @@
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#resolverExtraBody",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:653"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:658"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
@@ -8399,7 +8410,7 @@
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/voice-gateway.controller.ts#voiceGatewayPlugin",
-      "origen": "src/channels/voice/voice-gateway.controller.ts:709"
+      "origen": "src/channels/voice/voice-gateway.controller.ts:714"
     },
     {
       "desde": "modulo:src/channels/voice/voice-gateway.controller.ts",
@@ -9532,8 +9543,14 @@
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "exporta",
+      "hacia": "simbolo:src/core/rag/rag.service.ts#esPuraCortesia",
+      "origen": "src/core/rag/rag.service.ts:95"
+    },
+    {
+      "desde": "modulo:src/core/rag/rag.service.ts",
+      "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/core/rag/rag.service.ts:79"
+      "origen": "src/core/rag/rag.service.ts:106"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
@@ -13373,7 +13390,7 @@
       "desde": "simbolo:src/core/rag/rag.service.ts#RagService",
       "relacion": "implementa",
       "hacia": "puerto:RagPort",
-      "origen": "src/core/rag/rag.service.ts:79"
+      "origen": "src/core/rag/rag.service.ts:106"
     },
     {
       "desde": "simbolo:src/core/rag/rag.service.ts#RagService",
