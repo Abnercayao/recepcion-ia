@@ -95,14 +95,19 @@ describe('RagService.retrieve', () => {
     expect(resultado).toBe(esperado);
   });
 
-  it('usa los valores por defecto: 5 fragmentos y umbral de similitud 0.75', async () => {
+  // El umbral fue 0.75 hasta que se midio contra la base real: el fragmento
+  // CORRECTO puntuaba entre 0.41 y 0.71 con voyage-3, asi que no pasaba nada y
+  // el RAG devolvia lista vacia siempre. El modo de fallo no era el silencio
+  // prudente que se buscaba, sino el modelo rellenando el hueco. Ver la
+  // cabecera de rag.service.ts.
+  it('usa los valores por defecto: 5 fragmentos y umbral de similitud 0.35', async () => {
     const embeddings = new FakeEmbeddingPort(async () => [[0, 0, 0]]);
     const repo = new FakeKnowledgeRepository(async () => []);
     const service = new RagService(embeddings, repo, new FakeLogger());
 
     await service.retrieve(CLINIC_A, 'consulta cualquiera');
 
-    expect(repo.calls[0]).toMatchObject({ limit: 5, minSimilarity: 0.75 });
+    expect(repo.calls[0]).toMatchObject({ limit: 5, minSimilarity: 0.35 });
   });
 
   it('permite sobreescribir el limite de fragmentos por llamada', async () => {

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "799c11a9b4822e59",
+  "huella": "1c952796e257abbd",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -1241,7 +1241,7 @@
       "ruta": "src/core/rag/rag.service.ts",
       "resumen": "Implementacion de RagPort: recupera fragmentos aprobados y activos de la",
       "meta": {
-        "lineas": 97,
+        "lineas": 118,
         "capa": "nucleo"
       }
     },
@@ -1892,7 +1892,7 @@
         "externas": [
           "vitest"
         ],
-        "lineas": 193,
+        "lineas": 198,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -4577,7 +4577,7 @@
       "tipo": "simbolo",
       "nombre": "RagService",
       "ruta": "src/core/rag/rag.service.ts",
-      "linea": 58,
+      "linea": 79,
       "meta": {
         "clase": "class"
       }
@@ -4587,7 +4587,7 @@
       "tipo": "simbolo",
       "nombre": "RagServiceOptions",
       "ruta": "src/core/rag/rag.service.ts",
-      "linea": 48,
+      "linea": 69,
       "meta": {
         "clase": "interface"
       }
@@ -9493,25 +9493,25 @@
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/core/rag/rag.service.ts:58"
+      "origen": "src/core/rag/rag.service.ts:79"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagServiceOptions",
-      "origen": "src/core/rag/rag.service.ts:48"
+      "origen": "src/core/rag/rag.service.ts:69"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/rag/knowledge.repository.ts",
-      "origen": "src/core/rag/rag.service.ts:45"
+      "origen": "src/core/rag/rag.service.ts:66"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/types/index.ts",
-      "origen": "src/core/rag/rag.service.ts:44"
+      "origen": "src/core/rag/rag.service.ts:65"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
@@ -12763,7 +12763,7 @@
       "desde": "modulo:tests/unit/rag.service.test.ts",
       "relacion": "menciona",
       "hacia": "control:C9",
-      "origen": "tests/unit/rag.service.test.ts:131"
+      "origen": "tests/unit/rag.service.test.ts:136"
     },
     {
       "desde": "modulo:tests/unit/rag.service.test.ts",
@@ -12775,7 +12775,7 @@
       "desde": "modulo:tests/unit/rag.service.test.ts",
       "relacion": "verifica",
       "hacia": "control:C9",
-      "origen": "tests/unit/rag.service.test.ts:131"
+      "origen": "tests/unit/rag.service.test.ts:136"
     },
     {
       "desde": "modulo:tests/unit/rag.service.test.ts",
@@ -13327,7 +13327,7 @@
       "desde": "simbolo:src/core/rag/rag.service.ts#RagService",
       "relacion": "implementa",
       "hacia": "puerto:RagPort",
-      "origen": "src/core/rag/rag.service.ts:58"
+      "origen": "src/core/rag/rag.service.ts:79"
     },
     {
       "desde": "simbolo:src/core/rag/rag.service.ts#RagService",

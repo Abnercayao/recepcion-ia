@@ -99,10 +99,14 @@ Detalle completo en `decisiones.md`. Los principales:
 1. **RLS vs `SUPABASE_SERVICE_KEY`** — decidido para v1 con deuda reconocida; el `audit_log` inalterable sí queda resuelto de verdad.
 2. **`CalendarPort` sin sede ni profesional** — la clínica tiene dos sedes y especialistas que no atienden en ambas.
 3. **Falta herramienta de cancelación** — y las fuentes se contradicen: la Tabla 13 la exige, el anti-patrón 10 fija cinco herramientas.
-4. **Umbral del RAG en 0.75, sin calibrar** — ya hay clave de Voyage y el endpoint responde, así que la calibración pasa a ser posible; sigue sin hacerse.
+4. ~~**Umbral del RAG en 0.75, sin calibrar**~~ — **resuelto y medido.** Con voyage-3 el fragmento correcto puntuaba 0.41–0.71, así que con 0.75 el RAG devolvía lista vacía **siempre**. Y el modo de fallo no era el silencio prudente que se buscaba: sin fragmentos, el modelo rellenaba (llegó a afirmar que la clínica «solo cuenta con una sede única»). Bajado a **0.35**. Sigue siendo una calibración sobre pocas consultas: si cambia el modelo de embeddings o crece mucho la base, hay que volver a medirlo.
 5. **Riesgo de doble locución al escalar por voz** — solo detectable con telefonía real.
 6. **Revelación en WhatsApp sobre memoria de proceso** — frágil para un criterio bloqueante.
-7. **No hay medida del sobre-escalamiento.** Ver el fallo del clasificador descrito arriba. Es el único de esta lista que ya causó un fallo real en producción de la demo.
+7. **No hay medida del sobre-escalamiento.** Ver el fallo del clasificador descrito arriba.
+
+8. **`escalar_humano` no tiene a quién notificar.** `N8N_WEBHOOK_URL` está vacío, así que `NotificationClient` se queda sin canal y la herramienta devuelve `error` con «no se pudo notificar a recepción». El escalamiento se registra en `tool_calls` y en `audit_log`, y por voz la transferencia telefónica sí ocurre — pero **nadie del equipo recibe el aviso**. Contradice el control O5, que exige que el modo de fallo sea la reversión a operación manual y nunca el silencio. Se arregla apuntando `N8N_WEBHOOK_URL` a cualquier endpoint HTTPS que reciba JSON; el flujo previsto está en `n8n/F4_notificar_escalamiento.json`.
+
+9. **Plan gratuito de Voyage: 3 peticiones por minuto.** Cada turno con RAG consume una. En una conversación real el límite se alcanza enseguida y el RAG empieza a fallar — de forma silenciosa para el paciente, por el fail-safe. Requiere añadir método de pago en el panel de Voyage.
 
 *(Resuelto: `scripts/demo.ts`, `migrate.ts` y `seed.ts` no importaban `dotenv`, así que no leían el `.env` que la guía manda rellenar. Los tres lo hacen ya.)*
 

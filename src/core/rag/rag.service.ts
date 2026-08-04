@@ -6,14 +6,35 @@
  * Decisiones de diseno tomadas en esta rama (no fijadas por la especificacion,
  * documentadas tambien en el informe final):
  *
- * 1. UMBRAL DE SIMILITUD (0.75, no el 0.5 de match_knowledge). La funcion SQL
- *    trae 0.5 como fallback generico de la firma, pero este es un dominio
- *    donde una recuperacion equivocada con total confianza es peor que un
- *    "no dispongo del dato" de mas. Con similitud coseno y embeddings de
- *    voyage-3, 0.5 deja pasar fragmentos de tema apenas relacionado; 0.75
- *    prioriza precision sobre recall a proposito (sesgo hacia el silencio
- *    seguro, igual que el clasificador de urgencia sesga hacia el falso
- *    positivo por la razon inversa).
+ * 1. UMBRAL DE SIMILITUD (0.35, calibrado; antes 0.75 sin calibrar).
+ *
+ *    El valor original se eligio a ojo, razonando que en este dominio una
+ *    recuperacion equivocada es peor que un "no dispongo del dato" de mas. El
+ *    razonamiento sigue siendo bueno; el numero era falso. Medido contra la
+ *    base real con voyage-3, el fragmento CORRECTO puntua:
+ *
+ *      "Trabajan con EPS?"           -> 0.413  (FAQ de EPS)
+ *      "Donde queda la sede de X?"   -> 0.713  (FAQ de esa sede)
+ *      fragmentos NO relacionados    -> 0.28 a 0.42
+ *
+ *    Con 0.75 no pasaba NADA: el RAG devolvia lista vacia en todas las
+ *    consultas. Y ahi esta el problema, porque el modo de fallo no era el
+ *    silencio prudente que se buscaba: sin fragmentos, el modelo rellena. En
+ *    la prueba contra el modelo real llego a afirmar que la clinica "solo
+ *    cuenta con una sede unica". La linea roja "nunca inventar datos ausentes
+ *    de la base" NO tiene control automatico en capa 2 -- solo la vigila el
+ *    prompt --, asi que subir el umbral no compraba seguridad: la vendia.
+ *
+ *    0.35 recupera el fragmento correcto en las consultas medidas. Deja pasar
+ *    tambien alguno de tema vecino, y eso es asumible: todo lo que hay en
+ *    `knowledge_chunks` es contenido de la clinica ya aprobado, de modo que un
+ *    fragmento de mas ensucia el prompt pero no introduce informacion no
+ *    autorizada. Un fragmento de MENOS, en cambio, invita a inventar.
+ *
+ *    Sigue siendo una calibracion sobre pocas consultas: si se cambia el
+ *    modelo de embeddings o la base crece mucho, hay que volver a medirlo. El
+ *    valor es inyectable por `RagOptions.umbralSimilitud` para poder hacerlo
+ *    sin tocar este archivo.
  *
  * 2. NUMERO DE FRAGMENTOS (5 por defecto, igual que el default de
  *    match_knowledge). Suficiente para cubrir una pregunta compuesta
@@ -53,7 +74,7 @@ export interface RagServiceOptions {
 }
 
 const DEFAULT_LIMITE_FRAGMENTOS = 5;
-const DEFAULT_UMBRAL_SIMILITUD = 0.75;
+const DEFAULT_UMBRAL_SIMILITUD = 0.35;
 
 export class RagService implements RagPort {
   private readonly logger: Logger;
