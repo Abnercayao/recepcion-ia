@@ -292,6 +292,17 @@ async function main(): Promise<void> {
   await api('PATCH', `/v1/convai/agents/${AGENTE}`, {
     conversation_config: {
       agent: {
+        /**
+         * El saludo NO anuncia que es un asistente virtual.
+         *
+         * Decision del titular: quien llama ya lo sabe por el numero al que
+         * marca, y repetirlo en cada llamada suena a robot. La linea roja
+         * sigue en pie --si le preguntan, nunca dice ser una persona-- pero el
+         * criterio de aceptacion §7 ("conversaciones con revelacion ejecutada
+         * = 100%") deja de cumplirse a proposito. Queda dicho en
+         * docs/CONTINUAR.md.
+         */
+        first_message: `${(await clinicaDeLaSemilla()).nombre}, buenas. ¿Con quién tengo el gusto?`,
         prompt: {
           prompt: await construirPrompt(),
           llm: modelo,

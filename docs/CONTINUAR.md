@@ -178,6 +178,28 @@ npm run agente:alojado -- --verificar
 Compara el prompt vivo con el del repositorio, avisa si falta la lista de sedes
 y muestra la configuración de voz. Sale con código 1 si hay desfase.
 
+### ⚠ Dos decisiones del titular que rompen criterios del propio proyecto
+
+**1. La voz ya NO anuncia que es un asistente virtual.** Decisión explícita: el
+número al que se llama ya lo identifica. Con ello, el criterio de aceptación §7
+—«conversaciones con revelación ejecutada = 100%»— **deja de cumplirse**, y
+`calls.disclosureEjecutada` será falso en todas las llamadas; el webhook
+post-llamada lo verifica contra la transcripción y no lo encontrará.
+
+Lo que **sí** se mantiene, y es la línea roja: si el paciente pregunta si habla
+con una persona, el agente dice la verdad. Nunca afirma ser humano. El guardrail
+`nunca_es_humano` sigue activo.
+
+**2. El paciente se identifica solo con su NOMBRE, desde cualquier número.**
+`pacientes.md` en la base de conocimiento permite que el agente sepa la sede, el
+profesional y la próxima cita de quien llama. El efecto colateral es directo:
+**cualquiera que diga «soy Fulano» obtiene su historial**. En una clínica eso es
+suplantación con datos de salud.
+
+El arreglo mínimo, cuando esto deje de ser demostración: pedir un segundo dato
+antes de leer nada —los cuatro últimos dígitos del DNI, o la fecha de la última
+cita—. No hace la conversación menos natural y cierra el agujero.
+
 ### ⚠ El WhatsApp del cierre es GUION DE DEMOSTRACIÓN, no un envío
 
 El cierre de llamada (`prompts/estilo.voz.md`) hace que el agente confirme el

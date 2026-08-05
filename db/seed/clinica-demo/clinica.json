@@ -6,13 +6,44 @@
   "retencion_transcripcion_dias": 365,
   "retencion_audio_dias": 0,
   "_transfer_whitelist": "Central real de la clinica. Antes eran numeros inventados (+51999000001/2), que en una transferencia real habrian mandado al paciente a ninguna parte.",
-  "transfer_whitelist": ["+5114216323", "+51934953539"],
+  "transfer_whitelist": [
+    "+5114216323",
+    "+51934953539"
+  ],
   "config": {
     "_calendario": "googleCalendarId es el ID del calendario real: Google Calendar -> Configuracion del calendario -> Integrar el calendario -> ID del calendario. googleImpersonateSubject se OMITE a proposito: solo hace falta con delegacion de dominio de Google Workspace. Sin dominio propio basta con compartir el calendario con el email de la cuenta de servicio, dandole permiso para 'Hacer cambios en los eventos'.",
     "googleCalendarId": "723a5338e4b21175d26cd7aebf4a26666ab1123b9ca02a1e920d48cd58d9cd8b@group.calendar.google.com",
     "_agenda_por_sede": "CalendarPort lleva sede: cada una tiene su propia agenda y la ocupacion de una no afecta a las demas. Para que eso sea cierto en Google hace falta UN CALENDARIO POR SEDE aqui. Mientras una sede no tenga el suyo se cae a googleCalendarId y el cliente AVISA por el log: esa sede sigue compartiendo agenda.",
-    "calendarios_por_sede": {},
-
+    "calendarios_por_sede": {
+      "barranco": "b2c943c138ef262099398a4da43afd08c49fe1ce006693fb989bca7f2c0ffbcf@group.calendar.google.com",
+      "callao": "96978718435c8ab888865ceeed6afba65f06e86f4e30db0fcce60093bebd76ac@group.calendar.google.com",
+      "comas": "ca4ca4a567933f2be5b7aecd70c4fe6caf41fb2bffebef9be4ef8185d5ce2747@group.calendar.google.com",
+      "javierprado": "7c1671590817087c5052132498444a4df1dfac228eaf489911ce0f3b31cde91c@group.calendar.google.com",
+      "jesusmaria": "e4722b69e4a1a5d4d29d484b91f861604aa66c938d4de3a9318acf918e723b70@group.calendar.google.com",
+      "lamolinasanfelipe": "f5fd01ea0bcb5d15df6374d2218ef33f22379cf4b9774899bd21d0f2ac065040@group.calendar.google.com",
+      "limacentro": "259069deb9b6b6deacfe0eb6cd07abfed73d0582055b1a87b5231afaf46b6493@group.calendar.google.com",
+      "losolivos": "d8c7de154ad4b1cb9c4d4d20c1ee664eea6d5387ab25bdb305e0d0511c9fff83@group.calendar.google.com",
+      "miraflores": "d0540c6482757c74815dd6b37b1f15a86b8f76f0cfb0fddbfeb4d77e16824a54@group.calendar.google.com",
+      "pueblolibre": "4ae2d08561004c44674044423d0b6673099eb34703ff4538bc0fec97430866e3@group.calendar.google.com",
+      "sanisidro": "8636b9ad74b33e0620ed1e36a7ba292b192e842422a8404de7e49e90f3eb508f@group.calendar.google.com",
+      "sjllosjardines": "3a266dd3dd10f76ef13c97ddd56d1a724bc110877b193277f9f11d7a9aecc615@group.calendar.google.com",
+      "sjlzarate": "9b24f22a0bd07422f4373c2fabe16246a2df290a99f3fa2fc39aa3192df4e7ea@group.calendar.google.com",
+      "sanjuandemiraflores": "6aa023d3431c72f0fc5372f81a615d62e4e83d09a4ce1c2565d9944d2bf947e5@group.calendar.google.com",
+      "santacatalina": "e5bee00682fe46c0f4464e5ec3c93334d6b98029c0b7f0989f7d417dbe9122c7@group.calendar.google.com",
+      "surco": "8d727b7ee30f786a2dbac9d5b5c61b9a22d17565b1299694621092929d622e41@group.calendar.google.com",
+      "arequipa": "6c3e92695df4eab7665da9fccc4c36acabda0d5656fad0f30f4b5bab6f3fac5a@group.calendar.google.com",
+      "cajamarca": "4da78a0b9d0318b89d7768bb09343988ce18d18005b4d51a7b63cb121a982ecc@group.calendar.google.com",
+      "chiclayo": "daf96b11bf5017c5a403d8f4d4e9cb1e8b6637ed0b9d1870ec6286f58ceb09d5@group.calendar.google.com",
+      "cusco": "ea12550b78311f09a59406ef59e7eafd83b730258140e686db643ed6e1585acb@group.calendar.google.com",
+      "huancayo": "5ff866402a1f2f24b7bc1c924b257e22cee5f8e2138928e123cedb8e24e4462b@group.calendar.google.com",
+      "huaraz": "e9eb2e40dc1a174f2fbf6f0c85a5aaffe79301550318c405b3518c16e2ff03b7@group.calendar.google.com",
+      "ica": "b84654888488c43a72e736f0a7ca4934c7a8b438c1b214eaab2e8bb5a36a4174@group.calendar.google.com",
+      "moquegua": "a5785720251eb11752b37a452472ca22589ff82b44ee23129fe3b62773c10d57@group.calendar.google.com",
+      "piura": "0ef2d0863ace176b85fd224086ab8661f7e6d6e51ff98e2885a3f5e2e025810e@group.calendar.google.com",
+      "pucallpa": "af3c75e5f5940b7b506cecff1fb8cb11b98cc39f93402155da421088a24ea7e6@group.calendar.google.com",
+      "tacna": "a75b561d76569b32acee42be05c11afc213d156751de3d5dce28ec578a825858@group.calendar.google.com",
+      "tarapoto": "5f05786ab121e6baaf1cc9e7755812f2fbd38148410fbef730e5fc2cff12c2e5@group.calendar.google.com"
+    },
     "_sedes": "40 sedes reales: 24 en Lima y 16 en provincias. El proyecto asumia 24 en total e ignoraba las de provincias por completo.",
     "sedes_informativas": {
       "barranco": "Av. Almte. Miguel Grau 713",
@@ -58,7 +89,6 @@
       "juliaca": "Jr. Piura 482, Parque Grau",
       "puno": "Jr. Deustua 754"
     },
-
     "_telefonos": "Telefonos publicados por sede. Solo los de Lima estan en la portada de la web; las sedes de provincias no publican el suyo alli.",
     "telefonos_por_sede": {
       "barranco": "+51963369072",
@@ -86,63 +116,196 @@
       "surquillo": "+5114401021",
       "ventanilla": "+51951737704"
     },
-
     "_horarios": "Horario POR DEFECTO. La web publica un horario distinto para varias sedes, y esas van en `horarios_por_sede`: asumir uno unico haria que el agente rechazara citas legitimas.",
     "horarios": {
-      "lunes_viernes": [["09:00", "13:00"], ["14:00", "19:00"]],
-      "sabado": [["09:00", "13:00"]],
+      "lunes_viernes": [
+        [
+          "09:00",
+          "13:00"
+        ],
+        [
+          "14:00",
+          "19:00"
+        ]
+      ],
+      "sabado": [
+        [
+          "09:00",
+          "13:00"
+        ]
+      ],
       "domingo": []
     },
     "horarios_por_sede": {
       "cajamarca": {
-        "lunes_viernes": [["08:30", "13:00"], ["15:00", "19:00"]],
-        "sabado": [["08:30", "13:00"]],
+        "lunes_viernes": [
+          [
+            "08:30",
+            "13:00"
+          ],
+          [
+            "15:00",
+            "19:00"
+          ]
+        ],
+        "sabado": [
+          [
+            "08:30",
+            "13:00"
+          ]
+        ],
         "domingo": []
       },
       "chiclayo": {
-        "lunes_viernes": [["09:00", "13:00"], ["15:00", "20:00"]],
-        "sabado": [["09:00", "13:00"]],
+        "lunes_viernes": [
+          [
+            "09:00",
+            "13:00"
+          ],
+          [
+            "15:00",
+            "20:00"
+          ]
+        ],
+        "sabado": [
+          [
+            "09:00",
+            "13:00"
+          ]
+        ],
         "domingo": []
       },
       "tarapoto": {
-        "lunes_viernes": [["09:00", "13:00"], ["15:00", "20:00"]],
-        "sabado": [["09:00", "13:00"]],
+        "lunes_viernes": [
+          [
+            "09:00",
+            "13:00"
+          ],
+          [
+            "15:00",
+            "20:00"
+          ]
+        ],
+        "sabado": [
+          [
+            "09:00",
+            "13:00"
+          ]
+        ],
         "domingo": []
       },
       "tumbes": {
-        "lunes_viernes": [["09:00", "13:00"], ["15:00", "20:00"]],
-        "sabado": [["09:00", "13:00"]],
+        "lunes_viernes": [
+          [
+            "09:00",
+            "13:00"
+          ],
+          [
+            "15:00",
+            "20:00"
+          ]
+        ],
+        "sabado": [
+          [
+            "09:00",
+            "13:00"
+          ]
+        ],
         "domingo": []
       },
       "primavera": {
-        "lunes_viernes": [["09:00", "13:00"], ["14:00", "19:00"]],
-        "sabado": [["09:00", "13:00"], ["14:00", "19:00"]],
+        "lunes_viernes": [
+          [
+            "09:00",
+            "13:00"
+          ],
+          [
+            "14:00",
+            "19:00"
+          ]
+        ],
+        "sabado": [
+          [
+            "09:00",
+            "13:00"
+          ],
+          [
+            "14:00",
+            "19:00"
+          ]
+        ],
         "domingo": []
       }
     },
     "_horario_franquicias": "chorrillos, juliaca, la-molina-los-frutales, puno, san-borja, san-miguel-el-campillo, san-miguel-la-marina, surquillo y ventanilla NO publican horario en la web. Se les aplica el por defecto; conviene confirmarlo con cada una antes de agendar en firme.",
-
     "_profesionales": "387 profesionales reales con su sede, especialidad y colegiatura. NO van en la configuracion ni en el prompt: no caben --serian mas de 35 KB en el bloque de sesion, que no se cachea-- y viven en la base de conocimiento (`sedes-y-profesionales.md`), donde el agente los consulta con consultar_rag. Los TURNOS por profesional no estan publicados: se sabe en que sede atiende cada uno, no en que dias ni horas.",
-
     "sede_por_defecto": "miraflores",
     "duracion_cita_min": 40,
     "feriados": [
-      { "fecha": "2026-01-01", "motivo": "Ano Nuevo" },
-      { "fecha": "2026-04-02", "motivo": "Jueves Santo" },
-      { "fecha": "2026-04-03", "motivo": "Viernes Santo" },
-      { "fecha": "2026-05-01", "motivo": "Dia del Trabajo" },
-      { "fecha": "2026-06-07", "motivo": "Batalla de Arica y Dia de la Bandera" },
-      { "fecha": "2026-06-29", "motivo": "San Pedro y San Pablo" },
-      { "fecha": "2026-07-23", "motivo": "Dia de las Fuerzas Armadas y la Policia Nacional" },
-      { "fecha": "2026-07-28", "motivo": "Fiestas Patrias" },
-      { "fecha": "2026-07-29", "motivo": "Fiestas Patrias" },
-      { "fecha": "2026-08-06", "motivo": "Batalla de Junin" },
-      { "fecha": "2026-08-30", "motivo": "Santa Rosa de Lima" },
-      { "fecha": "2026-10-08", "motivo": "Combate de Angamos" },
-      { "fecha": "2026-11-01", "motivo": "Dia de Todos los Santos" },
-      { "fecha": "2026-12-08", "motivo": "Inmaculada Concepcion" },
-      { "fecha": "2026-12-09", "motivo": "Batalla de Ayacucho" },
-      { "fecha": "2026-12-25", "motivo": "Navidad" }
+      {
+        "fecha": "2026-01-01",
+        "motivo": "Ano Nuevo"
+      },
+      {
+        "fecha": "2026-04-02",
+        "motivo": "Jueves Santo"
+      },
+      {
+        "fecha": "2026-04-03",
+        "motivo": "Viernes Santo"
+      },
+      {
+        "fecha": "2026-05-01",
+        "motivo": "Dia del Trabajo"
+      },
+      {
+        "fecha": "2026-06-07",
+        "motivo": "Batalla de Arica y Dia de la Bandera"
+      },
+      {
+        "fecha": "2026-06-29",
+        "motivo": "San Pedro y San Pablo"
+      },
+      {
+        "fecha": "2026-07-23",
+        "motivo": "Dia de las Fuerzas Armadas y la Policia Nacional"
+      },
+      {
+        "fecha": "2026-07-28",
+        "motivo": "Fiestas Patrias"
+      },
+      {
+        "fecha": "2026-07-29",
+        "motivo": "Fiestas Patrias"
+      },
+      {
+        "fecha": "2026-08-06",
+        "motivo": "Batalla de Junin"
+      },
+      {
+        "fecha": "2026-08-30",
+        "motivo": "Santa Rosa de Lima"
+      },
+      {
+        "fecha": "2026-10-08",
+        "motivo": "Combate de Angamos"
+      },
+      {
+        "fecha": "2026-11-01",
+        "motivo": "Dia de Todos los Santos"
+      },
+      {
+        "fecha": "2026-12-08",
+        "motivo": "Inmaculada Concepcion"
+      },
+      {
+        "fecha": "2026-12-09",
+        "motivo": "Batalla de Ayacucho"
+      },
+      {
+        "fecha": "2026-12-25",
+        "motivo": "Navidad"
+      }
     ],
     "_feriados": "Dias en que NINGUNA sede atiende. Es DATO DE LA CLINICA, no una fuente legal: el codigo no calcula fiestas moviles (Jueves y Viernes Santo cambian cada ano) ni conoce feriados regionales ni cierres propios. Hay que revisarla cada ano; cuando se acabe, `verificarApertura` deja de bloquear feriados y solo queda el horario semanal.",
     "acepta_eps_y_seguros": true,

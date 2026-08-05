@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "0bc628cfa63a6610",
+  "huella": "2a7b24804da27763",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -609,7 +609,7 @@
       "nombre": "clinica.json",
       "ruta": "db/seed/clinica-demo/clinica.json",
       "meta": {
-        "lineas": 155,
+        "lineas": 318,
         "capa": "datos"
       }
     },
@@ -630,6 +630,16 @@
       "ruta": "db/seed/clinica-demo/formulario-maestro.md",
       "meta": {
         "lineas": 123,
+        "capa": "datos"
+      }
+    },
+    {
+      "id": "modulo:db/seed/clinica-demo/pacientes.md",
+      "tipo": "modulo",
+      "nombre": "pacientes.md",
+      "ruta": "db/seed/clinica-demo/pacientes.md",
+      "meta": {
+        "lineas": 68,
         "capa": "datos"
       }
     },
@@ -671,7 +681,7 @@
       "ruta": "docs/CONTINUAR.md",
       "resumen": "Continuar aquí",
       "meta": {
-        "lineas": 420,
+        "lineas": 442,
         "capa": "documentacion"
       }
     },
@@ -873,7 +883,7 @@
       "nombre": "estilo.voz.md",
       "ruta": "prompts/estilo.voz.md",
       "meta": {
-        "lineas": 46,
+        "lineas": 56,
         "capa": "prompts",
         "bloques": []
       }
@@ -885,7 +895,7 @@
       "ruta": "prompts/maestro.md",
       "resumen": "ROL",
       "meta": {
-        "lineas": 120,
+        "lineas": 128,
         "capa": "prompts",
         "bloques": [
           "ROL",
@@ -924,7 +934,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 318,
+        "lineas": 329,
         "capa": "scripts"
       }
     },
@@ -955,6 +965,23 @@
           "node:path"
         ],
         "lineas": 114,
+        "capa": "scripts"
+      }
+    },
+    {
+      "id": "modulo:scripts/crear-calendarios.ts",
+      "tipo": "modulo",
+      "nombre": "crear-calendarios.ts",
+      "ruta": "scripts/crear-calendarios.ts",
+      "resumen": "Un calendario de Google POR SEDE.",
+      "meta": {
+        "externas": [
+          "dotenv/config",
+          "googleapis",
+          "node:fs/promises",
+          "node:path"
+        ],
+        "lineas": 167,
         "capa": "scripts"
       }
     },
@@ -7733,7 +7760,7 @@
       "desde": "modulo:db/seed/clinica-demo/clinica.json",
       "relacion": "menciona",
       "hacia": "control:O5",
-      "origen": "db/seed/clinica-demo/clinica.json:57"
+      "origen": "db/seed/clinica-demo/clinica.json:88"
     },
     {
       "desde": "modulo:db/seed/clinica-demo/clinica.json",
@@ -7772,6 +7799,12 @@
       "origen": "db/seed/clinica-demo/formulario-maestro.md"
     },
     {
+      "desde": "modulo:db/seed/clinica-demo/pacientes.md",
+      "relacion": "pertenece_a",
+      "hacia": "capa:datos",
+      "origen": "db/seed/clinica-demo/pacientes.md"
+    },
+    {
       "desde": "modulo:db/seed/clinica-demo/protocolo-urgencias.md",
       "relacion": "pertenece_a",
       "hacia": "capa:datos",
@@ -7799,7 +7832,7 @@
       "desde": "modulo:docs/CONTINUAR.md",
       "relacion": "menciona",
       "hacia": "control:C7",
-      "origen": "docs/CONTINUAR.md:397"
+      "origen": "docs/CONTINUAR.md:419"
     },
     {
       "desde": "modulo:docs/CONTINUAR.md",
@@ -8250,6 +8283,18 @@
       "relacion": "pertenece_a",
       "hacia": "capa:scripts",
       "origen": "scripts/configurar-rag.ts"
+    },
+    {
+      "desde": "modulo:scripts/crear-calendarios.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/calendar.client.ts",
+      "origen": "scripts/crear-calendarios.ts:28"
+    },
+    {
+      "desde": "modulo:scripts/crear-calendarios.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:scripts",
+      "origen": "scripts/crear-calendarios.ts"
     },
     {
       "desde": "modulo:scripts/demo.ts",
