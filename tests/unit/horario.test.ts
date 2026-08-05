@@ -95,6 +95,80 @@ describe('resolverAgenda — lee la configuracion que existe de verdad', () => {
   });
 });
 
+describe('horario POR SEDE', () => {
+  /**
+   * Los datos reales de la clinica desmienten el supuesto del proyecto: el
+   * horario NO es uniforme. Cajamarca abre a las 08:30, Chiclayo cierra a las
+   * 20:00 y Primavera abre tambien el sabado por la tarde. Con un horario
+   * unico, `verificarApertura` rechazaria citas legitimas en esas sedes y le
+   * diria al paciente que no se atiende cuando si se atiende.
+   */
+  const clinicaMultisede = clinica({
+    horarios: {
+      lunes_viernes: [
+        ['09:00', '13:00'],
+        ['14:00', '19:00'],
+      ],
+      sabado: [['09:00', '13:00']],
+      domingo: [],
+    },
+    horarios_por_sede: {
+      chiclayo: {
+        lunes_viernes: [
+          ['09:00', '13:00'],
+          ['15:00', '20:00'],
+        ],
+        sabado: [['09:00', '13:00']],
+        domingo: [],
+      },
+      primavera: {
+        lunes_viernes: [
+          ['09:00', '13:00'],
+          ['14:00', '19:00'],
+        ],
+        sabado: [
+          ['09:00', '13:00'],
+          ['14:00', '19:00'],
+        ],
+        domingo: [],
+      },
+    },
+  });
+
+  const cabeEn = (sede: string | undefined, inicio: string, minutos = 40): boolean => {
+    const a = resolverAgenda(clinicaMultisede, undefined, sede);
+    const d = enLima(inicio);
+    return verificarApertura(d, new Date(d.getTime() + minutos * 60_000), a).abierto;
+  };
+
+  it('Chiclayo atiende a las 19:00; la sede por defecto, no', () => {
+    expect(cabeEn('chiclayo', '2026-08-03T19:00:00')).toBe(true);
+    expect(cabeEn('miraflores', '2026-08-03T19:00:00')).toBe(false);
+    expect(cabeEn(undefined, '2026-08-03T19:00:00')).toBe(false);
+  });
+
+  it('Chiclayo NO atiende a las 14:00: su pausa se alarga hasta las 15:00', () => {
+    expect(cabeEn('chiclayo', '2026-08-03T14:00:00')).toBe(false);
+    expect(cabeEn('miraflores', '2026-08-03T14:00:00')).toBe(true);
+  });
+
+  it('Primavera atiende el sabado por la tarde; las demas no', () => {
+    expect(cabeEn('primavera', '2026-08-08T15:00:00')).toBe(true);
+    expect(cabeEn('surco', '2026-08-08T15:00:00')).toBe(false);
+  });
+
+  it('una sede sin excepcion usa el horario general', () => {
+    expect(cabeEn('comas', '2026-08-03T10:00:00')).toBe(true);
+    expect(cabeEn('comas', '2026-08-03T19:30:00')).toBe(false);
+  });
+
+  it('el nombre de la sede se normaliza igual que en las herramientas', () => {
+    // «Chiclayo», `chiclayo` y «CHICLAYO» son la misma sede.
+    expect(cabeEn('CHICLAYO', '2026-08-03T19:00:00')).toBe(true);
+    expect(cabeEn('Chiclayo', '2026-08-03T19:00:00')).toBe(true);
+  });
+});
+
 describe('verificarApertura', () => {
   const cabe = (inicio: string, minutos = 40): boolean =>
     verificarApertura(enLima(inicio), new Date(enLima(inicio).getTime() + minutos * 60_000), agendaReal)

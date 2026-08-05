@@ -328,12 +328,46 @@ function aMinutos(hhmm: string): number {
  */
 const RESPALDO: Tramo[] = [{ desde: aMinutos('09:00'), hasta: aMinutos('13:00') }];
 
-export function resolverAgenda(clinic: Clinic, logger?: Logger): AgendaDeClinica {
+/** «San Borja», `san-borja` y «SAN BORJA» son la misma sede. */
+function normalizarSede(texto: string): string {
+  return texto
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+}
+
+/**
+ * Horario de la clinica, o el de UNA SEDE si difiere.
+ *
+ * El proyecto asumia un horario unico para todas. Los datos reales dicen otra
+ * cosa: Cajamarca abre a las 08:30; Chiclayo, Tarapoto y Tumbes cierran a las
+ * 20:00; Primavera abre tambien el sabado por la tarde. Con un horario unico,
+ * `verificarApertura` RECHAZARIA citas legitimas en esas cinco sedes --y le
+ * diria al paciente que la clinica no atiende cuando si atiende--.
+ *
+ * `horarios_por_sede` solo lleva las excepciones; el resto usa `horarios`.
+ */
+export function resolverAgenda(clinic: Clinic, logger?: Logger, sede?: string): AgendaDeClinica {
   const config = (clinic.config ?? {}) as Record<string, unknown>;
   const porDia = new Map<number, Tramo[]>();
   let configurado = false;
 
-  const plural = horariosSchema.safeParse(config['horarios']);
+  let crudoHorarios = config['horarios'];
+  if (sede !== undefined && sede.trim() !== '') {
+    const excepciones = config['horarios_por_sede'];
+    if (excepciones !== null && typeof excepciones === 'object') {
+      const objetivo = normalizarSede(sede);
+      for (const [nombre, valor] of Object.entries(excepciones as Record<string, unknown>)) {
+        if (normalizarSede(nombre) === objetivo) {
+          crudoHorarios = valor;
+          break;
+        }
+      }
+    }
+  }
+
+  const plural = horariosSchema.safeParse(crudoHorarios);
   if (plural.success && Object.keys(plural.data).length > 0) {
     configurado = true;
     for (const [clave, tramos] of Object.entries(plural.data)) {

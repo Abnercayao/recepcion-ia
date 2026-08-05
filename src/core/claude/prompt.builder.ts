@@ -345,13 +345,40 @@ function renderizarCierres(ctx: TurnContext): string {
  * practica bloquea es peor que no tenerlo.
  */
 export function renderizarProfesionales(config: Record<string, unknown>): string {
-  const crudo = config['profesionales_por_sede'];
-  if (crudo === null || typeof crudo !== 'object') {
-    return 'PROFESIONALES: no hay lista por sede. No le pidas al paciente el nombre de un doctor: agenda sin profesional y recepcion asigna.';
+  /**
+   * Los profesionales NO van en el prompt. Estan en la base de conocimiento.
+   *
+   * Son 387 repartidos en 40 sedes: mas de 35 KB. El bloque de sesion NO se
+   * cachea --solo los bloques 1-7 lo son-- asi que meterlos aqui seria pagar
+   * ese texto entero en cada iteracion del bucle de herramientas, de cada
+   * turno. La base de conocimiento existe justo para esto.
+   *
+   * Lo que si va en el prompt es la REGLA, que es corta y no puede fallar:
+   * elegir profesional es opcional y nunca bloquea una cita.
+   */
+  const conLista = config['profesionales_por_sede'];
+  const hayListaEnPrompt =
+    conLista !== null && typeof conLista === 'object' && Object.keys(conLista).length > 0;
+
+  const regla =
+    'PROFESIONALES. Elegir profesional es OPCIONAL y NUNCA es requisito para agendar. ' +
+    'Si no lo menciona, NO se lo preguntes: agenda sin profesional y dile que recepcion le ' +
+    'asigna al que corresponda. Jamas le pidas que adivine un nombre, ni bloquees la cita ' +
+    'por no tenerlo.';
+
+  if (!hayListaEnPrompt) {
+    return (
+      `${regla} Si pregunta por quien atiende en una sede, usa consultar_rag: la base de ` +
+      'conocimiento tiene los profesionales de cada sede con su especialidad y colegiatura. ' +
+      'NO te los inventes ni los deduzcas. Los TURNOS de cada profesional --que dias y a que ' +
+      'horas atiende-- NO estan en la base: si te lo preguntan, dilo y ofrece confirmarlo con recepcion.'
+    );
   }
 
+  // Camino de compatibilidad: una clinica pequena puede declararlos en la
+  // config y entonces si caben en el prompt.
   const lineas: string[] = [];
-  for (const [sede, lista] of Object.entries(crudo as Record<string, unknown>)) {
+  for (const [sede, lista] of Object.entries(conLista as Record<string, unknown>)) {
     if (!Array.isArray(lista) || lista.length === 0) continue;
     const nombres = lista
       .map((p) => {
@@ -363,25 +390,10 @@ export function renderizarProfesionales(config: Record<string, unknown>): string
           : nombre;
       })
       .filter((n): n is string => n !== undefined);
-    if (nombres.length > 0) {
-      lineas.push(`  ${sede.replace(/-/g, ' ')}: ${nombres.join(' · ')}`);
-    }
+    if (nombres.length > 0) lineas.push(`  ${sede.replace(/-/g, ' ')}: ${nombres.join(' · ')}`);
   }
 
-  if (lineas.length === 0) {
-    return 'PROFESIONALES: no hay lista por sede. No le pidas al paciente el nombre de un doctor: agenda sin profesional y recepcion asigna.';
-  }
-
-  return (
-    'PROFESIONALES POR SEDE:\n' +
-    `${lineas.join('\n')}\n` +
-    'Elegir profesional es OPCIONAL y NUNCA es requisito para agendar. Si el paciente ' +
-    'pregunta por quien atiende, o duda, LEELE los de esa sede y deja que elija. Si no ' +
-    'lo menciona, NO se lo preguntes: agenda sin profesional y dile que recepcion le ' +
-    'asigna al que corresponda. Jamas le pidas que adivine un nombre, ni bloquees la ' +
-    'cita por no tenerlo. En las sedes que no aparecen aqui, no inventes nombres: di ' +
-    'que recepcion le confirma quien le atendera.'
-  );
+  return `PROFESIONALES POR SEDE:\n${lineas.join('\n')}\n${regla}`;
 }
 
 export function renderizarSedes(config: Record<string, unknown>): string {

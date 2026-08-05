@@ -235,7 +235,9 @@ export class CrearCitaTool implements BusinessTool<CrearCitaInput, CrearCitaOutp
      * mediodia, despues de cerrar y el sabado por la tarde. Y no habia ningun
      * concepto de feriado, asi que el 6 de agosto se agendaba igual.
      */
-    const agenda = resolverAgenda(ctx.clinic, this.logger);
+    // Con la sede: su horario puede diferir del general (Cajamarca abre 08:30,
+    // Chiclayo cierra a las 20:00, Primavera abre el sabado por la tarde).
+    const agenda = resolverAgenda(ctx.clinic, this.logger, sede);
     const apertura = verificarApertura(inicioDate, finDate, agenda);
     if (!apertura.abierto) {
       return this.registrar(ctx, parsed.data, 'rechazada_validacion', empezado, {

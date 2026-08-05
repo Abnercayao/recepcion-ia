@@ -1,16 +1,19 @@
 {
-  "_aviso": "DEMOSTRACION. 'Aurora' es un nombre de trabajo. Datos operativos tomados de informacion publica del centro con el que se trabajara; los precios son estimaciones de demostracion. NO aprobado por profesional sanitario (control O2). No usar en produccion.",
+  "_aviso": "Datos REALES de la clinica, extraidos de su web publica el 4 de agosto de 2026 por su titular. 'Aurora' es el nombre de trabajo del proyecto; la clinica es la misma. Lo que sigue siendo estimacion y NO se ha verificado: los precios de referencia de faqs.md y formulario-maestro.md. NO aprobado por profesional sanitario (control O2).",
   "id": "00000000-0000-4000-8000-000000000001",
   "nombre": "Clinica Aurora",
   "timezone": "America/Lima",
   "retencion_transcripcion_dias": 365,
   "retencion_audio_dias": 0,
-  "transfer_whitelist": ["+51999000001", "+51999000002"],
+  "_transfer_whitelist": "Central real de la clinica. Antes eran numeros inventados (+51999000001/2), que en una transferencia real habrian mandado al paciente a ninguna parte.",
+  "transfer_whitelist": ["+5114216323", "+51934953539"],
   "config": {
-    "_agenda_por_sede": "CalendarPort YA lleva sede: cada una tiene su propia agenda y la ocupacion de una no afecta a las demas. Para que eso sea cierto en Google hace falta UN CALENDARIO POR SEDE y ponerlo en `calendarios_por_sede`. Mientras una sede no tenga el suyo se cae a `googleCalendarId` y el cliente AVISA por el log: esa sede sigue compartiendo agenda. Dar de alta los calendarios es trabajo de configuracion, no de codigo. Cada calendario nuevo hay que compartirlo con el email de la cuenta de servicio con permiso para 'Hacer cambios en los eventos'.",
-    "calendarios_por_sede": {},
     "_calendario": "googleCalendarId es el ID del calendario real: Google Calendar -> Configuracion del calendario -> Integrar el calendario -> ID del calendario. googleImpersonateSubject se OMITE a proposito: solo hace falta con delegacion de dominio de Google Workspace. Sin dominio propio basta con compartir el calendario con el email de la cuenta de servicio, dandole permiso para 'Hacer cambios en los eventos'.",
     "googleCalendarId": "723a5338e4b21175d26cd7aebf4a26666ab1123b9ca02a1e920d48cd58d9cd8b@group.calendar.google.com",
+    "_agenda_por_sede": "CalendarPort lleva sede: cada una tiene su propia agenda y la ocupacion de una no afecta a las demas. Para que eso sea cierto en Google hace falta UN CALENDARIO POR SEDE aqui. Mientras una sede no tenga el suyo se cae a googleCalendarId y el cliente AVISA por el log: esa sede sigue compartiendo agenda.",
+    "calendarios_por_sede": {},
+
+    "_sedes": "40 sedes reales: 24 en Lima y 16 en provincias. El proyecto asumia 24 en total e ignoraba las de provincias por completo.",
     "sedes_informativas": {
       "barranco": "Av. Almte. Miguel Grau 713",
       "callao": "Av. Guardia Chalaca 1362",
@@ -27,9 +30,22 @@
       "sjl-zarate": "Calle Las Chulpas 296, of. 201",
       "san-juan-de-miraflores": "Av. Guillermo Billinghurst 619",
       "santa-catalina": "Av. San Eugenio 631, Urb. Santa Catalina",
-      "surco": "Av. Caminos del Inca 1554"
+      "surco": "Av. Caminos del Inca 1554",
+      "arequipa": "Calle Sevilla 107, Urb. Los Sauces, Cayma",
+      "cajamarca": "Jr. Amazonas 757",
+      "chiclayo": "Calle Los Sauces 735, Urb. Santa Victoria",
+      "cusco": "Calle Abraham Valdelomar A-17",
+      "huancayo": "Av. Uruguay 564",
+      "huaraz": "Jr. Juan Bautista Mejia 858",
+      "ica": "Av. Conde de Nieva 317",
+      "moquegua": "Urb. El Huayco Mz. D Lt. 1 (frente a emergencias, ex MINSA)",
+      "piura": "Av. Grau 1050, Urb. Club Grau",
+      "pucallpa": "Jr. Atahualpa 139, Calleria - Coronel Portillo",
+      "tacna": "Av. Billinghurst 358",
+      "tarapoto": "Av. Augusto B. Leguia 1119",
+      "trujillo": "Pasaje San Martin de Porres 230, Urb. San Andres",
+      "tumbes": "Calle Sanchez Carrion 228, cruce con Av. Mayor Novoa"
     },
-    "_sedes_franquicia": "Estaban SOLO en la base de conocimiento (formulario-maestro.md y faqs.md), no en la config. Por eso, cuando el RAG recuperaba el fragmento de franquicias y no el de sedes propias, el modelo contestaba con 8 sedes de 24. La lista completa vive ahora aqui y entra al prompt por el bloque de sesion, sin depender de que una busqueda semantica acierte.",
     "sedes_franquicia": {
       "chorrillos": "Av. Alameda San Marcos 446",
       "la-molina-los-frutales": "Calle Santa Magdalena Sofia 109",
@@ -38,24 +54,78 @@
       "san-miguel-el-campillo": "Calle Ayarza de Morales 237, Urb. El Campillo",
       "san-miguel-la-marina": "Calle Monsenor Dintilhac 717",
       "surquillo": "Calle Las Tiendas 331, dpto. 101",
-      "ventanilla": "Av. Los Licenciados Mz. O5 Lt. 25, 2do piso"
+      "ventanilla": "Av. Los Licenciados Mz. O5 Lt. 25, 2do piso",
+      "juliaca": "Jr. Piura 482, Parque Grau",
+      "puno": "Jr. Deustua 754"
     },
-    "_profesionales": "Nombres de DEMOSTRACION, inventados para que la llamada suene real. Elegir profesional es OPCIONAL: si el paciente no lo menciona, la cita se agenda igual y recepcion asigna. La agenda NO esta separada por profesional (CalendarPort no lo lleva), asi que el nombre queda registrado en la cita pero no reserva a esa persona en concreto.",
-    "profesionales_por_sede": {
-      "comas": [
-        { "nombre": "Dra. Ana Quispe", "especialidad": "Odontologia general y limpiezas" },
-        { "nombre": "Dr. Luis Palomino", "especialidad": "Ortodoncia" },
-        { "nombre": "Dra. Carmen Rios", "especialidad": "Endodoncia y rehabilitacion" }
-      ]
+
+    "_telefonos": "Telefonos publicados por sede. Solo los de Lima estan en la portada de la web; las sedes de provincias no publican el suyo alli.",
+    "telefonos_por_sede": {
+      "barranco": "+51963369072",
+      "callao": "+5114533276",
+      "comas": "+5114216323",
+      "javier-prado": "+5114216323",
+      "jesus-maria": "+5114216323",
+      "la-molina-san-felipe": "+51934953539",
+      "lima-centro": "+5114270158",
+      "los-olivos": "+5112320420",
+      "miraflores": "+51989254923",
+      "pueblo-libre": "+5113307492",
+      "san-isidro": "+5114216323",
+      "sjl-los-jardines": "+5116537000",
+      "sjl-zarate": "+5114586472",
+      "san-juan-de-miraflores": "+5114661128",
+      "santa-catalina": "+5114216323",
+      "surco": "+51989207992",
+      "chorrillos": "+5119060766",
+      "la-molina-los-frutales": "+5116375870",
+      "primavera": "+5116480253",
+      "san-borja": "+5112250809",
+      "san-miguel-el-campillo": "+5113469586",
+      "san-miguel-la-marina": "+5114641108",
+      "surquillo": "+5114401021",
+      "ventanilla": "+51951737704"
     },
-    "sede_por_defecto": "miraflores",
-    "duracion_cita_min": 40,
+
+    "_horarios": "Horario POR DEFECTO. La web publica un horario distinto para varias sedes, y esas van en `horarios_por_sede`: asumir uno unico haria que el agente rechazara citas legitimas.",
     "horarios": {
       "lunes_viernes": [["09:00", "13:00"], ["14:00", "19:00"]],
       "sabado": [["09:00", "13:00"]],
       "domingo": []
     },
-    "_feriados": "Dias en que NINGUNA sede atiende. Antes no existia este concepto en ninguna capa y el agente agendaba en feriado con total normalidad: el 6 de agosto, Batalla de Junin, entre otros. La lista es DATO DE LA CLINICA, no una fuente legal: el codigo no calcula fiestas moviles (Jueves y Viernes Santo cambian cada ano) ni conoce los feriados regionales ni los cierres propios. Hay que revisarla cada ano; cuando se acabe, `verificarApertura` deja de bloquear feriados y solo queda el horario semanal.",
+    "horarios_por_sede": {
+      "cajamarca": {
+        "lunes_viernes": [["08:30", "13:00"], ["15:00", "19:00"]],
+        "sabado": [["08:30", "13:00"]],
+        "domingo": []
+      },
+      "chiclayo": {
+        "lunes_viernes": [["09:00", "13:00"], ["15:00", "20:00"]],
+        "sabado": [["09:00", "13:00"]],
+        "domingo": []
+      },
+      "tarapoto": {
+        "lunes_viernes": [["09:00", "13:00"], ["15:00", "20:00"]],
+        "sabado": [["09:00", "13:00"]],
+        "domingo": []
+      },
+      "tumbes": {
+        "lunes_viernes": [["09:00", "13:00"], ["15:00", "20:00"]],
+        "sabado": [["09:00", "13:00"]],
+        "domingo": []
+      },
+      "primavera": {
+        "lunes_viernes": [["09:00", "13:00"], ["14:00", "19:00"]],
+        "sabado": [["09:00", "13:00"], ["14:00", "19:00"]],
+        "domingo": []
+      }
+    },
+    "_horario_franquicias": "chorrillos, juliaca, la-molina-los-frutales, puno, san-borja, san-miguel-el-campillo, san-miguel-la-marina, surquillo y ventanilla NO publican horario en la web. Se les aplica el por defecto; conviene confirmarlo con cada una antes de agendar en firme.",
+
+    "_profesionales": "387 profesionales reales con su sede, especialidad y colegiatura. NO van en la configuracion ni en el prompt: no caben --serian mas de 35 KB en el bloque de sesion, que no se cachea-- y viven en la base de conocimiento (`sedes-y-profesionales.md`), donde el agente los consulta con consultar_rag. Los TURNOS por profesional no estan publicados: se sabe en que sede atiende cada uno, no en que dias ni horas.",
+
+    "sede_por_defecto": "miraflores",
+    "duracion_cita_min": 40,
     "feriados": [
       { "fecha": "2026-01-01", "motivo": "Ano Nuevo" },
       { "fecha": "2026-04-02", "motivo": "Jueves Santo" },
@@ -74,10 +144,11 @@
       { "fecha": "2026-12-09", "motivo": "Batalla de Ayacucho" },
       { "fecha": "2026-12-25", "motivo": "Navidad" }
     ],
+    "_feriados": "Dias en que NINGUNA sede atiende. Es DATO DE LA CLINICA, no una fuente legal: el codigo no calcula fiestas moviles (Jueves y Viernes Santo cambian cada ano) ni conoce feriados regionales ni cierres propios. Hay que revisarla cada ano; cuando se acabe, `verificarApertura` deja de bloquear feriados y solo queda el horario semanal.",
     "acepta_eps_y_seguros": true,
     "cancelacion_horas_min": 4,
     "ventana_agendamiento_dias": 60,
-    "contacto_urgencias": "+51999000001",
+    "contacto_urgencias": "+5114216323",
     "moneda": "PEN"
   }
 }

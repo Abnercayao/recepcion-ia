@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "8b5000a183350e78",
+  "huella": "0bc628cfa63a6610",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -609,7 +609,7 @@
       "nombre": "clinica.json",
       "ruta": "db/seed/clinica-demo/clinica.json",
       "meta": {
-        "lineas": 84,
+        "lineas": 155,
         "capa": "datos"
       }
     },
@@ -1240,7 +1240,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 545,
+        "lineas": 579,
         "capa": "nucleo"
       }
     },
@@ -1281,7 +1281,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 478,
+        "lineas": 490,
         "capa": "nucleo"
       }
     },
@@ -1393,7 +1393,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 346,
+        "lineas": 347,
         "capa": "nucleo"
       }
     },
@@ -1419,7 +1419,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 327,
+        "lineas": 329,
         "capa": "nucleo"
       }
     },
@@ -1979,7 +1979,7 @@
         "externas": [
           "vitest"
         ],
-        "lineas": 317,
+        "lineas": 391,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -4150,7 +4150,7 @@
       "tipo": "simbolo",
       "nombre": "cierresProximos",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 527,
+      "linea": 561,
       "resumen": "Los proximos dias cerrados dentro de una ventana, para que el modelo pueda",
       "meta": {
         "clase": "function"
@@ -4194,7 +4194,7 @@
       "tipo": "simbolo",
       "nombre": "feriadoDe",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 411,
+      "linea": 445,
       "resumen": "Si ese dia es feriado, devuelve el motivo.",
       "meta": {
         "clase": "function"
@@ -4205,7 +4205,7 @@
       "tipo": "simbolo",
       "nombre": "formatearMinutos",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 456,
+      "linea": 490,
       "meta": {
         "clase": "function"
       }
@@ -4226,7 +4226,7 @@
       "tipo": "simbolo",
       "nombre": "generarCandidatos",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 477,
+      "linea": 511,
       "resumen": "Horarios en los que la clinica PODRIA atender dentro del rango, alineados al",
       "meta": {
         "clase": "function"
@@ -4270,7 +4270,8 @@
       "tipo": "simbolo",
       "nombre": "resolverAgenda",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 331,
+      "linea": 351,
+      "resumen": "Horario de la clinica, o el de UNA SEDE si difiere.",
       "meta": {
         "clase": "function"
       }
@@ -4290,7 +4291,7 @@
       "tipo": "simbolo",
       "nombre": "VeredictoDeApertura",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 404,
+      "linea": 438,
       "meta": {
         "clase": "interface"
       }
@@ -4300,7 +4301,7 @@
       "tipo": "simbolo",
       "nombre": "verificarApertura",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 423,
+      "linea": 457,
       "resumen": "Comprueba que el intervalo [inicio, fin) cae ENTERO dentro de un mismo tramo",
       "meta": {
         "clase": "function"
@@ -4556,7 +4557,7 @@
       "tipo": "simbolo",
       "nombre": "PromptBuilder",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 427,
+      "linea": 439,
       "meta": {
         "clase": "class"
       }
@@ -4608,7 +4609,7 @@
       "tipo": "simbolo",
       "nombre": "renderizarSedes",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 387,
+      "linea": 399,
       "meta": {
         "clase": "function"
       }
@@ -7732,7 +7733,7 @@
       "desde": "modulo:db/seed/clinica-demo/clinica.json",
       "relacion": "menciona",
       "hacia": "control:O5",
-      "origen": "db/seed/clinica-demo/clinica.json:41"
+      "origen": "db/seed/clinica-demo/clinica.json:57"
     },
     {
       "desde": "modulo:db/seed/clinica-demo/clinica.json",
@@ -9862,7 +9863,7 @@
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#cierresProximos",
-      "origen": "src/core/agenda/horario.ts:527"
+      "origen": "src/core/agenda/horario.ts:561"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
@@ -9886,13 +9887,13 @@
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#feriadoDe",
-      "origen": "src/core/agenda/horario.ts:411"
+      "origen": "src/core/agenda/horario.ts:445"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#formatearMinutos",
-      "origen": "src/core/agenda/horario.ts:456"
+      "origen": "src/core/agenda/horario.ts:490"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
@@ -9904,7 +9905,7 @@
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#generarCandidatos",
-      "origen": "src/core/agenda/horario.ts:477"
+      "origen": "src/core/agenda/horario.ts:511"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
@@ -9928,7 +9929,7 @@
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#resolverAgenda",
-      "origen": "src/core/agenda/horario.ts:331"
+      "origen": "src/core/agenda/horario.ts:351"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
@@ -9940,13 +9941,13 @@
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#VeredictoDeApertura",
-      "origen": "src/core/agenda/horario.ts:404"
+      "origen": "src/core/agenda/horario.ts:438"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#verificarApertura",
-      "origen": "src/core/agenda/horario.ts:423"
+      "origen": "src/core/agenda/horario.ts:457"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
@@ -10144,7 +10145,7 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/core/claude/prompt.builder.ts:427"
+      "origen": "src/core/claude/prompt.builder.ts:439"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
@@ -10174,7 +10175,7 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#renderizarSedes",
-      "origen": "src/core/claude/prompt.builder.ts:387"
+      "origen": "src/core/claude/prompt.builder.ts:399"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",

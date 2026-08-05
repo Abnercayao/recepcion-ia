@@ -237,7 +237,8 @@ export class ConsultarAgendaTool implements BusinessTool<ConsultarAgendaInput, C
      * Se preguntan EN PARALELO: en serie, catorce huecos serian catorce idas y
      * vueltas encadenadas sobre un turno que el paciente esta esperando.
      */
-    const agenda = resolverAgenda(ctx.clinic, this.logger);
+    // Con la sede: cada una puede tener su propio horario.
+    const agenda = resolverAgenda(ctx.clinic, this.logger, sinVacio(parsed.data.sede));
     const candidatos = generarCandidatos(
       desdeDate,
       hastaDate,
