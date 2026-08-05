@@ -5,8 +5,12 @@ import type { TurnContext } from '../types/conversation.js';
 import {
   FORMATO_DE_FECHA_ESPERADO,
   cierresProximos,
+  describirInstante,
+  fechaLocal,
+  feriadoDe,
   generarCandidatos,
   interpretarInstante,
+  isoLocal,
   resolverAgenda,
 } from '../agenda/horario.js';
 import { maskArgsForLog, sinVacio, textoOpcional } from './tool.registry.js';
@@ -86,7 +90,30 @@ export const consultarAgendaInputSchema = z.object({
 });
 export type ConsultarAgendaInput = z.infer<typeof consultarAgendaInputSchema>;
 
+/**
+ * Un hueco tal como hay que decirselo al paciente.
+ *
+ * `cuando` existe porque el modelo NO debe convertir zonas horarias. Devolviendo
+ * los huecos como ISO en UTC, leia `2026-08-05T20:00:00.000Z` y anunciaba "las
+ * ocho de la noche" cuando eran las tres de la tarde, con la clinica cerrando a
+ * las siete. Ofrecia horarios imposibles y luego no podia agendarlos.
+ */
+export interface HuecoLegible {
+  /** Como se dice en voz alta: «miércoles, 5 de agosto, 3:00 p. m.». */
+  cuando: string;
+  /** ISO con el desplazamiento de la clinica. Es lo que hay que pasar a `crear_cita`. */
+  inicio: string;
+  fin: string;
+  sede?: string;
+}
+
 export interface ConsultarAgendaOutput {
+  /**
+   * LO QUE SE LE OFRECE AL PACIENTE. Se lee tal cual, sin convertir nada.
+   * Va primero a proposito: es el campo que el modelo debe mirar.
+   */
+  horarios: HuecoLegible[];
+  /** Los mismos huecos como instantes, para el codigo y las pruebas. */
   slots: CalendarSlot[];
   /**
    * Por que no hay huecos, cuando no los hay.
@@ -114,9 +141,11 @@ export class ConsultarAgendaTool implements BusinessTool<ConsultarAgendaInput, C
     'Consulta los horarios libres de la agenda de la clinica dentro de un rango de fechas (maximo ' +
     `${RANGO_MAXIMO_CONSULTA_DIAS} dias). Usarla ANTES de crear_cita, cuando el paciente quiere saber que ` +
     'horarios hay disponibles. Solo devuelve horarios en los que la clinica ABRE de verdad: respeta el ' +
-    'horario semanal, la pausa de mediodia y los feriados. Si devuelve la lista vacia, lee el campo ' +
-    '"motivo": no es lo mismo un feriado que un dia lleno. Pon la sede en el campo "sede", nunca en ' +
-    '"profesional". Nunca devuelve citas ya reservadas ni datos de otros pacientes, solo huecos libres.';
+    'horario semanal, la pausa de mediodia y los feriados. LEE EL CAMPO "horarios" y di el texto de ' +
+    '"cuando" TAL CUAL: ya viene en la hora de la clinica. NO conviertas zonas horarias ni uses el ' +
+    'campo "slots", que va en UTC y te hara decir una hora equivocada. Si "horarios" viene vacio, lee ' +
+    '"motivo": no es lo mismo un feriado que un dia lleno que una franja fuera de horario. Pon la sede ' +
+    'en el campo "sede", nunca en "profesional". Nunca devuelve citas de otros pacientes, solo huecos libres.';
   readonly input = consultarAgendaInputSchema;
   /**
    * 6 llamadas por conversacion: suficiente para explorar 2-3 dias distintos
@@ -218,14 +247,36 @@ export class ConsultarAgendaTool implements BusinessTool<ConsultarAgendaInput, C
     );
 
     if (candidatos.length === 0) {
-      // NO es lo mismo que «todo ocupado», y decirlo mal es justo lo que hacia
-      // que el agente negara disponibilidad de un dia entero libre.
-      const feriados = cierresProximos(desdeDate, 14, agenda);
-      const detalle = feriados.length > 0
-        ? ` Dias cerrados proximos: ${feriados.map((f) => `${f.iso} (${f.motivo})`).join(', ')}.`
-        : '';
+      /**
+       * EL MOTIVO TIENE QUE SER EL DEL RANGO CONSULTADO.
+       *
+       * Antes se anadia siempre la lista de feriados proximos, y el modelo la
+       * confundia con el dia preguntado: ante una consulta a las 23:00 de un
+       * miercoles --fuera de horario-- respondia «manana, jueves, la clinica
+       * cierra por la Batalla de Junin». Ni era manana ni era el motivo.
+       *
+       * Ahora se distingue: si el dia consultado ES feriado, se dice. Si no, se
+       * dice que es el horario, y los otros dias cerrados solo se mencionan
+       * marcados como OTROS, para que no se lean como el motivo.
+       */
+      const feriadoDelRango = feriadoDe(desdeDate, agenda);
+      let motivo: string;
+      if (feriadoDelRango !== undefined) {
+        const cual = fechaLocal(desdeDate, agenda.timeZone).iso;
+        motivo = `el ${cual} es feriado (${feriadoDelRango}) y no atiende ninguna sede.`;
+      } else {
+        motivo =
+          'en el rango consultado la clinica no atiende: cae fuera del horario de ese dia ' +
+          '(o ese dia no se atiende). NO es un feriado y NO significa que este lleno: prueba otra franja del mismo dia.';
+        const otros = cierresProximos(desdeDate, 14, agenda);
+        if (otros.length > 0) {
+          motivo += ` OTROS dias cerrados mas adelante, solo como referencia, NO son el motivo de esta consulta: ${otros
+            .map((f) => `${f.iso} (${f.motivo})`)
+            .join(', ')}.`;
+        }
+      }
       return this.registrar(ctx, parsed.data, 'ok', empezado, {
-        data: { slots: [], motivo: `la clinica no atiende en el rango consultado.${detalle}` },
+        data: { horarios: [], slots: [], motivo },
       });
     }
 
@@ -242,11 +293,26 @@ export class ConsultarAgendaTool implements BusinessTool<ConsultarAgendaInput, C
       const slots = libres
         .filter((c): c is { start: Date; end: Date } => c !== undefined)
         .map((c) => ({ ...c, ...(sedePedida ? { sede: sedePedida } : {}) }));
+
+      // La hora ya masticada, en la zona de la clinica. El modelo no convierte
+      // nada: lee `cuando` y lo dice.
+      const zonaClinica = agenda.timeZone;
+      const horarios = slots.map((s) => ({
+        cuando: describirInstante(s.start, zonaClinica),
+        inicio: isoLocal(s.start, zonaClinica),
+        fin: isoLocal(s.end, zonaClinica),
+        ...(sedePedida ? { sede: sedePedida } : {}),
+      }));
+
       return this.registrar(ctx, parsed.data, 'ok', empezado, {
         data: {
+          horarios,
           slots,
           ...(slots.length === 0
-            ? { motivo: 'la clinica atiende ese dia, pero todos los horarios estan ocupados' }
+            ? {
+                motivo:
+                  'la clinica SI atiende ese dia y en ese horario, pero todos los espacios estan ocupados. Ofrece otro dia u otra franja.',
+              }
             : {}),
         },
       });

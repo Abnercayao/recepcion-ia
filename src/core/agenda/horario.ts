@@ -191,6 +191,51 @@ export function esSoloFecha(texto: string): boolean {
   return SOLO_FECHA.test(texto.trim());
 }
 
+/**
+ * El instante tal como hay que DECIRSELO al paciente.
+ *
+ * Nace de un fallo medido y vergonzoso: la herramienta devolvia los huecos
+ * como ISO en UTC (`2026-08-05T20:00:00.000Z`) y el modelo leia el "20" y
+ * anunciaba "las ocho de la noche". Eran las tres de la tarde. Con la clinica
+ * cerrando a las siete, el agente ofrecia horarios imposibles y luego no podia
+ * agendarlos.
+ *
+ * La conversion de zona NO se le deja al modelo. Se le da la frase hecha, igual
+ * que el calendario de fechas.
+ */
+export function describirInstante(fecha: Date, timeZone: string): string {
+  try {
+    return new Intl.DateTimeFormat('es-PE', {
+      timeZone,
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }).format(fecha);
+  } catch {
+    return fecha.toISOString();
+  }
+}
+
+/** ISO con el desplazamiento de la clinica (`...-05:00`), nunca con `Z`. */
+export function isoLocal(fecha: Date, timeZone: string): string {
+  const l = fechaLocal(fecha, timeZone);
+  const medianoche = instanteLocal(l.anio, l.mes, l.dia, 0, 0, timeZone);
+  const minutos = Math.round((fecha.getTime() - medianoche.getTime()) / 60_000);
+  const hh = String(Math.floor(minutos / 60)).padStart(2, '0');
+  const mm = String(minutos % 60).padStart(2, '0');
+
+  const desfase = -Math.round((fecha.getTime() - (fecha.getTime() + desfaseDeZonaMs(fecha, timeZone))) / 60_000);
+  const signo = desfase <= 0 ? '-' : '+';
+  const abs = Math.abs(desfase);
+  const oh = String(Math.floor(abs / 60)).padStart(2, '0');
+  const om = String(abs % 60).padStart(2, '0');
+
+  return `${l.iso}T${hh}:${mm}:00${signo}${oh}:${om}`;
+}
+
 /** Formato que se le pide al modelo, en un solo sitio para no repetirlo mal. */
 export const FORMATO_DE_FECHA_ESPERADO =
   'Usa "2026-08-20" para un dia entero, "2026-08-20T09:00:00" para una hora concreta ' +

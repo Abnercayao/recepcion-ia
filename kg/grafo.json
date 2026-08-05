@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "9e3c3aea5bdafbc3",
+  "huella": "601a944371fa5eeb",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -454,7 +454,7 @@
       "tipo": "herramienta",
       "nombre": "consultar_agenda",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 111,
+      "linea": 138,
       "resumen": "Consulta los horarios libres de la agenda de la clinica dentro de un rango de fechas (maximo",
       "meta": {
         "clase": "ConsultarAgendaTool",
@@ -478,7 +478,7 @@
       "tipo": "herramienta",
       "nombre": "crear_cita",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 143,
+      "linea": 151,
       "resumen": "Crea una cita en la agenda de la clinica. SOLO se puede llamar despues de que el paciente confirmo",
       "meta": {
         "clase": "CrearCitaTool",
@@ -1200,7 +1200,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 500,
+        "lineas": 545,
         "capa": "nucleo"
       }
     },
@@ -1241,7 +1241,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 471,
+        "lineas": 478,
         "capa": "nucleo"
       }
     },
@@ -1353,7 +1353,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 280,
+        "lineas": 346,
         "capa": "nucleo"
       }
     },
@@ -1379,7 +1379,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 313,
+        "lineas": 327,
         "capa": "nucleo"
       }
     },
@@ -1939,7 +1939,7 @@
         "externas": [
           "vitest"
         ],
-        "lineas": 284,
+        "lineas": 317,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -4100,7 +4100,7 @@
       "tipo": "simbolo",
       "nombre": "AgendaDeClinica",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 257,
+      "linea": 302,
       "meta": {
         "clase": "interface"
       }
@@ -4110,8 +4110,19 @@
       "tipo": "simbolo",
       "nombre": "cierresProximos",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 482,
+      "linea": 527,
       "resumen": "Los proximos dias cerrados dentro de una ventana, para que el modelo pueda",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/agenda/horario.ts#describirInstante",
+      "tipo": "simbolo",
+      "nombre": "describirInstante",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 206,
+      "resumen": "El instante tal como hay que DECIRSELO al paciente.",
       "meta": {
         "clase": "function"
       }
@@ -4143,7 +4154,7 @@
       "tipo": "simbolo",
       "nombre": "feriadoDe",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 366,
+      "linea": 411,
       "resumen": "Si ese dia es feriado, devuelve el motivo.",
       "meta": {
         "clase": "function"
@@ -4154,7 +4165,7 @@
       "tipo": "simbolo",
       "nombre": "formatearMinutos",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 411,
+      "linea": 456,
       "meta": {
         "clase": "function"
       }
@@ -4164,7 +4175,7 @@
       "tipo": "simbolo",
       "nombre": "FORMATO_DE_FECHA_ESPERADO",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 195,
+      "linea": 240,
       "resumen": "Formato que se le pide al modelo, en un solo sitio para no repetirlo mal.",
       "meta": {
         "clase": "const"
@@ -4175,7 +4186,7 @@
       "tipo": "simbolo",
       "nombre": "generarCandidatos",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 432,
+      "linea": 477,
       "resumen": "Horarios en los que la clinica PODRIA atender dentro del rango, alineados al",
       "meta": {
         "clase": "function"
@@ -4204,11 +4215,22 @@
       }
     },
     {
+      "id": "simbolo:src/core/agenda/horario.ts#isoLocal",
+      "tipo": "simbolo",
+      "nombre": "isoLocal",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 223,
+      "resumen": "ISO con el desplazamiento de la clinica (`...-05:00`), nunca con `Z`.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
       "id": "simbolo:src/core/agenda/horario.ts#resolverAgenda",
       "tipo": "simbolo",
       "nombre": "resolverAgenda",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 286,
+      "linea": 331,
       "meta": {
         "clase": "function"
       }
@@ -4218,7 +4240,7 @@
       "tipo": "simbolo",
       "nombre": "Tramo",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 251,
+      "linea": 296,
       "meta": {
         "clase": "interface"
       }
@@ -4228,7 +4250,7 @@
       "tipo": "simbolo",
       "nombre": "VeredictoDeApertura",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 359,
+      "linea": 404,
       "meta": {
         "clase": "interface"
       }
@@ -4238,7 +4260,7 @@
       "tipo": "simbolo",
       "nombre": "verificarApertura",
       "ruta": "src/core/agenda/horario.ts",
-      "linea": 378,
+      "linea": 423,
       "resumen": "Comprueba que el intervalo [inicio, fin) cae ENTERO dentro de un mismo tramo",
       "meta": {
         "clase": "function"
@@ -4494,7 +4516,7 @@
       "tipo": "simbolo",
       "nombre": "PromptBuilder",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 420,
+      "linea": 427,
       "meta": {
         "clase": "class"
       }
@@ -4535,7 +4557,7 @@
       "tipo": "simbolo",
       "nombre": "renderizarProfesionales",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 340,
+      "linea": 347,
       "resumen": "Profesionales por sede, para poder OFRECERLOS.",
       "meta": {
         "clase": "function"
@@ -4546,7 +4568,7 @@
       "tipo": "simbolo",
       "nombre": "renderizarSedes",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 380,
+      "linea": 387,
       "meta": {
         "clase": "function"
       }
@@ -5107,7 +5129,7 @@
       "tipo": "simbolo",
       "nombre": "ConsultarAgendaInput",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 87,
+      "linea": 91,
       "meta": {
         "clase": "type"
       }
@@ -5117,7 +5139,7 @@
       "tipo": "simbolo",
       "nombre": "consultarAgendaInputSchema",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 40,
+      "linea": 44,
       "meta": {
         "clase": "const"
       }
@@ -5127,7 +5149,7 @@
       "tipo": "simbolo",
       "nombre": "ConsultarAgendaOutput",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 89,
+      "linea": 110,
       "meta": {
         "clase": "interface"
       }
@@ -5137,10 +5159,21 @@
       "tipo": "simbolo",
       "nombre": "ConsultarAgendaTool",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 111,
+      "linea": 138,
       "resumen": "Consulta disponibilidad de agenda.",
       "meta": {
         "clase": "class"
+      }
+    },
+    {
+      "id": "simbolo:src/core/tools/consultar-agenda.tool.ts#HuecoLegible",
+      "tipo": "simbolo",
+      "nombre": "HuecoLegible",
+      "ruta": "src/core/tools/consultar-agenda.tool.ts",
+      "linea": 101,
+      "resumen": "Un hueco tal como hay que decirselo al paciente.",
+      "meta": {
+        "clase": "interface"
       }
     },
     {
@@ -5148,7 +5181,7 @@
       "tipo": "simbolo",
       "nombre": "MAXIMO_HUECOS_POR_CONSULTA",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 22,
+      "linea": 26,
       "resumen": "Tope de huecos por consulta.",
       "meta": {
         "clase": "const"
@@ -5159,7 +5192,7 @@
       "tipo": "simbolo",
       "nombre": "RANGO_MAXIMO_CONSULTA_DIAS",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 36,
+      "linea": 40,
       "resumen": "Rango maximo de consulta: 30 dias.",
       "meta": {
         "clase": "const"
@@ -5222,7 +5255,7 @@
       "tipo": "simbolo",
       "nombre": "CrearCitaInput",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 137,
+      "linea": 138,
       "meta": {
         "clase": "type"
       }
@@ -5232,7 +5265,7 @@
       "tipo": "simbolo",
       "nombre": "crearCitaInputSchema",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 32,
+      "linea": 33,
       "meta": {
         "clase": "const"
       }
@@ -5242,7 +5275,7 @@
       "tipo": "simbolo",
       "nombre": "CrearCitaOutput",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 139,
+      "linea": 140,
       "meta": {
         "clase": "interface"
       }
@@ -5252,7 +5285,7 @@
       "tipo": "simbolo",
       "nombre": "CrearCitaTool",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 143,
+      "linea": 151,
       "meta": {
         "clase": "class"
       }
@@ -5262,7 +5295,7 @@
       "tipo": "simbolo",
       "nombre": "DURACION_MAX_MINUTOS",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 15,
+      "linea": 16,
       "meta": {
         "clase": "const"
       }
@@ -5272,7 +5305,7 @@
       "tipo": "simbolo",
       "nombre": "DURACION_MIN_MINUTOS",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 14,
+      "linea": 15,
       "meta": {
         "clase": "const"
       }
@@ -5282,7 +5315,7 @@
       "tipo": "simbolo",
       "nombre": "MAXIMO_CITAS_POR_CONVERSACION",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 30,
+      "linea": 31,
       "resumen": "Maximo de citas por conversacion: 5.",
       "meta": {
         "clase": "const"
@@ -5293,7 +5326,7 @@
       "tipo": "simbolo",
       "nombre": "resolverSede",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 117,
+      "linea": 118,
       "resumen": "Devuelve el nombre canonico de la sede, o `undefined` si no existe.",
       "meta": {
         "clase": "function"
@@ -5304,7 +5337,7 @@
       "tipo": "simbolo",
       "nombre": "sedesDeLaClinica",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 106,
+      "linea": 107,
       "resumen": "Sedes declaradas por la clinica, propias y franquicias.",
       "meta": {
         "clase": "function"
@@ -9741,13 +9774,19 @@
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#AgendaDeClinica",
-      "origen": "src/core/agenda/horario.ts:257"
+      "origen": "src/core/agenda/horario.ts:302"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#cierresProximos",
-      "origen": "src/core/agenda/horario.ts:482"
+      "origen": "src/core/agenda/horario.ts:527"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#describirInstante",
+      "origen": "src/core/agenda/horario.ts:206"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
@@ -9765,25 +9804,25 @@
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#feriadoDe",
-      "origen": "src/core/agenda/horario.ts:366"
-    },
-    {
-      "desde": "modulo:src/core/agenda/horario.ts",
-      "relacion": "exporta",
-      "hacia": "simbolo:src/core/agenda/horario.ts#formatearMinutos",
       "origen": "src/core/agenda/horario.ts:411"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#formatearMinutos",
+      "origen": "src/core/agenda/horario.ts:456"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#FORMATO_DE_FECHA_ESPERADO",
-      "origen": "src/core/agenda/horario.ts:195"
+      "origen": "src/core/agenda/horario.ts:240"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#generarCandidatos",
-      "origen": "src/core/agenda/horario.ts:432"
+      "origen": "src/core/agenda/horario.ts:477"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
@@ -9800,26 +9839,32 @@
     {
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#isoLocal",
+      "origen": "src/core/agenda/horario.ts:223"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#resolverAgenda",
-      "origen": "src/core/agenda/horario.ts:286"
+      "origen": "src/core/agenda/horario.ts:331"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#Tramo",
-      "origen": "src/core/agenda/horario.ts:251"
+      "origen": "src/core/agenda/horario.ts:296"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#VeredictoDeApertura",
-      "origen": "src/core/agenda/horario.ts:359"
+      "origen": "src/core/agenda/horario.ts:404"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/agenda/horario.ts#verificarApertura",
-      "origen": "src/core/agenda/horario.ts:378"
+      "origen": "src/core/agenda/horario.ts:423"
     },
     {
       "desde": "modulo:src/core/agenda/horario.ts",
@@ -10017,7 +10062,7 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/core/claude/prompt.builder.ts:420"
+      "origen": "src/core/claude/prompt.builder.ts:427"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
@@ -10041,13 +10086,13 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#renderizarProfesionales",
-      "origen": "src/core/claude/prompt.builder.ts:340"
+      "origen": "src/core/claude/prompt.builder.ts:347"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#renderizarSedes",
-      "origen": "src/core/claude/prompt.builder.ts:380"
+      "origen": "src/core/claude/prompt.builder.ts:387"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
@@ -10077,7 +10122,7 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "menciona",
       "hacia": "control:C9",
-      "origen": "src/core/claude/prompt.builder.ts:183"
+      "origen": "src/core/claude/prompt.builder.ts:190"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
@@ -10575,37 +10620,43 @@
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaInput",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:87"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:91"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#consultarAgendaInputSchema",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:40"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:44"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaOutput",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:89"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:110"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:111"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:138"
+    },
+    {
+      "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#HuecoLegible",
+      "origen": "src/core/tools/consultar-agenda.tool.ts:101"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#MAXIMO_HUECOS_POR_CONSULTA",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:22"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:26"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#RANGO_MAXIMO_CONSULTA_DIAS",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:36"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:40"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
@@ -10617,7 +10668,7 @@
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/tools/tool.registry.ts",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:11"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:15"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
@@ -10641,7 +10692,7 @@
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "menciona",
       "hacia": "control:C7",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:205"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:234"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
@@ -10731,55 +10782,55 @@
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaInput",
-      "origen": "src/core/tools/crear-cita.tool.ts:137"
+      "origen": "src/core/tools/crear-cita.tool.ts:138"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#crearCitaInputSchema",
-      "origen": "src/core/tools/crear-cita.tool.ts:32"
+      "origen": "src/core/tools/crear-cita.tool.ts:33"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaOutput",
-      "origen": "src/core/tools/crear-cita.tool.ts:139"
+      "origen": "src/core/tools/crear-cita.tool.ts:140"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
-      "origen": "src/core/tools/crear-cita.tool.ts:143"
+      "origen": "src/core/tools/crear-cita.tool.ts:151"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#DURACION_MAX_MINUTOS",
-      "origen": "src/core/tools/crear-cita.tool.ts:15"
+      "origen": "src/core/tools/crear-cita.tool.ts:16"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#DURACION_MIN_MINUTOS",
-      "origen": "src/core/tools/crear-cita.tool.ts:14"
+      "origen": "src/core/tools/crear-cita.tool.ts:15"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#MAXIMO_CITAS_POR_CONVERSACION",
-      "origen": "src/core/tools/crear-cita.tool.ts:30"
+      "origen": "src/core/tools/crear-cita.tool.ts:31"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#resolverSede",
-      "origen": "src/core/tools/crear-cita.tool.ts:117"
+      "origen": "src/core/tools/crear-cita.tool.ts:118"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#sedesDeLaClinica",
-      "origen": "src/core/tools/crear-cita.tool.ts:106"
+      "origen": "src/core/tools/crear-cita.tool.ts:107"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
@@ -10791,7 +10842,7 @@
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/tools/tool.registry.ts",
-      "origen": "src/core/tools/crear-cita.tool.ts:11"
+      "origen": "src/core/tools/crear-cita.tool.ts:12"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
@@ -13761,7 +13812,7 @@
       "desde": "modulo:tests/unit/horario.test.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/types/index.ts",
-      "origen": "tests/unit/horario.test.ts:25"
+      "origen": "tests/unit/horario.test.ts:27"
     },
     {
       "desde": "modulo:tests/unit/horario.test.ts",
@@ -13779,7 +13830,7 @@
       "desde": "modulo:tests/unit/horario.test.ts",
       "relacion": "verifica",
       "hacia": "modulo:src/core/types/index.ts",
-      "origen": "tests/unit/horario.test.ts:25"
+      "origen": "tests/unit/horario.test.ts:27"
     },
     {
       "desde": "modulo:tests/unit/openai-sse.mapper.test.ts",

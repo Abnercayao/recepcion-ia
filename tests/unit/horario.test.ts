@@ -15,11 +15,13 @@ import { describe, expect, it } from 'vitest';
 
 import {
   cierresProximos,
+  describirInstante,
   esSoloFecha,
   fechaLocal,
   generarCandidatos,
   instanteLocal,
   interpretarInstante,
+  isoLocal,
   resolverAgenda,
   verificarApertura,
 } from '../../src/core/agenda/horario.js';
@@ -260,6 +262,37 @@ describe('interpretarInstante — entender lo que el modelo manda de verdad', ()
   it('distingue una fecha sin hora, para no agendar a medianoche', () => {
     expect(esSoloFecha('2026-08-20')).toBe(true);
     expect(esSoloFecha('2026-08-20T10:00:00')).toBe(false);
+  });
+});
+
+describe('describirInstante — la hora que se le dice al paciente', () => {
+  /**
+   * REGRESION medida en una llamada real. La herramienta devolvia los huecos
+   * como ISO en UTC (`2026-08-05T20:00:00.000Z`) y el agente anunciaba "las
+   * ocho de la noche". Eran las TRES DE LA TARDE. Con la clinica cerrando a las
+   * siete, ofrecia horarios imposibles y luego no podia agendarlos.
+   */
+  it('convierte a hora de la clinica, no deja el UTC crudo', () => {
+    const texto = describirInstante(new Date('2026-08-05T20:00:00.000Z'), LIMA);
+    expect(texto).toMatch(/3:00/);
+    expect(texto).toMatch(/p\.?\s?m/i);
+    expect(texto).not.toMatch(/\b8:00\b/);
+    expect(texto).toMatch(/mi[eé]rcoles/i);
+    expect(texto).toMatch(/5 de agosto/);
+  });
+
+  it('isoLocal lleva el desplazamiento de la clinica, nunca Z', () => {
+    // Es lo que se le devuelve para que lo reenvie a `crear_cita`: si llevara
+    // Z, el modelo lo repetiria y la cita saldria cinco horas corrida.
+    expect(isoLocal(new Date('2026-08-05T20:00:00.000Z'), LIMA)).toBe('2026-08-05T15:00:00-05:00');
+    expect(isoLocal(new Date('2026-08-05T14:00:00.000Z'), LIMA)).toBe('2026-08-05T09:00:00-05:00');
+  });
+
+  it('lo que devuelve isoLocal vuelve a entrar sin perder la hora', () => {
+    // Ida y vuelta: consultar_agenda -> el modelo -> crear_cita.
+    const original = new Date('2026-08-05T20:00:00.000Z');
+    const texto = isoLocal(original, LIMA);
+    expect(interpretarInstante(texto, LIMA)?.getTime()).toBe(original.getTime());
   });
 });
 

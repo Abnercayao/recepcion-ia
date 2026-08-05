@@ -4,6 +4,7 @@ import type { CalendarEvent, CalendarPort, Logger, ToolCallRepository } from '..
 import type { Clinic, TurnContext } from '../types/conversation.js';
 import {
   FORMATO_DE_FECHA_ESPERADO,
+  describirInstante,
   esSoloFecha,
   interpretarInstante,
   resolverAgenda,
@@ -137,6 +138,13 @@ export function resolverSede(pedida: string, clinic: Clinic): string | undefined
 export type CrearCitaInput = z.infer<typeof crearCitaInputSchema>;
 
 export interface CrearCitaOutput {
+  /**
+   * La cita como hay que confirmarsela al paciente: «miércoles, 5 de agosto,
+   * 3:00 p. m.». El evento lleva `Date`, que se serializa en UTC, y el modelo
+   * lo leia como hora local y confirmaba una hora equivocada.
+   */
+  cuando: string;
+  sede: string;
   evento: CalendarEvent;
 }
 
@@ -282,7 +290,13 @@ export class CrearCitaTool implements BusinessTool<CrearCitaInput, CrearCitaOutp
         ctx.patient.telefonoE164,
         sede,
       );
-      return this.registrar(ctx, parsed.data, 'ok', empezado, { data: { evento } });
+      return this.registrar(ctx, parsed.data, 'ok', empezado, {
+        data: {
+          cuando: describirInstante(inicioDate, ctx.clinic.timezone),
+          sede,
+          evento,
+        },
+      });
     } catch (err) {
       this.logger.error({ err: String(err), clinicId }, 'fallo creando la cita en el calendario');
       return this.registrar(ctx, parsed.data, 'error', empezado, {

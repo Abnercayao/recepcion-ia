@@ -167,9 +167,16 @@ export function formatearFechaHora(fecha: Date, timezone: string): string {
       proximos.push(dia.format(new Date(fecha.getTime() + i * 86_400_000)));
     }
 
+    // «Manana» y «pasado manana» se dicen APARTE, no solo dentro de la lista.
+    // Medido: con la lista sola, el modelo seguia resolviendo «manana» al dia
+    // equivocado --decia que manana era jueves siendo martes--. Indexar en una
+    // lista es una operacion que se le puede dar hecha, y sale gratis.
+    const manana = proximos[0] ?? '';
+    const pasado = proximos[1] ?? '';
     return (
-      `${fmt.format(fecha)} (${timezone})\n` +
-      `Proximos dias, ya calculados -- usa ESTOS, no los deduzcas: ${proximos.join(' · ')}.`
+      `HOY es ${fmt.format(fecha)} (${timezone}).\n` +
+      `MANANA es ${manana}. PASADO MANANA es ${pasado}.\n` +
+      `Resto de dias, ya calculados -- usa ESTOS, no los deduzcas: ${proximos.join(' · ')}.`
     );
   } catch {
     // Una zona invalida no puede tumbar el turno: se degrada a ISO y se sigue.
