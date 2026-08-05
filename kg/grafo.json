@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "453e086eae58e884",
+  "huella": "8b5000a183350e78",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -644,6 +644,16 @@
       }
     },
     {
+      "id": "modulo:db/seed/clinica-demo/sedes-y-profesionales.md",
+      "tipo": "modulo",
+      "nombre": "sedes-y-profesionales.md",
+      "ruta": "db/seed/clinica-demo/sedes-y-profesionales.md",
+      "meta": {
+        "lineas": 768,
+        "capa": "datos"
+      }
+    },
+    {
       "id": "modulo:docs/bateria-adversarial.md",
       "tipo": "documento",
       "nombre": "bateria-adversarial.md",
@@ -929,6 +939,22 @@
           "dotenv/config"
         ],
         "lineas": 214,
+        "capa": "scripts"
+      }
+    },
+    {
+      "id": "modulo:scripts/configurar-rag.ts",
+      "tipo": "modulo",
+      "nombre": "configurar-rag.ts",
+      "ruta": "scripts/configurar-rag.ts",
+      "resumen": "Sube la base de conocimiento a ElevenLabs y activa el RAG nativo.",
+      "meta": {
+        "externas": [
+          "dotenv/config",
+          "node:fs/promises",
+          "node:path"
+        ],
+        "lineas": 114,
         "capa": "scripts"
       }
     },
@@ -7751,6 +7777,18 @@
       "origen": "db/seed/clinica-demo/protocolo-urgencias.md"
     },
     {
+      "desde": "modulo:db/seed/clinica-demo/sedes-y-profesionales.md",
+      "relacion": "menciona",
+      "hacia": "control:O2",
+      "origen": "db/seed/clinica-demo/sedes-y-profesionales.md:7"
+    },
+    {
+      "desde": "modulo:db/seed/clinica-demo/sedes-y-profesionales.md",
+      "relacion": "pertenece_a",
+      "hacia": "capa:datos",
+      "origen": "db/seed/clinica-demo/sedes-y-profesionales.md"
+    },
+    {
       "desde": "modulo:docs/bateria-adversarial.md",
       "relacion": "pertenece_a",
       "hacia": "capa:documentacion",
@@ -8199,6 +8237,18 @@
       "relacion": "pertenece_a",
       "hacia": "capa:scripts",
       "origen": "scripts/configurar-guardrails.ts"
+    },
+    {
+      "desde": "modulo:scripts/configurar-rag.ts",
+      "relacion": "menciona",
+      "hacia": "control:O2",
+      "origen": "scripts/configurar-rag.ts:12"
+    },
+    {
+      "desde": "modulo:scripts/configurar-rag.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:scripts",
+      "origen": "scripts/configurar-rag.ts"
     },
     {
       "desde": "modulo:scripts/demo.ts",

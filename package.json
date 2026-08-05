@@ -26,6 +26,7 @@
     "demo:web": "tsx scripts/web.ts",
     "agente:alojado": "tsx scripts/configurar-agente-alojado.ts",
     "agente:guardrails": "tsx scripts/configurar-guardrails.ts",
+    "agente:rag": "tsx scripts/configurar-rag.ts",
     "wer": "tsx scripts/wer.ts"
   },
   "dependencies": {
