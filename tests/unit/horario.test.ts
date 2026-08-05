@@ -15,9 +15,11 @@ import { describe, expect, it } from 'vitest';
 
 import {
   cierresProximos,
+  esSoloFecha,
   fechaLocal,
   generarCandidatos,
   instanteLocal,
+  interpretarInstante,
   resolverAgenda,
   verificarApertura,
 } from '../../src/core/agenda/horario.js';
@@ -201,6 +203,63 @@ describe('cierresProximos — para poder DECIRLO antes', () => {
   it('lista los feriados de la ventana con su motivo', () => {
     const cierres = cierresProximos(enLima('2026-08-01T09:00:00'), 30, agendaReal);
     expect(cierres).toEqual([{ iso: '2026-08-06', motivo: 'Batalla de Junin' }]);
+  });
+});
+
+describe('interpretarInstante — entender lo que el modelo manda de verdad', () => {
+  /**
+   * Casos REALES sacados de la traza del canal de voz. El esquema exigia
+   * ISO-8601 con desplazamiento y el modelo alojado mandaba esto; Zod lo
+   * rechazaba y el agente le decia al paciente «no tengo acceso al
+   * calendario». Ni era falta de acceso ni el paciente podia hacer nada.
+   */
+  it('una fecha sin hora es el comienzo del dia en la clinica', () => {
+    expect(interpretarInstante('2026-08-20', LIMA)?.toISOString()).toBe('2026-08-20T05:00:00.000Z');
+  });
+
+  it('la misma fecha como fin de rango es el FINAL de ese dia', () => {
+    // El modelo manda la misma fecha en `desde` y `hasta` para decir «el
+    // jueves». Tomarla literalmente daba un intervalo vacio y un «no hay
+    // disponibilidad» sobre un dia entero libre.
+    const fin = interpretarInstante('2026-08-20', LIMA, true);
+    expect(fin?.toISOString()).toBe('2026-08-21T04:59:59.999Z');
+    const inicio = interpretarInstante('2026-08-20', LIMA, false);
+    expect(fin!.getTime()).toBeGreaterThan(inicio!.getTime());
+  });
+
+  it('una hora SIN zona se resuelve en la de la clinica, nunca en la del servidor', () => {
+    // Es lo que separa una cita correcta de una corrida de horas segun donde
+    // este desplegado el proceso.
+    expect(interpretarInstante('2026-08-05T00:00:00', LIMA)?.toISOString()).toBe(
+      '2026-08-05T05:00:00.000Z',
+    );
+    expect(interpretarInstante('2026-08-20T09:00', LIMA)?.toISOString()).toBe(
+      '2026-08-20T14:00:00.000Z',
+    );
+    // Con espacio en vez de T tambien: el modelo lo escribe de las dos formas.
+    expect(interpretarInstante('2026-08-20 09:00:00', LIMA)?.toISOString()).toBe(
+      '2026-08-20T14:00:00.000Z',
+    );
+  });
+
+  it('un desplazamiento explicito manda sobre la zona de la clinica', () => {
+    expect(interpretarInstante('2026-08-20T09:00:00-05:00', LIMA)?.toISOString()).toBe(
+      '2026-08-20T14:00:00.000Z',
+    );
+    expect(interpretarInstante('2026-08-20T14:00:00Z', LIMA)?.toISOString()).toBe(
+      '2026-08-20T14:00:00.000Z',
+    );
+  });
+
+  it('lo que no es una fecha se rechaza, no se adivina', () => {
+    for (const basura of ['manana', 'el jueves', '', '   ', 'por la tarde']) {
+      expect(interpretarInstante(basura, LIMA)).toBeUndefined();
+    }
+  });
+
+  it('distingue una fecha sin hora, para no agendar a medianoche', () => {
+    expect(esSoloFecha('2026-08-20')).toBe(true);
+    expect(esSoloFecha('2026-08-20T10:00:00')).toBe(false);
   });
 });
 

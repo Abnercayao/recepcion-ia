@@ -2,7 +2,13 @@ import { z } from 'zod';
 import type { BusinessTool, ToolResult, ToolStatus } from '../types/tool.js';
 import type { CalendarPort, CalendarSlot, Logger, ToolCallRepository } from '../types/ports.js';
 import type { TurnContext } from '../types/conversation.js';
-import { cierresProximos, generarCandidatos, resolverAgenda } from '../agenda/horario.js';
+import {
+  FORMATO_DE_FECHA_ESPERADO,
+  cierresProximos,
+  generarCandidatos,
+  interpretarInstante,
+  resolverAgenda,
+} from '../agenda/horario.js';
 import { maskArgsForLog } from './tool.registry.js';
 
 /**
@@ -32,10 +38,36 @@ export const RANGO_MAXIMO_CONSULTA_DIAS = 30;
 const RANGO_MAXIMO_CONSULTA_MS = RANGO_MAXIMO_CONSULTA_DIAS * 24 * 60 * 60 * 1000;
 
 export const consultarAgendaInputSchema = z.object({
-  desde: z.iso.datetime({ offset: true }),
-  hasta: z.iso.datetime({ offset: true }),
-  duracionMin: z.number().int().min(15).max(240).default(30),
-  profesional: z.string().min(1).max(120).optional(),
+  /**
+   * Se acepta como CADENA y se interpreta despues, no con `z.iso.datetime`.
+   *
+   * El esquema estricto rechazaba lo que el modelo alojado manda de verdad
+   * --`2026-08-20`, `2026-08-05T00:00:00`-- y el agente le decia al paciente
+   * que no tenia acceso al calendario. Ver `interpretarInstante`.
+   */
+  desde: z
+    .string()
+    .min(4)
+    .describe(`Comienzo del rango a consultar. ${FORMATO_DE_FECHA_ESPERADO}`),
+  hasta: z
+    .string()
+    .min(4)
+    .describe(
+      `Fin del rango. Para consultar un dia entero manda la MISMA fecha que en "desde". ${FORMATO_DE_FECHA_ESPERADO}`,
+    ),
+  duracionMin: z
+    .number()
+    .int()
+    .min(15)
+    .max(240)
+    .default(30)
+    .describe('Duracion de la cita en minutos. Si no la sabes, usa la habitual de la clinica.'),
+  profesional: z
+    .string()
+    .min(1)
+    .max(120)
+    .optional()
+    .describe('Nombre del profesional, si el paciente pidio uno. NUNCA pongas aqui la sede.'),
   /**
    * Sede sobre la que se pregunta.
    *
@@ -49,7 +81,12 @@ export const consultarAgendaInputSchema = z.object({
    * creia el modelo estar preguntando, que es justo lo que hace falta el dia
    * que se separen los calendarios.
    */
-  sede: z.string().min(1).max(80).optional(),
+  sede: z
+    .string()
+    .min(1)
+    .max(80)
+    .optional()
+    .describe('Sede sobre la que se consulta. Cada sede tiene su propia agenda.'),
 });
 export type ConsultarAgendaInput = z.infer<typeof consultarAgendaInputSchema>;
 
@@ -109,8 +146,25 @@ export class ConsultarAgendaTool implements BusinessTool<ConsultarAgendaInput, C
 
     const clinicId = ctx.clinic.id; // jamas de los argumentos del modelo
     const { duracionMin } = parsed.data;
-    let desdeDate = new Date(parsed.data.desde);
-    const hastaDate = new Date(parsed.data.hasta);
+
+    /**
+     * Se interpreta en la zona de la CLINICA, nunca en la del servidor.
+     *
+     * `hasta` se completa al FINAL del dia cuando llega sin hora: el modelo
+     * manda la misma fecha en los dos extremos para decir «el jueves», y
+     * tomarla literalmente daba un intervalo vacio y un «no hay disponibilidad»
+     * sobre un dia entero libre.
+     */
+    const zona = ctx.clinic.timezone;
+    let desdeDate = interpretarInstante(parsed.data.desde, zona, false);
+    const hastaDate = interpretarInstante(parsed.data.hasta, zona, true);
+
+    if (desdeDate === undefined || hastaDate === undefined) {
+      const cual = desdeDate === undefined ? 'desde' : 'hasta';
+      return this.registrar(ctx, parsed.data, 'rechazada_validacion', empezado, {
+        error: `no entiendo la fecha de "${cual}". ${FORMATO_DE_FECHA_ESPERADO}`,
+      });
+    }
 
     if (hastaDate.getTime() <= ctx.now.getTime()) {
       return this.registrar(ctx, parsed.data, 'rechazada_validacion', empezado, {

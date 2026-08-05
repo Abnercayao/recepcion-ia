@@ -12,8 +12,15 @@
  *
  * Uso:
  *   npm run db:seed -- --dry-run
+ *   npm run db:seed -- --solo-clinica     # SOLO horarios, feriados, sedes...
  *   npm run db:seed -- --dir db/seed/clinica-demo
  *   npm run db:seed -- --dir db/seed/clinica-demo --aprobar-como "Dra. Carmen Rios"
+ *
+ * `--solo-clinica` actualiza la fila de `clinics` y NO toca la base de
+ * conocimiento. Es lo que hay que ejecutar cada vez que cambia `clinica.json`:
+ * la configuracion vive en dos sitios --ese archivo y Supabase-- y solo la
+ * fila manda en produccion. Olvidarlo ya costo dos veces que un arreglo
+ * quedara bien por texto y siguiera roto por voz.
  */
 // Mismo motivo que en migrate.ts: la guia manda poner las claves en .env, y
 // loadConfig() lee de process.env. Sin esto el script no ve ese archivo.
@@ -73,11 +80,14 @@ const clinicaJsonSchema = z.object({
 interface Opciones {
   dir: string;
   dryRun: boolean;
+  /** Actualiza solo la fila de `clinics`; no toca `knowledge_chunks`. */
+  soloClinica: boolean;
   aprobarComo?: string;
 }
 
 function parseArgs(argv: string[]): Opciones {
   const dryRun = argv.includes('--dry-run');
+  const soloClinica = argv.includes('--solo-clinica');
   const dirIdx = argv.indexOf('--dir');
   const aprobarIdx = argv.indexOf('--aprobar-como');
 
@@ -90,7 +100,7 @@ function parseArgs(argv: string[]): Opciones {
     );
   }
 
-  return { dir, dryRun, ...(aprobarComo ? { aprobarComo } : {}) };
+  return { dir, dryRun, soloClinica, ...(aprobarComo ? { aprobarComo } : {}) };
 }
 
 async function main(): Promise<void> {
@@ -137,7 +147,7 @@ async function main(): Promise<void> {
   //    entero, no a mitad de la carga dejando la base incoherente.
   const config = loadConfig();
 
-  if (!config.VOYAGE_API_KEY) {
+  if (!config.VOYAGE_API_KEY && !opciones.soloClinica) {
     throw new Error(
       'Falta VOYAGE_API_KEY. Sin embeddings no se puede poblar knowledge_chunks. Usa --dry-run para validar solo la fragmentacion.',
     );
@@ -149,7 +159,9 @@ async function main(): Promise<void> {
 
   const supabase = createClient(config.SUPABASE_URL, config.SUPABASE_SERVICE_KEY);
 
-  // 3. Alta de la clinica.
+  // 3. Alta de la clinica. Es un UPSERT, asi que tambien sirve para actualizar
+  //    la configuracion --horarios, feriados, sedes, calendarios por sede--
+  //    sin tocar nada mas.
   const { error: errorClinica } = await supabase.from('clinics').upsert(
     {
       id: clinica.id,
@@ -167,6 +179,29 @@ async function main(): Promise<void> {
     throw new Error(`No se pudo dar de alta la clinica: ${errorClinica.message}`);
   }
   console.log(`\nClinica registrada: ${clinica.nombre} (${clinica.id})`);
+
+  /**
+   * `--solo-clinica`: actualiza la configuracion y NO toca la base de
+   * conocimiento.
+   *
+   * Existe por un fallo que se repitio dos veces. La configuracion de la
+   * clinica vive en DOS sitios --este archivo y la fila de Supabase-- y solo
+   * la fila manda en produccion. Se anadieron las sedes y luego los feriados a
+   * la semilla, pasaron las pruebas, quedaron bien por texto... y por VOZ
+   * seguian sin existir, porque nadie actualizo la fila. El 6 de agosto,
+   * feriado, se seguia agendando.
+   *
+   * La carga de conocimiento NO se reejecuta porque `knowledge_chunks` solo
+   * inserta: repetirla duplica los fragmentos y obliga a re-aprobarlos a mano
+   * (control O2). Separar las dos cosas hace barato y seguro lo que antes
+   * nadie hacia.
+   */
+  if (opciones.soloClinica) {
+    const claves = Object.keys(clinica.config).filter((k) => !k.startsWith('_'));
+    console.log(`Configuracion actualizada (${claves.length} claves): ${claves.join(', ')}`);
+    console.log('\n--solo-clinica: la base de conocimiento no se toca.');
+    return;
+  }
 
   // 4. Embeber. `document` y no `query`: usar el tipo equivocado degrada la
   //    recuperacion de forma silenciosa.

@@ -2,7 +2,13 @@ import { z } from 'zod';
 import type { BusinessTool, ToolResult, ToolStatus } from '../types/tool.js';
 import type { CalendarEvent, CalendarPort, Logger, ToolCallRepository } from '../types/ports.js';
 import type { Clinic, TurnContext } from '../types/conversation.js';
-import { resolverAgenda, verificarApertura } from '../agenda/horario.js';
+import {
+  FORMATO_DE_FECHA_ESPERADO,
+  esSoloFecha,
+  interpretarInstante,
+  resolverAgenda,
+  verificarApertura,
+} from '../agenda/horario.js';
 import { maskArgsForLog } from './tool.registry.js';
 
 export const DURACION_MIN_MINUTOS = 15;
@@ -24,10 +30,31 @@ export const DURACION_MAX_MINUTOS = 180;
 export const MAXIMO_CITAS_POR_CONVERSACION = 5;
 
 export const crearCitaInputSchema = z.object({
-  inicio: z.iso.datetime({ offset: true }),
-  duracionMin: z.number().int().min(DURACION_MIN_MINUTOS).max(DURACION_MAX_MINUTOS).default(30),
-  motivo: z.string().min(1).max(200).optional(),
-  profesional: z.string().min(1).max(120).optional(),
+  /**
+   * Cadena, e interpretada despues en la zona de la clinica.
+   *
+   * Aqui la tolerancia importa MAS que en la consulta: si un texto sin zona se
+   * resolviera con el reloj del servidor, la cita quedaria a otra hora. Ver
+   * `interpretarInstante`, que nunca delega eso en `new Date`.
+   */
+  inicio: z
+    .string()
+    .min(4)
+    .describe(`Fecha y hora de comienzo de la cita. ${FORMATO_DE_FECHA_ESPERADO}`),
+  duracionMin: z
+    .number()
+    .int()
+    .min(DURACION_MIN_MINUTOS)
+    .max(DURACION_MAX_MINUTOS)
+    .default(30)
+    .describe('Duracion en minutos.'),
+  motivo: z.string().min(1).max(200).optional().describe('Motivo de la cita, en pocas palabras.'),
+  profesional: z
+    .string()
+    .min(1)
+    .max(120)
+    .optional()
+    .describe('Profesional solicitado. NUNCA pongas aqui la sede.'),
   /**
    * SEDE. Requerida, y no por burocracia.
    *
@@ -40,7 +67,13 @@ export const crearCitaInputSchema = z.object({
    * tocar el calendario: lo corta Zod. Es la unica forma de que "pregunta la
    * sede" no dependa de que el modelo se acuerde.
    */
-  sede: z.string().min(1).max(80),
+  sede: z
+    .string()
+    .min(1)
+    .max(80)
+    .describe(
+      'Sede en la que se atiende el paciente. OBLIGATORIA: preguntasela si no la ha dicho. Cada sede tiene su propia agenda.',
+    ),
   /**
    * Debe llegar exactamente `true`. Si el campo viene `false`, ausente, o con
    * cualquier otro valor, `z.literal(true)` hace que `safeParse` falle antes
@@ -139,7 +172,24 @@ export class CrearCitaTool implements BusinessTool<CrearCitaInput, CrearCitaOutp
 
     const clinicId = ctx.clinic.id; // jamas de los argumentos del modelo
     const { duracionMin, motivo, profesional } = parsed.data;
-    const inicioDate = new Date(parsed.data.inicio);
+
+    // En la zona de la CLINICA. Nunca `new Date(texto)` sobre un texto sin
+    // zona: lo resolveria con el reloj del servidor y la cita quedaria a otra
+    // hora, que es criterio bloqueante de la Tabla 14.
+    const inicioDate = interpretarInstante(parsed.data.inicio, ctx.clinic.timezone, false);
+    if (inicioDate === undefined) {
+      return this.registrar(ctx, parsed.data, 'rechazada_validacion', empezado, {
+        error: `no entiendo la fecha de "inicio". ${FORMATO_DE_FECHA_ESPERADO}`,
+      });
+    }
+    if (esSoloFecha(parsed.data.inicio)) {
+      // Una fecha sin hora no es una cita: agendarla a medianoche seria peor
+      // que rechazarla, y el paciente no habria confirmado ninguna hora.
+      return this.registrar(ctx, parsed.data, 'rechazada_validacion', empezado, {
+        error:
+          'falta la HORA de la cita: "inicio" trae solo la fecha. Confirma la hora con el paciente y mandala como "2026-08-20T10:00:00".',
+      });
+    }
     const finDate = new Date(inicioDate.getTime() + duracionMin * 60_000);
 
     if (inicioDate.getTime() <= ctx.now.getTime()) {

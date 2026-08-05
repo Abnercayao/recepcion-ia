@@ -122,6 +122,22 @@ Son independientes y conviven sin problema. **Matar el de 3000 tumba la voz aunq
 la web siga en pie**: la página pública sirve el widget, pero el widget llama a
 ElevenLabs y ElevenLabs llama a los webhooks del túnel de 3000.
 
+⚠ **`clinica.json` y la fila de Supabase son DOS fuentes de verdad.**
+El archivo es la semilla; **la fila manda en producción**. Ya mordió dos veces:
+se añadieron las sedes y luego los feriados a la semilla, pasaron las pruebas,
+quedaron bien en la web —que lee el archivo— y por **voz** seguían sin existir,
+porque nadie actualizó la fila. El 6 de agosto, feriado, se seguía agendando.
+
+Cada vez que cambie `db/seed/clinica-demo/clinica.json`:
+
+```bash
+npm run db:seed -- --solo-clinica
+```
+
+Actualiza `clinics.config` y **no** toca la base de conocimiento —reejecutar la
+carga completa duplicaría los fragmentos y obligaría a re-aprobarlos a mano
+(control O2)—.
+
 ⚠ **El repositorio y el agente de ElevenLabs son DOS fuentes de verdad.**
 Cambiar el prompt en el código no lo publica. Ya mordió una vez: el defecto de
 las sedes se reparó, pasó las pruebas y quedó bien por texto, pero **por voz

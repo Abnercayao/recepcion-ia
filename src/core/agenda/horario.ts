@@ -117,6 +117,87 @@ export function fechaLocal(
 }
 
 // ---------------------------------------------------------------------------
+// Interpretacion de fechas que manda el modelo
+// ---------------------------------------------------------------------------
+
+/** `2026-08-20` */
+const SOLO_FECHA = /^(\d{4})-(\d{2})-(\d{2})$/;
+/** `2026-08-20T09:00`, `2026-08-20T09:00:00`, con espacio en vez de T tambien. */
+const FECHA_Y_HORA_SIN_ZONA = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?$/;
+
+/**
+ * Convierte lo que el modelo manda en un instante absoluto.
+ *
+ * NACE DE UN FALLO MEDIDO, y de los caros. El esquema exigia ISO-8601 con
+ * desplazamiento (`2026-08-20T09:00:00-05:00`) y el modelo ALOJADO mandaba
+ * `2026-08-20` a secas, o `2026-08-05T00:00:00` sin zona. Zod los rechazaba, la
+ * herramienta devolvia "argumentos invalidos" y el agente se lo traducia al
+ * paciente como **«no tengo acceso al calendario»**. Ni era falta de acceso ni
+ * el paciente podia hacer nada.
+ *
+ * Exigirle formato estricto a un modelo que no controlamos --Qwen, dentro del
+ * proveedor-- es una apuesta que se pierde. Es mas barato entender lo que
+ * manda.
+ *
+ * LO QUE NO SE HACE, y es deliberado: NUNCA se delega en `new Date(texto)` para
+ * un texto sin zona. El constructor lo interpretaria con la zona del SERVIDOR,
+ * que puede estar en cualquier sitio, y una cita corrida de hora es el criterio
+ * BLOQUEANTE de la Tabla 14. Sin zona explicita se resuelve SIEMPRE en la zona
+ * de la clinica.
+ *
+ * `finDeDia` decide como se completa una fecha sin hora: `2026-08-20` es el
+ * comienzo de ese dia si es el principio de un rango, y su final si es el
+ * cierre. Es lo que hace que «el jueves» --que el modelo manda como la misma
+ * fecha en `desde` y en `hasta`-- signifique el dia entero y no un intervalo
+ * vacio.
+ */
+export function interpretarInstante(
+  texto: string,
+  timeZone: string,
+  finDeDia = false,
+): Date | undefined {
+  const limpio = texto.trim();
+  if (limpio === '') return undefined;
+
+  const soloFecha = SOLO_FECHA.exec(limpio);
+  if (soloFecha) {
+    const [, a, m, d] = soloFecha.map(Number) as unknown as [unknown, number, number, number];
+    return finDeDia
+      ? new Date(instanteLocal(a, m, d + 1, 0, 0, timeZone).getTime() - 1)
+      : instanteLocal(a, m, d, 0, 0, timeZone);
+  }
+
+  const sinZona = FECHA_Y_HORA_SIN_ZONA.exec(limpio);
+  if (sinZona) {
+    const [, a, m, d, h, min] = sinZona.map(Number) as unknown as [
+      unknown,
+      number,
+      number,
+      number,
+      number,
+      number,
+    ];
+    return instanteLocal(a, m, d, h, min, timeZone);
+  }
+
+  // Con desplazamiento explicito (`-05:00`) o `Z`: no hay ambiguedad que
+  // resolver y se acepta tal cual.
+  const conZona = new Date(limpio);
+  return Number.isNaN(conZona.getTime()) ? undefined : conZona;
+}
+
+/** True si el texto es una fecha sin hora. El llamador decide que hacer con eso. */
+export function esSoloFecha(texto: string): boolean {
+  return SOLO_FECHA.test(texto.trim());
+}
+
+/** Formato que se le pide al modelo, en un solo sitio para no repetirlo mal. */
+export const FORMATO_DE_FECHA_ESPERADO =
+  'Usa "2026-08-20" para un dia entero, "2026-08-20T09:00:00" para una hora concreta ' +
+  '(se entiende en la hora local de la clinica) o "2026-08-20T09:00:00-05:00" con desplazamiento. ' +
+  'NUNCA mandes texto como "manana", "el jueves" o "por la tarde": conviertelo a fecha tu.';
+
+// ---------------------------------------------------------------------------
 // Configuracion: lo que de verdad hay en `clinic.config`
 // ---------------------------------------------------------------------------
 
