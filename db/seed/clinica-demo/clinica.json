@@ -7,7 +7,8 @@
   "retencion_audio_dias": 0,
   "transfer_whitelist": ["+51999000001", "+51999000002"],
   "config": {
-    "_limitacion_v1": "CalendarPort no lleva parametro de sede: v1 agenda contra UN solo calendario. Las dos sedes existen en la base de conocimiento (informativo) pero el agendamiento real usa googleCalendarId. Ver docs/decisiones.md, vacio 6.",
+    "_agenda_por_sede": "CalendarPort YA lleva sede: cada una tiene su propia agenda y la ocupacion de una no afecta a las demas. Para que eso sea cierto en Google hace falta UN CALENDARIO POR SEDE y ponerlo en `calendarios_por_sede`. Mientras una sede no tenga el suyo se cae a `googleCalendarId` y el cliente AVISA por el log: esa sede sigue compartiendo agenda. Dar de alta los calendarios es trabajo de configuracion, no de codigo. Cada calendario nuevo hay que compartirlo con el email de la cuenta de servicio con permiso para 'Hacer cambios en los eventos'.",
+    "calendarios_por_sede": {},
     "_calendario": "googleCalendarId es el ID del calendario real: Google Calendar -> Configuracion del calendario -> Integrar el calendario -> ID del calendario. googleImpersonateSubject se OMITE a proposito: solo hace falta con delegacion de dominio de Google Workspace. Sin dominio propio basta con compartir el calendario con el email de la cuenta de servicio, dandole permiso para 'Hacer cambios en los eventos'.",
     "googleCalendarId": "723a5338e4b21175d26cd7aebf4a26666ab1123b9ca02a1e920d48cd58d9cd8b@group.calendar.google.com",
     "sedes_informativas": {
@@ -28,6 +29,17 @@
       "santa-catalina": "Av. San Eugenio 631, Urb. Santa Catalina",
       "surco": "Av. Caminos del Inca 1554"
     },
+    "_sedes_franquicia": "Estaban SOLO en la base de conocimiento (formulario-maestro.md y faqs.md), no en la config. Por eso, cuando el RAG recuperaba el fragmento de franquicias y no el de sedes propias, el modelo contestaba con 8 sedes de 24. La lista completa vive ahora aqui y entra al prompt por el bloque de sesion, sin depender de que una busqueda semantica acierte.",
+    "sedes_franquicia": {
+      "chorrillos": "Av. Alameda San Marcos 446",
+      "la-molina-los-frutales": "Calle Santa Magdalena Sofia 109",
+      "primavera": "Av. Primavera 643, int. 503, Urb. Chacarilla",
+      "san-borja": "Av. Joaquin Madrid 235",
+      "san-miguel-el-campillo": "Calle Ayarza de Morales 237, Urb. El Campillo",
+      "san-miguel-la-marina": "Calle Monsenor Dintilhac 717",
+      "surquillo": "Calle Las Tiendas 331, dpto. 101",
+      "ventanilla": "Av. Los Licenciados Mz. O5 Lt. 25, 2do piso"
+    },
     "sede_por_defecto": "miraflores",
     "duracion_cita_min": 40,
     "horarios": {
@@ -35,6 +47,25 @@
       "sabado": [["09:00", "13:00"]],
       "domingo": []
     },
+    "_feriados": "Dias en que NINGUNA sede atiende. Antes no existia este concepto en ninguna capa y el agente agendaba en feriado con total normalidad: el 6 de agosto, Batalla de Junin, entre otros. La lista es DATO DE LA CLINICA, no una fuente legal: el codigo no calcula fiestas moviles (Jueves y Viernes Santo cambian cada ano) ni conoce los feriados regionales ni los cierres propios. Hay que revisarla cada ano; cuando se acabe, `verificarApertura` deja de bloquear feriados y solo queda el horario semanal.",
+    "feriados": [
+      { "fecha": "2026-01-01", "motivo": "Ano Nuevo" },
+      { "fecha": "2026-04-02", "motivo": "Jueves Santo" },
+      { "fecha": "2026-04-03", "motivo": "Viernes Santo" },
+      { "fecha": "2026-05-01", "motivo": "Dia del Trabajo" },
+      { "fecha": "2026-06-07", "motivo": "Batalla de Arica y Dia de la Bandera" },
+      { "fecha": "2026-06-29", "motivo": "San Pedro y San Pablo" },
+      { "fecha": "2026-07-23", "motivo": "Dia de las Fuerzas Armadas y la Policia Nacional" },
+      { "fecha": "2026-07-28", "motivo": "Fiestas Patrias" },
+      { "fecha": "2026-07-29", "motivo": "Fiestas Patrias" },
+      { "fecha": "2026-08-06", "motivo": "Batalla de Junin" },
+      { "fecha": "2026-08-30", "motivo": "Santa Rosa de Lima" },
+      { "fecha": "2026-10-08", "motivo": "Combate de Angamos" },
+      { "fecha": "2026-11-01", "motivo": "Dia de Todos los Santos" },
+      { "fecha": "2026-12-08", "motivo": "Inmaculada Concepcion" },
+      { "fecha": "2026-12-09", "motivo": "Batalla de Ayacucho" },
+      { "fecha": "2026-12-25", "motivo": "Navidad" }
+    ],
     "acepta_eps_y_seguros": true,
     "cancelacion_horas_min": 4,
     "ventana_agendamiento_dias": 60,

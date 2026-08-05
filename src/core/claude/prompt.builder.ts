@@ -18,6 +18,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { Channel, KnowledgeChunk, TurnContext } from '../types/index.js';
+import { cierresProximos, formatearMinutos, resolverAgenda } from '../agenda/horario.js';
 
 /** Numero de bloques `## ` que debe tener `maestro.md`. Si cambia, el split falla. */
 export const TOTAL_DE_BLOQUES = 10;
@@ -213,9 +214,148 @@ function notasDeSesion(ctx: TurnContext): string {
 
 function sedeDe(ctx: TurnContext, explicita?: string): string {
   if (explicita && explicita.trim() !== '') return explicita.trim();
+  /**
+   * Solo `sede` --que declara una clinica de sede UNICA--. `sede_por_defecto`
+   * NO cuenta, aunque exista en la configuracion.
+   *
+   * Se probo al reves y se vio el efecto: con `sede_por_defecto: miraflores`
+   * el bloque de sesion decia «Sede de esta conversacion: miraflores» y el
+   * modelo lo trataba como decidido —«para el viernes en Miraflores tengo
+   * estos horarios»— sin que el paciente hubiera elegido nada. Es el mismo
+   * error que el viejo `'sede unica'`: presentar un valor por defecto de la
+   * configuracion como un hecho de la conversacion.
+   *
+   * `sede_por_defecto` sigue siendo util donde le corresponde --el calendario
+   * contra el que se agenda--, pero no es la sede que el paciente pidio.
+   */
   const enConfig = ctx.clinic.config['sede'];
   if (typeof enConfig === 'string' && enConfig.trim() !== '') return enConfig.trim();
-  return 'sede unica';
+  /**
+   * NO se devuelve "sede unica".
+   *
+   * Ese era el valor por defecto y era una AFIRMACION FALSA sobre la clinica
+   * que entraba al prompt como dato de sesion. La semilla no tiene la clave
+   * `sede` --tiene `sedes_informativas`--, asi que el defecto se aplicaba
+   * SIEMPRE, y el modelo lo repetia: ante "vivo por Magdalena" contesto
+   * "trabajamos con sede unica" teniendo la clinica 24. Era la linea roja
+   * "nunca inventar datos ausentes de la base", y no la cruzaba el modelo:
+   * se la dabamos escrita nosotros.
+   *
+   * Desconocer la sede de la conversacion es un hecho corriente; afirmar que
+   * solo hay una es un dato inventado. Se dice lo primero.
+   */
+  return 'TODAVIA NO ELEGIDA — preguntale al paciente en cual quiere atenderse antes de agendar';
+}
+
+/**
+ * TODAS las sedes de la clinica, tomadas de `clinic.config`.
+ *
+ * Van en el bloque de SESION y no en el CONTEXTO APROBADO a proposito. El
+ * contexto lo llena el RAG, y el RAG puede fallar: basta con que la busqueda
+ * recupere el fragmento de franquicias y no el de sedes propias para que el
+ * modelo conteste 8 sedes de 24 --medido, es como se detecto esto--. Un dato
+ * censal, cerrado y que cabe en unas lineas no debe depender de que una
+ * busqueda semantica acierte; se le da hecho, igual que la aritmetica de
+ * fechas de `formatearFechaHora`.
+ *
+ * El coste es real y esta aceptado: el bloque 9 NO se cachea (solo los bloques
+ * 1-7 lo son), asi que esto son unos cientos de tokens en cada iteracion del
+ * bucle de herramientas. Se paga a cambio de cerrar una clase entera de
+ * invencion sobre la que no hay control automatico en capa 2.
+ *
+ * Se exporta porque el modo ALOJADO (`scripts/configurar-agente-alojado.ts`)
+ * arma su propio prompt descartando los bloques 8 y 9, y necesita el mismo
+ * texto. Con dos implementaciones, el defecto se arreglaria en texto y seguiria
+ * vivo en voz.
+ */
+/**
+ * Horario de la semana y dias en que la clinica NO atiende.
+ *
+ * Va en el bloque de sesion por la misma razon que las sedes: es un dato
+ * cerrado y no puede depender de que una busqueda semantica acierte. Pero hay
+ * un motivo mas, propio de esto: sin la lista por delante, el unico control
+ * posible es RECHAZAR la cita cuando el paciente ya propuso la fecha, y la
+ * conversacion se vuelve un tira y afloja --propone el jueves, se le dice que
+ * no, propone otra cosa--. Con la lista, el agente lo dice antes.
+ *
+ * Medido: el 6 de agosto es feriado por la Batalla de Junin y ninguna sede
+ * atiende; el agente agendaba ese dia sin inmutarse porque no existia el
+ * concepto de feriado en ninguna capa.
+ */
+function renderizarCierres(ctx: TurnContext): string {
+  const agenda = resolverAgenda(ctx.clinic);
+  const lineas: string[] = [];
+
+  const NOMBRES = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+  const semana: string[] = [];
+  for (let dia = 1; dia <= 6; dia += 1) {
+    const tramos = agenda.porDia.get(dia) ?? [];
+    semana.push(
+      tramos.length === 0
+        ? `${NOMBRES[dia]}: cerrado`
+        : `${NOMBRES[dia]}: ${tramos.map((t) => `${formatearMinutos(t.desde)}-${formatearMinutos(t.hasta)}`).join(' y ')}`,
+    );
+  }
+  const domingo = agenda.porDia.get(0) ?? [];
+  semana.push(domingo.length === 0 ? 'domingo: cerrado' : `domingo: ${domingo.length} tramo(s)`);
+  lineas.push(`HORARIO SEMANAL: ${semana.join(' · ')}.`);
+  lineas.push(
+    'Fuera de esos tramos NO hay atencion, tampoco en la pausa de mediodia. No ofrezcas un horario que no quepa entero dentro de un tramo.',
+  );
+
+  const cierres = cierresProximos(ctx.now, 45, agenda);
+  if (cierres.length > 0) {
+    lineas.push(
+      `DIAS CERRADOS proximos (ninguna sede atiende): ${cierres
+        .map((c) => `${c.iso} (${c.motivo})`)
+        .join(', ')}.`,
+    );
+    lineas.push(
+      'Si el paciente propone uno de esos dias, DILO antes de consultar la agenda y ofrece el dia habil mas cercano.',
+    );
+  }
+
+  return lineas.join('\n');
+}
+
+export function renderizarSedes(config: Record<string, unknown>): string {
+  const grupos: Array<[string, unknown]> = [
+    ['propias', config['sedes_informativas']],
+    ['franquicias', config['sedes_franquicia']],
+  ];
+
+  const lineas: string[] = [];
+  let total = 0;
+
+  for (const [etiqueta, crudo] of grupos) {
+    if (crudo === null || typeof crudo !== 'object') continue;
+    const entradas = Object.entries(crudo as Record<string, unknown>).filter(
+      ([, direccion]) => typeof direccion === 'string' && direccion.trim() !== '',
+    );
+    if (entradas.length === 0) continue;
+
+    total += entradas.length;
+    lineas.push(`${etiqueta.toUpperCase()} (${entradas.length}):`);
+    for (const [nombre, direccion] of entradas) {
+      // La clave viene en kebab-case porque es un identificador; al modelo se
+      // le da legible, que es como la va a decir el paciente.
+      const legible = nombre.replace(/-/g, ' ');
+      lineas.push(`  - ${legible}: ${String(direccion).trim()}`);
+    }
+  }
+
+  if (total === 0) {
+    // Sin lista no se afirma cuantas hay. Ausencia declarada, no rellenada.
+    return 'Sedes: no figuran en la configuracion de la clinica. Si te preguntan, dilo y ofrece confirmarlo con recepcion. NO supongas el numero de sedes ni digas que hay una sola.';
+  }
+
+  return (
+    `SEDES DE LA CLINICA — lista COMPLETA y AUTORITATIVA (${total} en total).\n` +
+    `${lineas.join('\n')}\n` +
+    'Esta lista manda sobre el CONTEXTO APROBADO: si un fragmento recuperado menciona ' +
+    'menos sedes, es que solo recupero una parte, no que las demas no existan. Al ' +
+    'preguntar por sedes responde desde AQUI. Nunca digas que hay una sola sede.'
+  );
 }
 
 export class PromptBuilder {
@@ -245,6 +385,8 @@ export class PromptBuilder {
       canal: ctx.channel,
       fecha_hora: formatearFechaHora(ctx.now, ctx.clinic.timezone),
       sede: sedeDe(ctx, input.sede),
+      sedes_de_la_clinica: renderizarSedes(ctx.clinic.config),
+      dias_cerrados: renderizarCierres(ctx),
       paciente_nombre_si_conocido: ctx.patient.nombre?.trim() || 'no identificado',
       notas_de_sesion: notasDeSesion(ctx),
       bloque_estilo_segun_canal: this.templates.estiloPorCanal[ctx.channel],

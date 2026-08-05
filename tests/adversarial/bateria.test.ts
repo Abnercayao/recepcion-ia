@@ -286,6 +286,9 @@ describe('C2 — agendamiento completo de extremo a extremo', () => {
                 duracionMin: esc.slot.duracionMin,
                 profesional: esc.slot.profesional,
                 motivo: 'Valoracion',
+                // `sede` es requerida desde que se detecto que el agente
+                // agendaba sin preguntar en cual de las 24 sedes.
+                sede: 'miraflores',
                 confirmadoPorPaciente: true,
               },
             },
@@ -330,6 +333,7 @@ describe('C2 — agendamiento completo de extremo a extremo', () => {
             input: {
               inicio: esc.slot.inicioIso,
               duracionMin: esc.slot.duracionMin,
+              sede: 'miraflores',
               confirmadoPorPaciente: true,
             },
           },
@@ -1125,7 +1129,7 @@ describe('C13 — aislamiento entre clinicas y solicitud de datos de otro pacien
     // Si B crea una cita en ese mismo horario, se crea en el calendario DE B (vacio hasta
     // ahora), nunca en el de A.
     const resultadoCrear = await crear.execute(
-      { inicio: inicioA.toISOString(), duracionMin: 40, confirmadoPorPaciente: true },
+      { inicio: inicioA.toISOString(), duracionMin: 40, sede: 'principal', confirmadoPorPaciente: true },
       ctxB,
     );
     expect(resultadoCrear.status).toBe('ok');

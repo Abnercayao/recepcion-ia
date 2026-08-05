@@ -186,6 +186,81 @@ describe('PromptBuilder — variables de sesion', () => {
   });
 });
 
+/**
+ * REGRESION. Defecto medido contra el modelo real: ante "vivo por Magdalena" el
+ * agente contesto que la clinica "trabaja con sede unica", teniendo 24; y ante
+ * "que sedes tienen" listo 8 --las franquicias-- porque fue lo unico que
+ * recupero el RAG.
+ *
+ * Ninguna de las dos las invento el modelo por su cuenta:
+ *   · "sede unica" era el valor por defecto de `sedeDe()`, y entraba al bloque
+ *     de sesion como un dato mas. La semilla no tiene la clave `sede`.
+ *   · Las 8 sedes salieron del CONTEXTO APROBADO, que depende de que la
+ *     busqueda acierte.
+ *
+ * La linea roja "nunca inventar datos ausentes de la base" NO tiene control
+ * automatico en capa 2. Esto es lo mas cerca que hay de uno.
+ */
+describe('PromptBuilder — las sedes no dependen de que el RAG acierte', () => {
+  const builder = new PromptBuilder(plantillas);
+
+  const conSedes: Clinic = {
+    ...clinica,
+    config: {
+      sedes_informativas: { miraflores: 'Av. Benavides 2027', surco: 'Av. Caminos del Inca 1554' },
+      sedes_franquicia: { chorrillos: 'Av. Alameda San Marcos 446' },
+    },
+  };
+
+  it('mete TODAS las sedes en el bloque de sesion, propias y franquicias', () => {
+    const { segments } = builder.build({ ctx: contexto('whatsapp', { clinic: conSedes }) });
+    expect(segments.sesion).toContain('Av. Benavides 2027');
+    expect(segments.sesion).toContain('Av. Caminos del Inca 1554');
+    expect(segments.sesion).toContain('Av. Alameda San Marcos 446');
+    expect(segments.sesion).toContain('(3 en total)');
+  });
+
+  it('las sedes van en la SESION, no en el contexto recuperado', () => {
+    // Es la diferencia entre un dato que siempre esta y uno que esta si la
+    // busqueda acierta. Si alguien las mueve al bloque 8, esto se cae.
+    const { segments } = builder.build({ ctx: contexto('whatsapp', { clinic: conSedes }), fragmentos });
+    expect(segments.contexto).not.toContain('Av. Benavides 2027');
+  });
+
+  it('sin la clave `sede`, NUNCA afirma que la clinica tiene una sola sede', () => {
+    const { system } = builder.build({ ctx: contexto('whatsapp', { clinic: conSedes }) });
+    expect(system).not.toMatch(/sede unica/i);
+    expect(system).not.toMatch(/sede única/i);
+  });
+
+  it('sin sedes en la config declara la ausencia en vez de suponerla', () => {
+    const pelada: Clinic = { ...clinica, config: {} };
+    const { segments } = builder.build({ ctx: contexto('voice', { clinic: pelada }) });
+    expect(segments.sesion).toMatch(/no figuran en la configuracion/);
+    expect(segments.sesion).not.toMatch(/sede unica/i);
+  });
+
+  it('`sede_por_defecto` NO se presenta como la sede que eligio el paciente', () => {
+    /**
+     * Medido con el modelo real: cuando el bloque de sesion decia «Sede de
+     * esta conversacion: miraflores» --tomado de `sede_por_defecto`--, el
+     * agente lo daba por decidido y ofrecia horarios «en Miraflores» sin que
+     * el paciente hubiera elegido nada. Un valor por defecto de la
+     * configuracion no es un hecho de la conversacion.
+     */
+    const conDefecto: Clinic = { ...clinica, config: { sede_por_defecto: 'miraflores' } };
+    const { segments } = builder.build({ ctx: contexto('whatsapp', { clinic: conDefecto }) });
+    expect(segments.sesion).not.toContain('Sede de esta conversación: miraflores');
+    expect(segments.sesion).toMatch(/TODAVIA NO ELEGIDA/);
+  });
+
+  it('una clinica de sede unica SI declara su sede', () => {
+    const unica: Clinic = { ...clinica, config: { sede: 'Miraflores' } };
+    const { segments } = builder.build({ ctx: contexto('whatsapp', { clinic: unica }) });
+    expect(segments.sesion).toContain('Sede de esta conversación: Miraflores');
+  });
+});
+
 describe('PromptBuilder — el contexto recuperado es dato, no instruccion', () => {
   const builder = new PromptBuilder(plantillas);
 

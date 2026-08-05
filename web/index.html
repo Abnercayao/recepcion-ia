@@ -160,6 +160,28 @@
             <div id="anfitrion-voz"></div>
           </section>
         </div>
+
+        <!-- Diagnóstico del canal de voz. Vive en otro proceso (el núcleo,
+             puerto 3000) y en modo alojado ni siquiera pasa por nuestro
+             orquestador, así que sin esto es un punto ciego. Se muestra solo
+             con «Detalle técnico» activado. -->
+        <div class="contenedor">
+          <section class="panel-voz" id="panel-voz" hidden aria-label="Diagnóstico del canal de voz">
+            <header class="panel-voz__cabecera">
+              <div>
+                <h2>Canal de voz — qué llegó al núcleo</h2>
+                <p class="panel-voz__nota">
+                  En modo alojado, el modelo razona dentro de ElevenLabs: lo único que pasa por
+                  nuestro código son las llamadas a las cinco herramientas y el webhook de
+                  iniciación. Esto es exactamente lo que llegó.
+                </p>
+              </div>
+              <button type="button" id="refrescar-voz" class="panel-voz__boton">Actualizar</button>
+            </header>
+            <p class="panel-voz__estado" id="estado-voz">Pulsa «Actualizar» para consultar.</p>
+            <div id="lista-voz"></div>
+          </section>
+        </div>
       </section>
 
       <!-- Pilares ------------------------------------------------------- -->

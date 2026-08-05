@@ -204,6 +204,7 @@ describe('evidence explicita en checkOutbound', () => {
               inicio: CITA,
               duracionMin: 30,
               motivo: 'Valoracion',
+              sede: 'Miraflores',
               confirmadoPorPaciente: true,
             },
           },
@@ -233,7 +234,7 @@ describe('evidence explicita en checkOutbound', () => {
           {
             id: 'tu-1',
             name: 'crear_cita',
-            input: { inicio: CITA, duracionMin: 30, confirmadoPorPaciente: true },
+            input: { inicio: CITA, duracionMin: 30, sede: 'Miraflores', confirmadoPorPaciente: true },
           },
         ],
         stopReason: 'tool_use',

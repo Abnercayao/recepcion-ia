@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { BusinessTool, ToolResult, ToolStatus } from '../types/tool.js';
 import type { CalendarEvent, CalendarPort, Logger, ToolCallRepository } from '../types/ports.js';
 import type { Clinic, TurnContext } from '../types/conversation.js';
+import { resolverAgenda, verificarApertura } from '../agenda/horario.js';
 import { maskArgsForLog } from './tool.registry.js';
 
 export const DURACION_MIN_MINUTOS = 15;
@@ -22,75 +23,24 @@ export const DURACION_MAX_MINUTOS = 180;
  */
 export const MAXIMO_CITAS_POR_CONVERSACION = 5;
 
-const horarioClinicaSchema = z
-  .object({
-    horaApertura: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
-    horaCierre: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
-    /** 0=domingo .. 6=sabado (convencion de Intl.DateTimeFormat/Date#getDay). */
-    diasLaborables: z.array(z.number().int().min(0).max(6)).min(1),
-  })
-  .partial();
-
-/**
- * Horario por defecto: lunes(1) a sabado(6), 08:00-20:00.
- *
- * El tipo `Clinic` (contrato compartido, no lo puedo tocar) no fija la forma
- * del horario de atencion: `config` es `Record<string, unknown>`. Se lee
- * `clinic.config.horario` de forma defensiva con Zod y, si falta o es
- * invalido, se usa este valor por defecto en lugar de fallar o de asumir que
- * "no hay horario" (lo que dejaria crear citas a cualquier hora). Se deja
- * constancia de este vacio de la especificacion en el informe final.
- */
-const HORARIO_POR_DEFECTO = {
-  horaApertura: '08:00',
-  horaCierre: '20:00',
-  diasLaborables: [1, 2, 3, 4, 5, 6],
-};
-
-function resolverHorario(clinic: Clinic, logger: Logger) {
-  const crudo = (clinic.config as Record<string, unknown> | undefined)?.['horario'];
-  const parsed = horarioClinicaSchema.safeParse(crudo);
-  if (!parsed.success) {
-    logger.warn(
-      { clinicId: clinic.id },
-      'horario de clinica ausente o invalido en clinic.config; se usa horario por defecto',
-    );
-    return HORARIO_POR_DEFECTO;
-  }
-  return { ...HORARIO_POR_DEFECTO, ...parsed.data };
-}
-
-const DIA_SEMANA_A_NUMERO: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
-
-/** Traduce el instante a hora local de la clinica con `Intl` (sin dependencias nuevas) y valida horario. */
-function dentroDeHorario(inicio: Date, clinic: Clinic, logger: Logger): boolean {
-  const horario = resolverHorario(clinic, logger);
-  const partes = new Intl.DateTimeFormat('en-US', {
-    timeZone: clinic.timezone,
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    weekday: 'short',
-  }).formatToParts(inicio);
-
-  const hora = Number(partes.find((p) => p.type === 'hour')?.value ?? '0');
-  const minuto = Number(partes.find((p) => p.type === 'minute')?.value ?? '0');
-  const dia = DIA_SEMANA_A_NUMERO[partes.find((p) => p.type === 'weekday')?.value ?? ''] ?? -1;
-
-  const minutosDelDia = hora * 60 + minuto;
-  const [horaAp, minAp] = horario.horaApertura.split(':').map(Number);
-  const [horaCi, minCi] = horario.horaCierre.split(':').map(Number);
-  const minutosApertura = horaAp * 60 + minAp;
-  const minutosCierre = horaCi * 60 + minCi;
-
-  return horario.diasLaborables.includes(dia) && minutosDelDia >= minutosApertura && minutosDelDia < minutosCierre;
-}
-
 export const crearCitaInputSchema = z.object({
   inicio: z.iso.datetime({ offset: true }),
   duracionMin: z.number().int().min(DURACION_MIN_MINUTOS).max(DURACION_MAX_MINUTOS).default(30),
   motivo: z.string().min(1).max(200).optional(),
   profesional: z.string().min(1).max(120).optional(),
+  /**
+   * SEDE. Requerida, y no por burocracia.
+   *
+   * La clinica tiene 24 sedes y este campo no existia: el agente agendaba sin
+   * preguntar en cual, y el paciente se presentaba donde no era. Una cita con
+   * el lugar equivocado es tan inutil como una con la hora equivocada, y la
+   * Tabla 14 trata eso como criterio bloqueante.
+   *
+   * Al ser requerida en el ESQUEMA, un intento de agendar sin sede no llega a
+   * tocar el calendario: lo corta Zod. Es la unica forma de que "pregunta la
+   * sede" no dependa de que el modelo se acuerde.
+   */
+  sede: z.string().min(1).max(80),
   /**
    * Debe llegar exactamente `true`. Si el campo viene `false`, ausente, o con
    * cualquier otro valor, `z.literal(true)` hace que `safeParse` falle antes
@@ -100,6 +50,52 @@ export const crearCitaInputSchema = z.object({
    */
   confirmadoPorPaciente: z.literal(true),
 });
+
+/**
+ * Normaliza un nombre de sede para compararlo: sin tildes, sin mayusculas y
+ * sin separadores. Asi «San Juan de Lurigancho - Zárate», «sjl-zarate» y
+ * «SJL Zarate» son la misma sede.
+ */
+function normalizarSede(texto: string): string {
+  return texto
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+}
+
+/** Sedes declaradas por la clinica, propias y franquicias. */
+export function sedesDeLaClinica(clinic: Clinic): string[] {
+  const config = (clinic.config ?? {}) as Record<string, unknown>;
+  const nombres: string[] = [];
+  for (const clave of ['sedes_informativas', 'sedes_franquicia']) {
+    const grupo = config[clave];
+    if (grupo !== null && typeof grupo === 'object') nombres.push(...Object.keys(grupo));
+  }
+  return nombres;
+}
+
+/** Devuelve el nombre canonico de la sede, o `undefined` si no existe. */
+export function resolverSede(pedida: string, clinic: Clinic): string | undefined {
+  const disponibles = sedesDeLaClinica(clinic);
+  // Sin sedes declaradas no se puede validar; se acepta lo que diga el modelo
+  // en vez de bloquear el agendamiento de una clinica de sede unica.
+  if (disponibles.length === 0) return pedida.trim();
+
+  const objetivo = normalizarSede(pedida);
+  if (objetivo === '') return undefined;
+
+  const exacta = disponibles.find((s) => normalizarSede(s) === objetivo);
+  if (exacta) return exacta;
+
+  // Coincidencia por inclusion: el paciente dice «Zarate» y la sede es
+  // «sjl-zarate». Solo vale si es INEQUIVOCA; con dos candidatas hay que
+  // preguntar, no elegir por el paciente.
+  const parciales = disponibles.filter(
+    (s) => normalizarSede(s).includes(objetivo) || objetivo.includes(normalizarSede(s)),
+  );
+  return parciales.length === 1 ? parciales[0] : undefined;
+}
 export type CrearCitaInput = z.infer<typeof crearCitaInputSchema>;
 
 export interface CrearCitaOutput {
@@ -110,8 +106,9 @@ export class CrearCitaTool implements BusinessTool<CrearCitaInput, CrearCitaOutp
   readonly name = 'crear_cita' as const;
   readonly description =
     'Crea una cita en la agenda de la clinica. SOLO se puede llamar despues de que el paciente confirmo ' +
-    'explicitamente fecha y hora (confirmadoPorPaciente=true); si el paciente todavia no confirmo, no la uses. ' +
-    'Rechaza fechas pasadas, horarios fuera de atencion y horarios que ya no esten libres.';
+    'explicitamente fecha y hora (confirmadoPorPaciente=true) Y dijo en QUE SEDE quiere atenderse; si falta ' +
+    'cualquiera de las dos cosas, preguntala antes en vez de llamar a esta herramienta. ' +
+    'Rechaza fechas pasadas, feriados, horarios fuera de atencion, sedes que no existen y horarios ya ocupados.';
   readonly input = crearCitaInputSchema;
   readonly maxCallsPerConversation = MAXIMO_CITAS_POR_CONVERSACION;
 
@@ -125,12 +122,19 @@ export class CrearCitaTool implements BusinessTool<CrearCitaInput, CrearCitaOutp
     const empezado = Date.now();
     const parsed = this.input.safeParse(args);
     if (!parsed.success) {
-      const faltaConfirmacion = parsed.error.issues.some((i) => i.path[0] === 'confirmadoPorPaciente');
-      return this.registrar(ctx, args, 'rechazada_validacion', empezado, {
-        error: faltaConfirmacion
-          ? 'no se puede crear la cita sin confirmacion explicita del paciente (confirmadoPorPaciente debe ser true)'
-          : `argumentos invalidos: ${parsed.error.issues.map((i) => i.message).join('; ')}`,
-      });
+      const falta = (campo: string): boolean => parsed.error.issues.some((i) => i.path[0] === campo);
+      let error: string;
+      if (falta('confirmadoPorPaciente')) {
+        error =
+          'no se puede crear la cita sin confirmacion explicita del paciente (confirmadoPorPaciente debe ser true)';
+      } else if (falta('sede')) {
+        error =
+          'falta la sede: preguntale al paciente en cual de las sedes quiere atenderse antes de agendar. ' +
+          `Sedes disponibles: ${sedesDeLaClinica(ctx.clinic).join(', ') || '(la clinica no las declara)'}`;
+      } else {
+        error = `argumentos invalidos: ${parsed.error.issues.map((i) => i.message).join('; ')}`;
+      }
+      return this.registrar(ctx, args, 'rechazada_validacion', empezado, { error });
     }
 
     const clinicId = ctx.clinic.id; // jamas de los argumentos del modelo
@@ -143,9 +147,32 @@ export class CrearCitaTool implements BusinessTool<CrearCitaInput, CrearCitaOutp
         error: 'no se puede agendar una cita en el pasado',
       });
     }
-    if (!dentroDeHorario(inicioDate, ctx.clinic, this.logger)) {
+
+    // La sede tiene que EXISTIR. Aceptar «la de Magdalena» --que no hay-- y
+    // grabarla en el evento manda al paciente a una direccion inventada.
+    const sede = resolverSede(parsed.data.sede, ctx.clinic);
+    if (sede === undefined) {
       return this.registrar(ctx, parsed.data, 'rechazada_validacion', empezado, {
-        error: 'el horario solicitado esta fuera del horario de atencion de la clinica',
+        error:
+          `la sede "${parsed.data.sede}" no existe o es ambigua. Preguntale al paciente cual prefiere. ` +
+          `Sedes disponibles: ${sedesDeLaClinica(ctx.clinic).join(', ')}`,
+      });
+    }
+
+    /**
+     * Horario y feriados, con la agenda REAL de la clinica.
+     *
+     * Antes se leia `clinic.config.horario`, una clave que la semilla no tiene
+     * --tiene `horarios`--, asi que siempre se caia a un defecto de 08:00-20:00
+     * de lunes a sabado: se podia agendar antes de abrir, en la pausa de
+     * mediodia, despues de cerrar y el sabado por la tarde. Y no habia ningun
+     * concepto de feriado, asi que el 6 de agosto se agendaba igual.
+     */
+    const agenda = resolverAgenda(ctx.clinic, this.logger);
+    const apertura = verificarApertura(inicioDate, finDate, agenda);
+    if (!apertura.abierto) {
+      return this.registrar(ctx, parsed.data, 'rechazada_validacion', empezado, {
+        error: `no se puede agendar en ese horario: ${apertura.motivo ?? 'la clinica no atiende'}`,
       });
     }
 
@@ -156,7 +183,10 @@ export class CrearCitaTool implements BusinessTool<CrearCitaInput, CrearCitaOutp
     // chequeo que cuenta es el que ocurre justo antes de escribir.
     let libre: boolean;
     try {
-      libre = await this.calendarPort.isSlotFree(clinicId, inicioDate, finDate);
+      // Sobre la agenda DE ESA SEDE. Comprobarlo contra una agenda compartida
+      // rechazaba citas legitimas: que Comas estuviera lleno bloqueaba
+      // Miraflores.
+      libre = await this.calendarPort.isSlotFree(clinicId, inicioDate, finDate, sede);
     } catch (err) {
       this.logger.error({ err: String(err), clinicId }, 'fallo verificando colision antes de crear la cita');
       return this.registrar(ctx, parsed.data, 'error', empezado, {
@@ -170,10 +200,28 @@ export class CrearCitaTool implements BusinessTool<CrearCitaInput, CrearCitaOutp
     }
 
     try {
+      /**
+       * La cita se crea CON su sede y CON su paciente.
+       *
+       * El titulo es lo que se lee de un vistazo en el calendario y los campos
+       * de paciente son lo que permite reprogramar o confirmar: sin telefono no
+       * se sabe a quien llamar. Antes ni la sede ni el paciente llegaban al
+       * evento, asi que recepcion veia «Cita» a secas.
+       */
+      const nombre = ctx.patient.nombre?.trim();
       const evento = await this.calendarPort.createEvent(
         clinicId,
-        { start: inicioDate, end: finDate, titulo: motivo ?? 'Cita', profesional },
+        {
+          start: inicioDate,
+          end: finDate,
+          titulo: `${motivo ?? 'Cita'} · ${nombre ?? ctx.patient.telefonoE164} · sede ${sede}`,
+          profesional,
+          sede,
+          pacienteTelefono: ctx.patient.telefonoE164,
+          ...(nombre ? { pacienteNombre: nombre } : {}),
+        },
         ctx.patient.telefonoE164,
+        sede,
       );
       return this.registrar(ctx, parsed.data, 'ok', empezado, { data: { evento } });
     } catch (err) {

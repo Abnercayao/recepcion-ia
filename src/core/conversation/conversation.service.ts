@@ -43,6 +43,8 @@ import type {
 import type { ConversationService } from '../types/index.js';
 import type { ToolLoopResult } from '../claude/claude.service.js';
 import type { PromptBuilder } from '../claude/prompt.builder.js';
+import { TRAZA_NULA, type RecolectorDeTraza, type TurnoEnTraza } from '../observabilidad/traza.js';
+import type { DiagnosticoDeRag } from '../rag/diagnostico.js';
 import { detectOutboundViolations, type OutboundEvidence } from '../claude/guardrails.js';
 import type { EscalarHumanoOutput } from '../tools/escalar-humano.tool.js';
 import type { MessageRouter } from './message.router.js';
@@ -73,6 +75,31 @@ export interface ClaudeToolLoopPort extends ClaudePort {
 /** Lo unico que el orquestador usa del detector de urgencia (capa 3). */
 export interface UrgencyPort {
   detectUrgency(text: string): Promise<UrgencyResult>;
+}
+
+/**
+ * Capacidad OPCIONAL de un RAG: recuperar declarando como lo hizo.
+ *
+ * Se declara aqui y no en `ports.ts` --contrato congelado-- y se comprueba de
+ * forma estructural: un `RagPort` que no la implemente sigue siendo valido y el
+ * turno funciona igual, solo que la traza dice menos.
+ *
+ * Devuelve el diagnostico EN LA MISMA LLAMADA en vez de dejarlo en una
+ * propiedad del servicio. No es un capricho: el servicio de RAG es unico y
+ * compartido por los dos canales, asi que un "ultimo diagnostico" mutable se
+ * pisaria entre un turno de voz y uno de texto simultaneos, y la traza mentiria
+ * justo cuando hay concurrencia, que es cuando mas se la necesita.
+ */
+export interface RagConDiagnostico extends RagPort {
+  retrieveConDiagnostico(
+    clinicId: string,
+    query: string,
+    limit?: number,
+  ): Promise<{ fragmentos: KnowledgeChunk[]; diagnostico: DiagnosticoDeRag }>;
+}
+
+function tieneDiagnostico(rag: RagPort): rag is RagConDiagnostico {
+  return typeof (rag as Partial<RagConDiagnostico>).retrieveConDiagnostico === 'function';
 }
 
 /** Lo unico que el orquestador usa de los guardrails (capas 1 y 2). */
@@ -199,6 +226,13 @@ export class VerificadorDeSalida {
     /** Getter, no valor: la evidencia cambia dentro del turno segun se ejecutan las herramientas. */
     private readonly evidencia: () => OutboundEvidence,
     private readonly retardoDeFrases: number,
+    /**
+     * Opcional. La RETENCION es invisible desde fuera --devuelve `{emitir: ''}`,
+     * igual que "todavia no hay frase completa"-- y es justo lo que explica que
+     * un turno se quede callado unos segundos. Sin esto, ese silencio no se
+     * puede diagnosticar.
+     */
+    private readonly traza: TurnoEnTraza = TRAZA_NULA.abrir({ canal: 'interno', entrada: '' }),
   ) {}
 
   /** Todo lo que el modelo lleva producido, emitido o no. */
@@ -249,7 +283,17 @@ export class VerificadorDeSalida {
       this.emitidoHasta = hasta;
       return { emitir };
     }
-    if (!esIrrecuperable(violaciones)) return { emitir: '' }; // retencion
+    if (!esIrrecuperable(violaciones)) {
+      this.traza.marcar('capa2', 'RETENCION: no se emite y se sigue generando', 'aviso', {
+        violaciones,
+        // Recuperable: puede limpiarse sola si el texto que viene detras anade
+        // lo que falta (la mencion a la valoracion, o un `crear_cita` con ok).
+        recuperable: true,
+        retenidoDesde: this.emitidoHasta,
+        candidato: candidato.slice(this.emitidoHasta),
+      });
+      return { emitir: '' }; // retencion
+    }
 
     const resultado = this.guardrails.checkOutbound(candidato, this.ctx, this.evidencia());
     return {
@@ -327,6 +371,13 @@ export interface ConversationServiceDeps {
   messages: MessageRepository;
   logger: Logger;
   audit?: AuditRepository;
+  /**
+   * Instrumentacion del turno. OPCIONAL: sin recolector el orquestador se
+   * comporta exactamente igual que antes de existir la traza (`TRAZA_NULA`).
+   * No esta en `ports.ts` porque ese contrato esta congelado y esto es
+   * observabilidad, no una frontera del dominio.
+   */
+  traza?: RecolectorDeTraza;
 }
 
 export interface ConversationServiceOptions {
@@ -402,16 +453,46 @@ export class ConversationServiceImpl implements ConversationService {
   async *streamTurn(input: InboundMessage): AsyncIterable<TurnChunk> {
     const inicio = Date.now();
 
+    const traza = (this.deps.traza ?? TRAZA_NULA).abrir({
+      canal: input.channel,
+      entrada: input.text,
+      ...(input.sessionId ? { sesion: input.sessionId } : {}),
+    });
+
     // Si esto falla no hay `conversationId` y no se puede construir un
     // `OutboundMessage`: la excepcion sube al adaptador de canal, que es quien
     // sabe como disculparse en su medio.
-    const ctx = await this.deps.router.route(input);
+    const medidorEnrutado = traza.iniciar('enrutado', 'resolver conversacion y paciente');
+    let ctx: TurnContext;
+    try {
+      ctx = await this.deps.router.route(input);
+    } catch (err) {
+      // El turno muere aqui y aun asi tiene que verse: un fallo de enrutado es
+      // invisible en el resto de la instrumentacion, que empieza mas tarde.
+      medidorEnrutado.fin({
+        estado: 'error',
+        detalle: { error: err instanceof Error ? err.message : String(err) },
+      });
+      traza.cerrar('');
+      throw err;
+    }
+    medidorEnrutado.fin({
+      detalle: {
+        conversacionNueva: ctx.history.length === 0,
+        mensajesEnHistorial: ctx.history.length,
+        cambioDeCanal: ctx.channelSwitched,
+        fallosDeComprension: ctx.comprehensionFailures,
+      },
+    });
+    traza.identificar({ conversationId: ctx.conversationId, clinicId: ctx.clinic.id });
+
     const log = this.logger.child({
       conversationId: ctx.conversationId,
       canal: ctx.channel,
       clinicId: ctx.clinic.id,
     });
 
+    const medidorEntrante = traza.iniciar('persistencia', 'guardar mensaje del paciente');
     await this.deps.messages.append({
       conversationId: ctx.conversationId,
       rol: 'user',
@@ -419,6 +500,7 @@ export class ConversationServiceImpl implements ConversationService {
       canal: ctx.channel,
       sessionId: ctx.sessionId,
     });
+    medidorEntrante.fin();
 
     // CAPA 1. Marca, no bloquea. No se usa su `replacement`: cortar el turno
     // aqui dejaria sin atender a quien dice «me duele una muela, quiero cita»,
@@ -428,28 +510,55 @@ export class ConversationServiceImpl implements ConversationService {
     if (!entrada.pass) {
       log.warn({ capa: 1, flags: entrada.reason }, 'mensaje entrante marcado por la capa 1');
     }
+    traza.marcar('capa1', 'verificacion de la entrada', entrada.pass ? 'ok' : 'aviso', {
+      pasa: entrada.pass,
+      motivo: entrada.reason ?? null,
+      // La capa 1 marca y NO bloquea: verlo evita leer un aviso como un corte.
+      efecto: entrada.pass ? 'sin marcas' : 'marcado, se continua el turno',
+    });
 
     // CAPA 3 EN PARALELO. Se lanza ANTES del RAG y no se espera aqui: el
     // presupuesto de latencia del control C4 no admite encadenar clasificador y
     // generacion. El `catch` evita un rechazo sin gestionar; el detector ya
     // promete no lanzar, esto es cinturon y tirantes.
     let urgencia: UrgencyResult | undefined;
+    const medidorUrgencia = traza.iniciar('capa3', 'clasificador de urgencia', {
+      // Corre EN PARALELO con el RAG y la generacion. Si se lee la traza como
+      // una escalera, este salto se solapa con los siguientes a proposito.
+      enParalelo: true,
+    });
     const enCursoUrgencia = this.deps.urgency.detectUrgency(input.text).then(
       (r) => {
         urgencia = r;
+        medidorUrgencia.fin({
+          estado: r.isUrgent ? 'aviso' : 'ok',
+          detalle: {
+            urgente: r.isUrgent,
+            confianza: r.confidence,
+            senales: r.signals,
+            latenciaClasificadorMs: r.latencyMs,
+          },
+        });
       },
       (err: unknown) => {
         log.error({ capa: 3, error: String(err) }, 'el detector de urgencia lanzo; se sigue sin su veredicto');
+        medidorUrgencia.fin({
+          estado: 'error',
+          detalle: {
+            error: String(err),
+            efecto: 'el turno sigue SIN veredicto de urgencia',
+          },
+        });
       },
     );
 
-    const fragmentos = await this.recuperarContexto(ctx, input.text, log);
+    const fragmentos = await this.recuperarContexto(ctx, input.text, log, traza);
 
     // Punto de control 1: el pre-filtro lexico de la capa 3 resuelve sin red,
     // asi que a esta altura ya suele haber veredicto. Si es urgencia, la
     // respuesta comercial no llega ni a empezar.
     if (urgencia?.isUrgent) {
-      yield* this.protocoloDeUrgencia(ctx, input, urgencia, inicio, '', log);
+      yield* this.protocoloDeUrgencia(ctx, input, urgencia, inicio, '', log, traza);
       return;
     }
 
@@ -470,6 +579,7 @@ export class ConversationServiceImpl implements ConversationService {
       // el retardo no se oye, se mantiene en 1.
       (ctx.channel === 'voice' ? this.opciones.retardoDeFrasesVoz : undefined) ??
         this.opciones.retardoDeFrases,
+      traza,
     );
 
     let emitido = '';
@@ -479,7 +589,21 @@ export class ConversationServiceImpl implements ConversationService {
     let tokensOut = 0;
 
     try {
+      const medidorPrompt = traza.iniciar('prompt', 'ensamblar el prompt maestro');
       const prompt = this.deps.promptBuilder.build({ ctx, fragmentos });
+      medidorPrompt.fin({
+        detalle: {
+          // En caracteres, no en tokens: el nucleo no tokeniza. Sirve igual
+          // para ver que tramo crece y cual se esta cacheando.
+          caracteresTotal: prompt.system.length,
+          caracteresCacheables: prompt.segments.invariable.length,
+          caracteresContextoRag: prompt.segments.contexto.length,
+          caracteresSesion: prompt.segments.sesion.length,
+          caracteresEstilo: prompt.segments.estilo.length,
+          mensajesEnElHilo: ctx.history.length,
+        },
+      });
+
       const opciones: ClaudeCallOptions = {
         system: prompt.system,
         // Bloques 1-7: identicos en todos los turnos y en ambos canales, y
@@ -497,8 +621,80 @@ export class ConversationServiceImpl implements ConversationService {
       if (modelo !== undefined) opciones.model = modelo;
       if (tope !== undefined) opciones.maxTokens = tope;
 
+      /**
+       * LLAMADAS AL MODELO: se cuentan aqui, no dentro de `ClaudeService`.
+       *
+       * `streamLoop` emite un unico `end` al final de todo el bucle, asi que
+       * desde fuera no hay marca de "termino la llamada N". Pero la SECUENCIA
+       * si la delata: llegan chunks (llamada N), se para a ejecutar
+       * herramientas --que es codigo nuestro-- y vuelven a llegar chunks
+       * (llamada N+1). Con eso basta para acotar cada ida y vuelta sin tocar
+       * el adaptador del modelo.
+       *
+       * Es el dato que mas importa: cada llamada de mas son varios segundos, y
+       * son la causa principal de la latencia, no las herramientas.
+       */
+      let llamada = 0;
+      let medidorModelo: { fin: (c?: { estado?: 'ok' | 'aviso' | 'error'; detalle?: Record<string, unknown> }) => void } | undefined;
+      let inicioDeLlamada = 0;
+      let primerTokenEn: number | undefined;
+      let caracteresDeLaLlamada = 0;
+      /**
+       * Instante en que termino la ultima herramienta.
+       *
+       * Es cuando empieza, de verdad, la siguiente llamada al modelo: el bucle
+       * la lanza en cuanto le devolvemos el resultado. Pero nosotros no nos
+       * enteramos hasta que llega su primer fragmento, varios segundos despues.
+       * Guardarlo permite fechar esa llamada hacia atras y no perder la espera,
+       * que es la mayor parte del turno.
+       */
+      let reanudarEn: number | undefined;
+
+      const abrirLlamada = (desde?: number): void => {
+        if (medidorModelo) return;
+        llamada += 1;
+        inicioDeLlamada = desde ?? Date.now();
+        primerTokenEn = undefined;
+        caracteresDeLaLlamada = 0;
+        medidorModelo = traza.iniciar(
+          'modelo',
+          `llamada ${String(llamada)} al modelo`,
+          {
+            modelo: opciones.model ?? '(por defecto del adaptador)',
+            maxTokens: opciones.maxTokens ?? null,
+          },
+          desde,
+        );
+      };
+      const cerrarLlamada = (motivo: string): void => {
+        if (!medidorModelo) return;
+        medidorModelo.fin({
+          detalle: {
+            termino: motivo,
+            caracteresGenerados: caracteresDeLaLlamada,
+            // Lo que se espera ANTES de oir nada. En voz es lo que se percibe
+            // como silencio, y no es lo mismo que la duracion total.
+            msHastaPrimerToken: primerTokenEn ?? null,
+          },
+        });
+        medidorModelo = undefined;
+      };
+
       const ejecutar = async (toolUse: ClaudeToolUse): Promise<ToolLoopResult> => {
+        // La primera herramienta de la tanda cierra la llamada al modelo que
+        // la pidio: a partir de aqui el tiempo ya no es del modelo.
+        cerrarLlamada('pidio herramientas');
+        const medidorTool = traza.iniciar('herramienta', toolUse.name, {
+          argumentos: toolUse.input,
+        });
         const resultado = await this.ejecutarHerramienta(toolUse, ctx, log);
+        medidorTool.fin({
+          estado: resultado.estado === 'ok' ? 'ok' : 'error',
+          detalle: { estadoDevuelto: resultado.estado, resultado: resultado.datos ?? null },
+        });
+        // Con varias herramientas en la misma tanda esto se reescribe en cada
+        // una; al terminar la ultima queda el valor bueno, que es el que se usa.
+        reanudarEn = Date.now();
         // EVIDENCIA EXPLICITA PARA LA CAPA 2. Es esto, y solo esto, lo que
         // separa «el modelo dice que agendo» de «la agenda tiene la cita».
         // Sin pasarlo, `checkOutbound` cae en una heuristica sobre el historial
@@ -515,6 +711,12 @@ export class ConversationServiceImpl implements ConversationService {
         [Symbol.asyncIterator]();
 
       try {
+        // La PRIMERA llamada se abre ANTES de esperar nada. Si se abriera al
+        // llegar el primer fragmento, la espera --que en las medidas es la
+        // mayor parte del turno-- quedaria sin atribuir y el diagnostico
+        // apuntaria a un tramo que no es.
+        abrirLlamada();
+
         for (;;) {
           const paso = await iterador.next();
           if (paso.done === true) break;
@@ -523,8 +725,14 @@ export class ConversationServiceImpl implements ConversationService {
           // generacion. En cuanto lo hace, se abandona la respuesta comercial.
           if (urgencia?.isUrgent) break;
 
+          // Si no hay llamada abierta, este fragmento es el primero de la que
+          // sigue a una tanda de herramientas: se fecha cuando acabo la ultima.
+          abrirLlamada(reanudarEn);
+
           const chunk = paso.value;
           if (chunk.type === 'text') {
+            primerTokenEn ??= Date.now() - inicioDeLlamada;
+            caracteresDeLaLlamada += chunk.delta.length;
             const decision = verificador.push(chunk.delta);
             if (decision.emitir !== '') {
               emitido += decision.emitir;
@@ -535,12 +743,17 @@ export class ConversationServiceImpl implements ConversationService {
               break;
             }
           } else if (chunk.type === 'tool_use') {
+            primerTokenEn ??= Date.now() - inicioDeLlamada;
             yield { type: 'tool_call', name: chunk.toolUse.name, args: chunk.toolUse.input };
           } else {
             tokensIn += chunk.tokensIn;
             tokensOut += chunk.tokensOut;
           }
         }
+        cerrarLlamada(corte ? 'cortado por la capa 2' : 'fin de la generacion');
+      } catch (err) {
+        cerrarLlamada('error');
+        throw err;
       } finally {
         // Cortar el stream cierra tambien el bucle de herramientas: sin esto,
         // un corte por urgencia dejaria al modelo generando contra el vacio.
@@ -548,7 +761,11 @@ export class ConversationServiceImpl implements ConversationService {
       }
     } catch (err) {
       log.error({ error: err instanceof Error ? err.message : String(err) }, 'fallo la generacion del turno');
-      yield* this.protocoloDeFalloTecnico(ctx, input, inicio, emitido, log);
+      traza.marcar('aviso', 'fallo la generacion del turno', 'error', {
+        error: err instanceof Error ? err.message : String(err),
+        yaEmitido: emitido.length,
+      });
+      yield* this.protocoloDeFalloTecnico(ctx, input, inicio, emitido, log, traza);
       return;
     }
 
@@ -558,7 +775,7 @@ export class ConversationServiceImpl implements ConversationService {
     await enCursoUrgencia;
     const veredicto = urgencia;
     if (veredicto?.isUrgent) {
-      yield* this.protocoloDeUrgencia(ctx, input, veredicto, inicio, emitido, log);
+      yield* this.protocoloDeUrgencia(ctx, input, veredicto, inicio, emitido, log, traza);
       return;
     }
 
@@ -576,13 +793,30 @@ export class ConversationServiceImpl implements ConversationService {
         { capa: 2, motivo: corte.motivo, yaEmitido: emitido.length },
         'capa 2: se corta la respuesta del modelo y se emite la respuesta canonica',
       );
+      traza.marcar('capa2', 'BLOQUEO: se sustituye la respuesta', 'error', {
+        violacion: corte.motivo,
+        // Lo que el modelo llego a producir frente a lo que salio. Es la unica
+        // forma de ver QUE se bloqueo, no solo que se bloqueo algo.
+        textoDelModelo: verificador.textoDelModelo,
+        textoSustituto: corte.replacement,
+        yaEmitidoAntesDelCorte: emitido,
+      });
+      traza.anotar({ capa2: 'bloqueo' });
       const separador = emitido.endsWith(' ') || emitido === '' ? '' : ' ';
       emitido += separador + corte.replacement;
       yield { type: 'text', delta: separador + corte.replacement };
+    } else {
+      traza.marcar('capa2', 'verificacion de la salida: pasa', 'ok', {
+        caracteresVerificados: verificador.textoDelModelo.length,
+        citaCreadaEnEsteTurno: evidencia.citaCreada,
+      });
     }
 
     if (emitido.trim() === '') {
       emitido = MENSAJE_SIN_RESPUESTA;
+      traza.marcar('aviso', 'el modelo no produjo nada emitible', 'aviso', {
+        efecto: 'sale la respuesta canonica de "sin respuesta"',
+      });
       yield { type: 'text', delta: emitido };
     }
 
@@ -591,7 +825,12 @@ export class ConversationServiceImpl implements ConversationService {
     }
 
     const latencyMs = Date.now() - inicio;
+    const medidorSalida = traza.iniciar('persistencia', 'guardar respuesta del asistente');
     await this.persistirRespuesta(ctx, emitido, { tokensIn, tokensOut, latencyMs });
+    medidorSalida.fin({ detalle: { tokensIn, tokensOut } });
+
+    traza.anotar({ tokensIn, tokensOut, escalado: escalacionDelModelo !== undefined });
+    traza.cerrar(emitido);
 
     const mensaje: OutboundMessage = {
       conversationId: ctx.conversationId,
@@ -612,11 +851,58 @@ export class ConversationServiceImpl implements ConversationService {
     ctx: TurnContext,
     texto: string,
     log: Logger,
+    traza: TurnoEnTraza,
   ): Promise<KnowledgeChunk[]> {
+    const medidor = traza.iniciar('rag', 'recuperar contexto aprobado', {
+      limite: this.opciones.limiteFragmentosRag ?? '(por defecto del servicio)',
+    });
+    const rag = this.deps.rag;
+    const limite = this.opciones.limiteFragmentosRag;
     try {
-      return await this.deps.rag.retrieve(ctx.clinic.id, texto, this.opciones.limiteFragmentosRag);
+      // Si el RAG sabe contar como resolvio, se le pregunta; si no, se recupera
+      // igual y la traza dice menos, pero el turno no cambia.
+      const { fragmentos, diagnostico } = tieneDiagnostico(rag)
+        ? await rag.retrieveConDiagnostico(ctx.clinic.id, texto, limite)
+        : {
+            fragmentos: await rag.retrieve(ctx.clinic.id, texto, limite),
+            diagnostico: undefined as DiagnosticoDeRag | undefined,
+          };
+
+      // Cero fragmentos es el caso a vigilar: es el que precede a que el modelo
+      // rellene, que es exactamente el defecto que se acaba de reparar.
+      const estrategia = diagnostico?.estrategia ?? (fragmentos.length > 0 ? 'recuperado' : 'vacio');
+
+      traza.anotar({ ragEstrategia: estrategia, fragmentos: fragmentos.length });
+      medidor.fin({
+        estado: fragmentos.length === 0 ? 'aviso' : 'ok',
+        detalle: {
+          estrategia,
+          consulta: texto,
+          fragmentos: fragmentos.length,
+          // Con similitud y fuente se ve de un vistazo si recupero lo que
+          // tocaba o algo del tema vecino.
+          recuperados: fragmentos.map((f) => ({
+            fuente: f.fuente,
+            similitud: f.similarity ?? null,
+            extracto: f.contenido.slice(0, 220),
+          })),
+          ...(diagnostico ?? {}),
+          ...(fragmentos.length === 0
+            ? {
+                riesgo:
+                  'sin contexto aprobado el modelo tiende a rellenar; la linea roja "nunca inventar" no tiene control automatico en capa 2',
+              }
+            : {}),
+        },
+      });
+      return fragmentos;
     } catch (err) {
       log.error({ error: String(err) }, 'fallo la recuperacion RAG; se sigue sin contexto aprobado');
+      traza.anotar({ ragEstrategia: 'error', fragmentos: 0 });
+      medidor.fin({
+        estado: 'error',
+        detalle: { error: String(err), efecto: 'el turno sigue SIN contexto aprobado' },
+      });
       return [];
     }
   }
@@ -693,7 +979,17 @@ export class ConversationServiceImpl implements ConversationService {
     inicio: number,
     yaEmitido: string,
     log: Logger,
+    traza: TurnoEnTraza,
   ): AsyncIterable<TurnChunk> {
+    traza.marcar('capa3', 'URGENCIA: se aborta el flujo comercial', 'aviso', {
+      senales: urgencia.signals,
+      confianza: urgencia.confidence,
+      latenciaClasificadorMs: urgencia.latencyMs,
+      // Si ya habia salido texto comercial, el paciente lo vio. Importa saberlo.
+      yaEmitidoAntesDeAbortar: yaEmitido,
+    });
+    traza.anotar({ urgencia: true, escalado: true });
+
     log.warn(
       { capa: 3, senales: urgencia.signals, confianza: urgencia.confidence, yaEmitido: yaEmitido.length },
       'URGENCIA: se aborta la respuesta comercial y se fuerza el protocolo de urgencia',
@@ -754,6 +1050,7 @@ export class ConversationServiceImpl implements ConversationService {
       latenciaClasificadorMs: urgencia.latencyMs,
       canal: ctx.channel,
     });
+    traza.cerrar(texto);
 
     yield {
       type: 'done',
@@ -774,6 +1071,7 @@ export class ConversationServiceImpl implements ConversationService {
     inicio: number,
     yaEmitido: string,
     log: Logger,
+    traza: TurnoEnTraza,
   ): AsyncIterable<TurnChunk> {
     /**
      * VACIO DE LA ESPECIFICACION: `EscalationReason` es un enum cerrado sin
@@ -805,6 +1103,8 @@ export class ConversationServiceImpl implements ConversationService {
     const latencyMs = Date.now() - inicio;
     const texto = yaEmitido === '' ? MENSAJE_DE_FALLO_TECNICO : `${yaEmitido} ${MENSAJE_DE_FALLO_TECNICO}`;
     await this.persistirRespuesta(ctx, texto, { tokensIn: 0, tokensOut: 0, latencyMs });
+    traza.anotar({ escalado: true });
+    traza.cerrar(texto);
 
     yield {
       type: 'done',

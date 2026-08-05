@@ -18,6 +18,7 @@ import { EscalarHumanoTool } from '../../src/core/tools/escalar-humano.tool.js';
 import { GuardarLeadTool, type GuardarLeadInput } from '../../src/core/tools/guardar-lead.tool.js';
 import { ConsultarRagTool } from '../../src/core/tools/consultar-rag.tool.js';
 import { ToolRegistryImpl } from '../../src/core/tools/tool.registry.js';
+import { CalendarDoble } from '../helpers/dobles.js';
 
 // ---------------------------------------------------------------------------
 // Dobles de prueba. Ninguno toca red: son los puertos de ports.ts, en memoria.
@@ -181,6 +182,7 @@ describe('CrearCitaTool', () => {
     const args: CrearCitaInput = {
       inicio: inicioValido,
       duracionMin: 30,
+      sede: 'Miraflores',
       confirmadoPorPaciente: true,
     };
     const resultado = await tool.execute(args, crearContexto());
@@ -199,6 +201,7 @@ describe('CrearCitaTool', () => {
     const args: CrearCitaInput = {
       inicio: inicioValido,
       duracionMin: 30,
+      sede: 'Miraflores',
       confirmadoPorPaciente: true,
     };
     const resultado = await tool.execute(args, crearContexto());
@@ -206,10 +209,17 @@ describe('CrearCitaTool', () => {
     expect(resultado.status).toBe('ok');
     expect(calendarPort.isSlotFree).toHaveBeenCalledTimes(1);
     expect(calendarPort.createEvent).toHaveBeenCalledTimes(1);
+    // Titulo: motivo · paciente · sede. Sin nombre conocido cae al telefono,
+    // que es lo minimo para que recepcion sepa a quien esperar.
     expect(calendarPort.createEvent).toHaveBeenCalledWith(
       'clinica-legitima',
-      expect.objectContaining({ titulo: 'Cita' }),
+      expect.objectContaining({
+        titulo: 'Cita · +51987654321 · sede Miraflores',
+        sede: 'Miraflores',
+        pacienteTelefono: '+51987654321',
+      }),
       '+51987654321',
+      'Miraflores',
     );
     // el registro de auditoria guarda argumentos, nunca objetos crudos sin pasar por el enmascarador
     expect(toolCallRepository.registros).toHaveLength(1);
@@ -224,6 +234,7 @@ describe('CrearCitaTool', () => {
     const args: CrearCitaInput = {
       inicio: '2026-07-01T10:00:00-05:00', // anterior a ctx.now (2026-07-25)
       duracionMin: 30,
+      sede: 'Miraflores',
       confirmadoPorPaciente: true,
     };
     const resultado = await tool.execute(args, crearContexto());
@@ -239,15 +250,234 @@ describe('CrearCitaTool', () => {
     const tool = new CrearCitaTool(calendarPort, toolCallRepository, crearLoggerFake());
 
     const args: CrearCitaInput = {
-      inicio: '2026-08-03T22:00:00-05:00', // lunes 22:00 Lima, fuera de 08:00-20:00
+      inicio: '2026-08-03T22:00:00-05:00', // lunes 22:00 Lima
       duracionMin: 30,
+      sede: 'Miraflores',
       confirmadoPorPaciente: true,
     };
     const resultado = await tool.execute(args, crearContexto());
 
     expect(resultado.status).toBe('rechazada_validacion');
-    expect(resultado.error).toMatch(/fuera del horario/);
+    expect(resultado.error).toMatch(/no cabe en el horario/);
     expect(calendarPort.isSlotFree).not.toHaveBeenCalled();
+  });
+
+  // -------------------------------------------------------------------------
+  // Horario real, feriados y sede
+  //
+  // Los tres defectos que hacian que el agente agendara con aplomo donde no
+  // debia. Ver la cabecera de `src/core/agenda/horario.ts`.
+  // -------------------------------------------------------------------------
+
+  /** Clinica con la forma REAL de la semilla, no la que el codigo leia antes. */
+  const clinicaReal = crearClinica({
+    config: {
+      horarios: {
+        lunes_viernes: [
+          ['09:00', '13:00'],
+          ['14:00', '19:00'],
+        ],
+        sabado: [['09:00', '13:00']],
+        domingo: [],
+      },
+      feriados: [{ fecha: '2026-08-06', motivo: 'Batalla de Junin' }],
+      sedes_informativas: { miraflores: 'Av. Benavides 2027', comas: 'Av. El Maestro Peruano 430' },
+      sedes_franquicia: { 'san-borja': 'Av. Joaquin Madrid 235' },
+      duracion_cita_min: 40,
+    },
+  });
+
+  const citaEn = (inicio: string, sede = 'miraflores', duracionMin = 40): CrearCitaInput => ({
+    inicio,
+    duracionMin,
+    sede,
+    confirmadoPorPaciente: true,
+  });
+
+  const casosDeHorario: Array<[string, string, RegExp]> = [
+    // Antes TODOS estos se creaban: el codigo leia `config.horario` (singular),
+    // la semilla tiene `horarios` (plural), y el defecto era 08:00-20:00 L-S.
+    ['antes de abrir (08:00, abre a las 9)', '2026-08-03T08:00:00-05:00', /no cabe en el horario/],
+    ['en la pausa de mediodia (13:30)', '2026-08-03T13:30:00-05:00', /no cabe en el horario/],
+    ['despues de cerrar (19:30, cierra a las 19)', '2026-08-03T19:30:00-05:00', /no cabe en el horario/],
+    ['sabado por la tarde (cierra a las 13)', '2026-08-08T15:00:00-05:00', /no cabe en el horario/],
+    ['domingo', '2026-08-09T10:00:00-05:00', /no atiende/],
+    ['el feriado del 6 de agosto', '2026-08-06T10:00:00-05:00', /Batalla de Junin/],
+  ];
+
+  for (const [caso, inicio, esperado] of casosDeHorario) {
+    it(`NO agenda ${caso}`, async () => {
+      const calendarPort = crearCalendarPortFake();
+      const tool = new CrearCitaTool(calendarPort, new FakeToolCallRepository(), crearLoggerFake());
+      const resultado = await tool.execute(citaEn(inicio), crearContexto({ clinic: clinicaReal }));
+
+      expect(resultado.status).toBe('rechazada_validacion');
+      expect(resultado.error).toMatch(esperado);
+      expect(calendarPort.createEvent).not.toHaveBeenCalled();
+    });
+  }
+
+  it('una cita que EMPIEZA dentro pero TERMINA fuera tampoco pasa', async () => {
+    // 12:40 + 40 min = 13:20, con la clinica ya cerrada. Comprobar solo el
+    // comienzo --que es lo que se hacia-- la daba por buena.
+    const calendarPort = crearCalendarPortFake();
+    const tool = new CrearCitaTool(calendarPort, new FakeToolCallRepository(), crearLoggerFake());
+    const resultado = await tool.execute(
+      citaEn('2026-08-03T12:40:00-05:00'),
+      crearContexto({ clinic: clinicaReal }),
+    );
+
+    expect(resultado.status).toBe('rechazada_validacion');
+    expect(calendarPort.createEvent).not.toHaveBeenCalled();
+  });
+
+  it('agenda dentro del horario real y deja la sede en el titulo', async () => {
+    const calendarPort = crearCalendarPortFake();
+    const tool = new CrearCitaTool(calendarPort, new FakeToolCallRepository(), crearLoggerFake());
+    const resultado = await tool.execute(
+      { ...citaEn('2026-08-03T14:00:00-05:00'), motivo: 'Limpieza' },
+      crearContexto({ clinic: clinicaReal }),
+    );
+
+    expect(resultado.status).toBe('ok');
+    // La sede tiene que llegar a recepcion: `CalendarPort` no la lleva como
+    // parametro, asi que el titulo es el unico sitio donde cabe.
+    expect(calendarPort.createEvent).toHaveBeenCalledWith(
+      clinicaReal.id,
+      expect.objectContaining({ titulo: 'Limpieza · +51987654321 · sede miraflores' }),
+      '+51987654321',
+      'miraflores',
+    );
+  });
+
+  it('sin sede no llega a tocar el calendario, y lo dice con la lista', async () => {
+    const calendarPort = crearCalendarPortFake();
+    const tool = new CrearCitaTool(calendarPort, new FakeToolCallRepository(), crearLoggerFake());
+    const sinSede = { inicio: '2026-08-03T10:00:00-05:00', duracionMin: 40, confirmadoPorPaciente: true };
+    const resultado = await tool.execute(sinSede as unknown as CrearCitaInput, crearContexto({ clinic: clinicaReal }));
+
+    expect(resultado.status).toBe('rechazada_validacion');
+    expect(resultado.error).toMatch(/falta la sede/);
+    expect(resultado.error).toMatch(/miraflores/);
+    expect(calendarPort.isSlotFree).not.toHaveBeenCalled();
+  });
+
+  it('rechaza una sede que no existe en vez de agendar en cualquier sitio', async () => {
+    const calendarPort = crearCalendarPortFake();
+    const tool = new CrearCitaTool(calendarPort, new FakeToolCallRepository(), crearLoggerFake());
+    const resultado = await tool.execute(
+      citaEn('2026-08-03T10:00:00-05:00', 'Magdalena'),
+      crearContexto({ clinic: clinicaReal }),
+    );
+
+    expect(resultado.status).toBe('rechazada_validacion');
+    expect(resultado.error).toMatch(/no existe o es ambigua/);
+    expect(calendarPort.createEvent).not.toHaveBeenCalled();
+  });
+
+  // -------------------------------------------------------------------------
+  // Una agenda POR SEDE
+  // -------------------------------------------------------------------------
+
+  it('que Comas este ocupado NO bloquea la misma hora en Miraflores', async () => {
+    /**
+     * El defecto que reporto el usuario. Las 24 sedes compartian calendario,
+     * asi que una cita en Comas hacia aparecer ocupado ese horario en todas.
+     * Con `CalendarDoble` --que ahora particiona por sede, igual que hace el
+     * cliente de Google con `calendarios_por_sede`-- se comprueba de verdad.
+     */
+    const calendario = new CalendarDoble();
+    const tool = new CrearCitaTool(calendario, new FakeToolCallRepository(), crearLoggerFake());
+    const ctx = crearContexto({ clinic: clinicaReal });
+
+    const enComas = await tool.execute(citaEn('2026-08-03T10:00:00-05:00', 'comas'), ctx);
+    expect(enComas.status).toBe('ok');
+
+    // MISMA hora, OTRA sede: tiene que poder agendarse.
+    const enMiraflores = await tool.execute(citaEn('2026-08-03T10:00:00-05:00', 'miraflores'), ctx);
+    expect(enMiraflores.status).toBe('ok');
+
+    // Y la misma hora EN COMAS ya no, que para eso esta la comprobacion.
+    const otraVezComas = await tool.execute(citaEn('2026-08-03T10:00:00-05:00', 'comas'), ctx);
+    expect(otraVezComas.status).toBe('rechazada_validacion');
+    expect(otraVezComas.error).toMatch(/ya no esta disponible/);
+
+    expect(calendario.eventos).toHaveLength(2);
+  });
+
+  it('la disponibilidad tampoco mezcla sedes', async () => {
+    const calendario = new CalendarDoble();
+    const crear = new CrearCitaTool(calendario, new FakeToolCallRepository(), crearLoggerFake());
+    const consultar = new ConsultarAgendaTool(calendario, new FakeToolCallRepository(), crearLoggerFake());
+    const ctx = crearContexto({ clinic: clinicaReal });
+
+    await crear.execute(citaEn('2026-08-03T09:00:00-05:00', 'comas'), ctx);
+
+    const rango = {
+      desde: '2026-08-03T09:00:00-05:00',
+      hasta: '2026-08-03T13:00:00-05:00',
+      duracionMin: 40,
+    };
+    const enComas = await consultar.execute({ ...rango, sede: 'comas' }, ctx);
+    const enMiraflores = await consultar.execute({ ...rango, sede: 'miraflores' }, ctx);
+
+    const huecos = (r: typeof enComas): Date[] =>
+      ((r.data as { slots: Array<{ start: Date }> } | undefined)?.slots ?? []).map((s) => s.start);
+
+    const nueve = new Date('2026-08-03T09:00:00-05:00').getTime();
+    expect(huecos(enComas).some((d) => d.getTime() === nueve)).toBe(false);
+    expect(huecos(enMiraflores).some((d) => d.getTime() === nueve)).toBe(true);
+  });
+
+  it('la cita creada lleva el telefono del paciente y su sede', async () => {
+    // Sin telefono, recepcion no sabe a quien llamar para confirmar o mover la
+    // cita. El doble lo descartaba, asi que en la web las citas se creaban sin
+    // ningun dato de quien las habia pedido.
+    const calendario = new CalendarDoble();
+    const tool = new CrearCitaTool(calendario, new FakeToolCallRepository(), crearLoggerFake());
+    const ctx = crearContexto({
+      clinic: clinicaReal,
+      patient: crearPaciente({ nombre: 'Rosa Quispe' }),
+    });
+
+    const resultado = await tool.execute(citaEn('2026-08-03T10:00:00-05:00', 'comas'), ctx);
+    expect(resultado.status).toBe('ok');
+
+    const evento = calendario.eventos[0];
+    expect(evento?.pacienteTelefono).toBe('+51987654321');
+    expect(evento?.sede).toBe('comas');
+    // El titulo es lo que se lee de un vistazo en el calendario.
+    expect(evento?.titulo).toContain('Rosa Quispe');
+    expect(evento?.titulo).toContain('sede comas');
+  });
+
+  it('sin nombre conocido, el titulo cae al telefono en vez de quedarse anonimo', async () => {
+    const calendario = new CalendarDoble();
+    const tool = new CrearCitaTool(calendario, new FakeToolCallRepository(), crearLoggerFake());
+    const resultado = await tool.execute(
+      citaEn('2026-08-03T10:00:00-05:00', 'comas'),
+      crearContexto({ clinic: clinicaReal }),
+    );
+
+    expect(resultado.status).toBe('ok');
+    expect(calendario.eventos[0]?.titulo).toContain('+51987654321');
+  });
+
+  it('acepta la sede como la dice el paciente y la normaliza', async () => {
+    const calendarPort = crearCalendarPortFake();
+    const tool = new CrearCitaTool(calendarPort, new FakeToolCallRepository(), crearLoggerFake());
+    const resultado = await tool.execute(
+      citaEn('2026-08-03T10:00:00-05:00', 'San Borja'),
+      crearContexto({ clinic: clinicaReal }),
+    );
+
+    expect(resultado.status).toBe('ok');
+    expect(calendarPort.createEvent).toHaveBeenCalledWith(
+      clinicaReal.id,
+      expect.objectContaining({ titulo: 'Cita · +51987654321 · sede san-borja', sede: 'san-borja' }),
+      '+51987654321',
+      'san-borja',
+    );
   });
 });
 
@@ -330,25 +560,27 @@ describe('ConsultarAgendaTool', () => {
     // campo, asi que Zod lo descarta - pero se prueba tambien a nivel de tipo
     // no fiable (unknown) para simular una entrada hostil.
     const argsHostiles = {
-      desde: '2026-08-01T00:00:00-05:00',
-      hasta: '2026-08-02T00:00:00-05:00',
+      // Lunes: tiene que ser un dia que la clinica abra, o no se genera
+      // ningun candidato y la prueba no llegaria a comprobar nada.
+      desde: '2026-08-03T00:00:00-05:00',
+      hasta: '2026-08-04T00:00:00-05:00',
       duracionMin: 30,
       clinicId: 'clinica-ajena',
     };
     const resultado = await tool.execute(argsHostiles as never, ctx);
 
     expect(resultado.status).toBe('ok');
-    expect(calendarPort.findAvailableSlots).toHaveBeenCalledTimes(1);
-    expect(calendarPort.findAvailableSlots).toHaveBeenCalledWith(
-      'clinica-legitima',
-      expect.any(Date),
-      expect.any(Date),
-      30,
-    );
-    // nunca se le paso 'clinica-ajena' al puerto
-    expect(calendarPort.findAvailableSlots).not.toHaveBeenCalledWith(
+    // La disponibilidad se comprueba con `isSlotFree` sobre candidatos que
+    // salen del horario de la clinica, no con la rejilla ciega de
+    // `findAvailableSlots`. Lo que se verifica sigue siendo lo mismo: el
+    // `clinicId` sale SIEMPRE del contexto y jamas de los argumentos.
+    const llamadas = (calendarPort.isSlotFree as ReturnType<typeof vi.fn>).mock.calls;
+    expect(llamadas.length).toBeGreaterThan(0);
+    for (const [clinicId] of llamadas) {
+      expect(clinicId).toBe('clinica-legitima');
+    }
+    expect(calendarPort.isSlotFree).not.toHaveBeenCalledWith(
       'clinica-ajena',
-      expect.anything(),
       expect.anything(),
       expect.anything(),
     );

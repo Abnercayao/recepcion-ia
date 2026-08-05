@@ -154,7 +154,32 @@ export function parseGoogleCredentials(raw: string): GoogleServiceAccountCredent
 const clinicCalendarConfigSchema = z.object({
   googleCalendarId: z.string().min(1, 'clinic.config.googleCalendarId es requerido para usar el calendario'),
   googleImpersonateSubject: z.string().min(1).optional(),
+  /**
+   * UN CALENDARIO POR SEDE.
+   *
+   * `{ "miraflores": "abc@group.calendar.google.com", "comas": "def@..." }`
+   *
+   * Sin esto, las 24 sedes compartian un unico calendario y la agenda de una
+   * bloqueaba la de todas: si Comas estaba lleno, Miraflores aparecia lleno
+   * tambien. Es un error de negocio, no un detalle tecnico.
+   *
+   * Es OPCIONAL porque una clinica de sede unica no lo necesita, y porque dar
+   * de alta 24 calendarios en Google es trabajo de configuracion, no de
+   * codigo. Mientras una sede no tenga el suyo se cae a `googleCalendarId` y
+   * se AVISA por el log: seguir compartiendo agenda en silencio es justo el
+   * fallo que se esta corrigiendo.
+   */
+  calendarios_por_sede: z.record(z.string(), z.string().min(1)).optional(),
 });
+
+/** Misma normalizacion que usa la herramienta: «San Borja» y `san-borja` son la misma sede. */
+function normalizarSede(texto: string): string {
+  return texto
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+}
 
 // ---------------------------------------------------------------------------
 // Reintentos
@@ -256,7 +281,10 @@ export class GoogleCalendarClient implements CalendarPort {
    * llamada; si la configuracion de una clinica cambia, se puede invalidar
    * con `invalidateClinicCache`.
    */
-  private readonly cache = new Map<string, { api: CalendarApiSurface; calendarId: string }>();
+  private readonly cache = new Map<
+    string,
+    { api: CalendarApiSurface; calendarId: string; porSede: Record<string, string> }
+  >();
 
   constructor(
     private readonly clinicRepository: ClinicRepository,
@@ -274,7 +302,35 @@ export class GoogleCalendarClient implements CalendarPort {
     else this.cache.clear();
   }
 
-  private async resolveClinicCalendar(clinicId: string): Promise<ResolvedClinicCalendar> {
+  /**
+   * Calendario de una SEDE concreta.
+   *
+   * Si la sede no tiene calendario propio se usa el general y se avisa: es
+   * mejor agendar en una agenda compartida --y que quede dicho-- que negarse a
+   * agendar, pero mientras eso pase la disponibilidad de esa sede sigue
+   * mezclada con la de las demas.
+   */
+  private calendarioDeSede(
+    general: string,
+    porSede: Record<string, string>,
+    sede: string | undefined,
+    clinicId: string,
+  ): string {
+    if (sede === undefined || sede.trim() === '') return general;
+    const propio = porSede[normalizarSede(sede)];
+    if (propio !== undefined) return propio;
+
+    this.logger.warn(
+      { clinicId, sede, componente: 'calendar' },
+      'la sede no tiene calendario propio en clinic.config.calendarios_por_sede: se usa el general y su agenda queda MEZCLADA con la de las demas sedes',
+    );
+    return general;
+  }
+
+  private async resolveClinicCalendar(
+    clinicId: string,
+    sede?: string,
+  ): Promise<ResolvedClinicCalendar> {
     const clinic = await this.clinicRepository.findById(clinicId);
     if (!clinic) {
       throw new Error(`clinica no encontrada: ${clinicId}`);
@@ -282,7 +338,11 @@ export class GoogleCalendarClient implements CalendarPort {
 
     const cached = this.cache.get(clinicId);
     if (cached) {
-      return { api: cached.api, calendarId: cached.calendarId, clinic };
+      return {
+        api: cached.api,
+        calendarId: this.calendarioDeSede(cached.calendarId, cached.porSede, sede, clinicId),
+        clinic,
+      };
     }
 
     const calendarConfig = clinicCalendarConfigSchema.safeParse(clinic.config);
@@ -304,15 +364,37 @@ export class GoogleCalendarClient implements CalendarPort {
     });
 
     const api = this.calendarApiFactory(jwt);
-    this.cache.set(clinicId, { api, calendarId: calendarConfig.data.googleCalendarId });
-    return { api, calendarId: calendarConfig.data.googleCalendarId, clinic };
+    // Las claves se normalizan una sola vez, al cachear: asi «San Borja»,
+    // `san-borja` y «SAN BORJA» encuentran el mismo calendario.
+    const porSede: Record<string, string> = {};
+    for (const [nombre, id] of Object.entries(calendarConfig.data.calendarios_por_sede ?? {})) {
+      porSede[normalizarSede(nombre)] = id;
+    }
+
+    this.cache.set(clinicId, { api, calendarId: calendarConfig.data.googleCalendarId, porSede });
+    return {
+      api,
+      calendarId: this.calendarioDeSede(
+        calendarConfig.data.googleCalendarId,
+        porSede,
+        sede,
+        clinicId,
+      ),
+      clinic,
+    };
   }
 
-  async findAvailableSlots(clinicId: string, from: Date, to: Date, durationMin: number): Promise<CalendarSlot[]> {
+  async findAvailableSlots(
+    clinicId: string,
+    from: Date,
+    to: Date,
+    durationMin: number,
+    sede?: string,
+  ): Promise<CalendarSlot[]> {
     if (durationMin <= 0) {
       throw new Error('durationMin debe ser mayor que 0');
     }
-    const { api, calendarId, clinic } = await this.resolveClinicCalendar(clinicId);
+    const { api, calendarId, clinic } = await this.resolveClinicCalendar(clinicId, sede);
 
     const response = await withTransientRetry(
       () =>
@@ -340,14 +422,14 @@ export class GoogleCalendarClient implements CalendarPort {
       const slotEnd = new Date(t + stepMs);
       const overlaps = busy.some((b) => slotStart < b.end && slotEnd > b.start);
       if (!overlaps) {
-        slots.push({ start: slotStart, end: slotEnd });
+        slots.push({ start: slotStart, end: slotEnd, ...(sede ? { sede } : {}) });
       }
     }
     return slots;
   }
 
-  async isSlotFree(clinicId: string, start: Date, end: Date): Promise<boolean> {
-    const { api, calendarId, clinic } = await this.resolveClinicCalendar(clinicId);
+  async isSlotFree(clinicId: string, start: Date, end: Date, sede?: string): Promise<boolean> {
+    const { api, calendarId, clinic } = await this.resolveClinicCalendar(clinicId, sede);
 
     // Consulta SIEMPRE fresca contra la API: nunca se reutiliza aqui el
     // resultado de findAvailableSlots ni ningun valor calculado antes. Es la
@@ -374,8 +456,16 @@ export class GoogleCalendarClient implements CalendarPort {
   }
 
   /** Ver punto 5 del comentario de cabecera: idempotencia sin tocar la firma del puerto. */
-  private deriveEventId(clinicId: string, event: Omit<CalendarEvent, 'id'>, patientPhone: string): string {
-    const raw = `${clinicId}|${event.start.toISOString()}|${event.end.toISOString()}|${patientPhone}`;
+  private deriveEventId(
+    clinicId: string,
+    event: Omit<CalendarEvent, 'id'>,
+    patientPhone: string,
+    sede: string | undefined,
+  ): string {
+    // La SEDE entra en el id: el mismo paciente, a la misma hora, en dos sedes
+    // distintas son dos citas distintas. Sin ella, la segunda se tomaria por un
+    // reintento de la primera y no se crearia.
+    const raw = `${clinicId}|${sede ?? ''}|${event.start.toISOString()}|${event.end.toISOString()}|${patientPhone}`;
     const hash = createHash('sha256').update(raw).digest('hex');
     // Los ids de evento de Google solo admiten el alfabeto [a-v0-9]; el hex
     // (0-9a-f) es un subconjunto valido. Se prefija con una letra para
@@ -402,22 +492,36 @@ export class GoogleCalendarClient implements CalendarPort {
     clinicId: string,
     event: Omit<CalendarEvent, 'id'>,
     patientPhone: string,
+    sede?: string,
   ): Promise<CalendarEvent> {
-    const { api, calendarId, clinic } = await this.resolveClinicCalendar(clinicId);
+    const sedeEfectiva = sede ?? event.sede;
+    const { api, calendarId, clinic } = await this.resolveClinicCalendar(clinicId, sedeEfectiva);
 
     // Defensa adicional dentro del cliente: aunque la herramienta de negocio
     // (crear-cita.tool.ts, fuera de este archivo) debe llamar a isSlotFree
     // antes de invocar createEvent, aqui se repite la comprobacion justo
     // antes de escribir. Es la misma llamada de freebusy, asi que es barata,
     // y cierra la ventana de carrera si algo escribio entre la comprobacion
-    // de la herramienta y esta llamada.
-    const free = await this.isSlotFree(clinicId, event.start, event.end);
+    // de la herramienta y esta llamada. Sobre la MISMA sede, claro: contra el
+    // calendario general no probaria nada.
+    const free = await this.isSlotFree(clinicId, event.start, event.end, sedeEfectiva);
     if (!free) {
       throw new Error('horario_no_disponible: el horario dejo de estar libre justo antes de crear la cita');
     }
 
-    const eventId = this.deriveEventId(clinicId, event, patientPhone);
-    const descripcionPartes = [`Paciente: ${patientPhone}`];
+    const eventId = this.deriveEventId(clinicId, event, patientPhone, sedeEfectiva);
+
+    /**
+     * QUIEN, DONDE y CON QUIEN, en la descripcion del evento.
+     *
+     * Es lo unico que ve la recepcion humana cuando abre el calendario. Una
+     * cita sin telefono no se puede reprogramar ni confirmar: hay que saber a
+     * quien llamar. El telefono va en claro A PROPOSITO --es una agenda
+     * clinica privada, no un log-- mientras que en logs y trazas sale
+     * enmascarado por `maskPII`.
+     */
+    const descripcionPartes = [`Paciente: ${event.pacienteNombre ?? 'sin nombre'} · ${patientPhone}`];
+    if (sedeEfectiva) descripcionPartes.push(`Sede: ${sedeEfectiva}`);
     if (event.profesional) descripcionPartes.push(`Profesional: ${event.profesional}`);
 
     const data = await pRetry(
@@ -466,11 +570,17 @@ export class GoogleCalendarClient implements CalendarPort {
       },
     );
 
-    return this.mapToCalendarEvent(data, event.profesional);
+    const creado = this.mapToCalendarEvent(data, event.profesional);
+    return {
+      ...creado,
+      ...(sedeEfectiva ? { sede: sedeEfectiva } : {}),
+      pacienteTelefono: patientPhone,
+      ...(event.pacienteNombre ? { pacienteNombre: event.pacienteNombre } : {}),
+    };
   }
 
-  async cancelEvent(clinicId: string, eventId: string): Promise<void> {
-    const { api, calendarId } = await this.resolveClinicCalendar(clinicId);
+  async cancelEvent(clinicId: string, eventId: string, sede?: string): Promise<void> {
+    const { api, calendarId } = await this.resolveClinicCalendar(clinicId, sede);
 
     await pRetry(
       async () => {

@@ -31,6 +31,9 @@ import { UrgencyDetector } from '../src/core/urgency/urgency.detector.js';
 import { MessageRouter } from '../src/core/conversation/message.router.js';
 import { ConversationServiceImpl } from '../src/core/conversation/conversation.service.js';
 import { chunkText } from '../src/core/rag/chunker.js';
+import { esPuraCortesia } from '../src/core/rag/rag.service.js';
+import type { DiagnosticoDeRag } from '../src/core/rag/diagnostico.js';
+import { RecolectorDeTrazaEnMemoria } from '../src/infra/traza.memoria.js';
 import type { Clinic, KnowledgeChunk, Logger, RagPort } from '../src/core/types/index.js';
 import { crearDobles } from '../tests/helpers/dobles.js';
 
@@ -57,6 +60,15 @@ function tokenizar(texto: string): string[] {
     .split(/\s+/)
     .filter((t) => t.length > 2 && !VACIAS.has(t));
 }
+
+/**
+ * Solapamiento minimo para considerar relevante un fragmento.
+ *
+ * Es el equivalente pobre del umbral de similitud del RAG real (0.45 con
+ * voyage-3-large). No son comparables: alli es coseno entre embeddings, aqui es
+ * la fraccion de terminos de la consulta que aparecen en el fragmento.
+ */
+const UMBRAL_LEXICO = 0.15;
 
 const FUENTES: Array<[string, KnowledgeChunk['fuente']]> = [
   ['formulario-maestro.md', 'formulario'],
@@ -96,24 +108,84 @@ export class RagDeDemostracion implements RagPort {
     return this.fragmentos.length;
   }
 
-  retrieve(clinicId: string, query: string, limit = 5): Promise<KnowledgeChunk[]> {
+  async retrieve(clinicId: string, query: string, limit = 5): Promise<KnowledgeChunk[]> {
+    const { fragmentos } = await this.retrieveConDiagnostico(clinicId, query, limit);
+    return fragmentos;
+  }
+
+  /**
+   * Igual que el servicio real: declara COMO resolvio.
+   *
+   * Aqui importa mas todavia que en produccion. Este RAG recupera por
+   * coincidencia de palabras y es PEOR que el vectorial: cuando el agente dice
+   * que no tiene un dato que si esta en la base, la primera sospecha debe ser
+   * esta clase, no el prompt. El diagnostico lo dice en vez de dejarlo a la
+   * intuicion de quien depura.
+   */
+  retrieveConDiagnostico(
+    clinicId: string,
+    query: string,
+    limit = 5,
+  ): Promise<{ fragmentos: KnowledgeChunk[]; diagnostico: DiagnosticoDeRag }> {
+    const vacio = (motivo: string): Promise<{ fragmentos: KnowledgeChunk[]; diagnostico: DiagnosticoDeRag }> =>
+      Promise.resolve({ fragmentos: [], diagnostico: { estrategia: 'vacio', motivo } });
+
     // El aislamiento entre clinicas se respeta tambien aqui, aunque el demo
     // tenga una sola: es la invariante mas importante del sistema.
-    if (clinicId !== this.clinicId) return Promise.resolve([]);
+    if (clinicId !== this.clinicId) return vacio('la clinica no coincide: aislamiento entre clinicas (C9)');
+
+    if (esPuraCortesia(query)) {
+      return Promise.resolve({
+        fragmentos: [],
+        diagnostico: {
+          estrategia: 'cortesia',
+          motivo: 'el mensaje es solo saludo o agradecimiento; no hay nada que recuperar',
+        },
+      });
+    }
 
     const consulta = tokenizar(query);
-    if (consulta.length === 0) return Promise.resolve([]);
+    if (consulta.length === 0) {
+      return vacio('la consulta no dejo ningun termino util tras quitar palabras vacias');
+    }
 
+    const t0 = Date.now();
     const puntuados = this.fragmentos
       .map(({ chunk, tokens }) => {
         const comunes = consulta.filter((t) => tokens.has(t)).length;
         return { chunk, score: comunes / consulta.length };
       })
-      .filter((f) => f.score > 0.15)
+      .filter((f) => f.score > UMBRAL_LEXICO)
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
 
-    return Promise.resolve(puntuados.map((p) => ({ ...p.chunk, similarity: p.score })));
+    const msConsulta = Date.now() - t0;
+
+    if (puntuados.length === 0) {
+      return Promise.resolve({
+        fragmentos: [],
+        diagnostico: {
+          estrategia: 'vacio',
+          msConsulta,
+          umbral: UMBRAL_LEXICO,
+          motivo:
+            `ningun fragmento comparte mas del ${String(UMBRAL_LEXICO * 100)}% de los terminos de la consulta. ` +
+            `Terminos buscados: ${consulta.join(', ')}`,
+        },
+      });
+    }
+
+    return Promise.resolve({
+      fragmentos: puntuados.map((p) => ({ ...p.chunk, similarity: p.score })),
+      diagnostico: {
+        // Se llama por su nombre: NO es busqueda vectorial y no hay que
+        // confundir sus aciertos con los del RAG real.
+        estrategia: 'lexico_de_demostracion',
+        msConsulta,
+        umbral: UMBRAL_LEXICO,
+        motivo: `terminos buscados: ${consulta.join(', ')}`,
+      },
+    });
   }
 }
 
@@ -168,6 +240,8 @@ export interface NucleoDeDemostracion {
   dobles: ReturnType<typeof crearDobles>;
   modelo: string;
   modeloClasificacion: string;
+  /** Trazas de los turnos ya cerrados. Es lo que alimenta el panel de la web. */
+  trazas: RecolectorDeTrazaEnMemoria;
 }
 
 export class FaltaLaClaveError extends Error {
@@ -227,6 +301,8 @@ export async function montarNucleoDeDemostracion(): Promise<NucleoDeDemostracion
     },
     { regionPorDefecto: 'PE' },
   );
+  const trazas = new RecolectorDeTrazaEnMemoria();
+
   const servicio = new ConversationServiceImpl(
     {
       router,
@@ -239,9 +315,10 @@ export async function montarNucleoDeDemostracion(): Promise<NucleoDeDemostracion
       messages: dobles.mensajes,
       logger,
       audit: dobles.auditoria,
+      traza: trazas,
     },
     { model: modelo },
   );
 
-  return { servicio, clinica, rag, dobles, modelo, modeloClasificacion };
+  return { servicio, clinica, rag, dobles, modelo, modeloClasificacion, trazas };
 }

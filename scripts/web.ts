@@ -66,8 +66,42 @@ const TIPOS: Record<string, string> = {
 const escalamientos: Array<Record<string, unknown> & { recibidoEn: string }> = [];
 const MAX_ESCALAMIENTOS = 100;
 
+/**
+ * Trazas del canal de VOZ, que ocurren en OTRO proceso.
+ *
+ * La web corre en el puerto 4000 y el nucleo con el canal de voz en el 3000.
+ * En modo alojado, ademas, la voz ni siquiera pasa por `ConversationService`:
+ * el proveedor razona por su cuenta y lo unico que toca nuestro codigo son los
+ * webhooks de las herramientas. Asi que sus trazas viven en el otro proceso.
+ *
+ * Se piden desde AQUI, por el servidor, y no desde el navegador: el endpoint
+ * del 3000 esta protegido por `VOICE_GATEWAY_SECRET` y ese secreto no puede
+ * bajar al cliente. De paso se evita el CORS entre los dos puertos.
+ */
+async function trazasDeVoz(): Promise<{ trazas: unknown[]; error?: string }> {
+  const secreto = process.env['VOICE_GATEWAY_SECRET'];
+  if (!secreto) return { trazas: [], error: 'sin VOICE_GATEWAY_SECRET: no se pueden pedir' };
+
+  const base = process.env['URL_NUCLEO'] ?? 'http://127.0.0.1:3000';
+  try {
+    const r = await fetch(`${base}/v1/g/${secreto}/trazas`, {
+      signal: AbortSignal.timeout(3000),
+    });
+    if (!r.ok) return { trazas: [], error: `el nucleo respondio ${String(r.status)}` };
+    const cuerpo = (await r.json()) as { trazas?: unknown[] };
+    return { trazas: cuerpo.trazas ?? [] };
+  } catch (e) {
+    // Que el nucleo no este levantado es lo normal si solo se prueba el chat.
+    // No es un error del turno: se dice y ya.
+    return {
+      trazas: [],
+      error: `no responde ${base} (¿esta corriendo \`npm run dev\`?): ${e instanceof Error ? e.message : String(e)}`,
+    };
+  }
+}
+
 async function main(): Promise<void> {
-  const { servicio, clinica, rag, dobles, modelo } = await montarNucleoDeDemostracion();
+  const { servicio, clinica, rag, dobles, modelo, trazas } = await montarNucleoDeDemostracion();
 
   const app = Fastify({ logger: false });
 
@@ -104,6 +138,25 @@ async function main(): Promise<void> {
     fragmentos: rag.total,
     sedes: (clinica.config as Record<string, unknown>)['sedes_informativas'] ?? {},
   }));
+
+  /**
+   * Todas las trazas: las de texto de este proceso y las de voz del nucleo.
+   *
+   * Es lo que hace que el panel sirva para diagnosticar de verdad. La voz es
+   * el canal que peor se ve --corre en otro proceso y, en modo alojado, con
+   * otro modelo-- y sin esto habria que leer dos consolas a la vez.
+   */
+  app.get('/api/trazas', async () => {
+    const voz = await trazasDeVoz();
+    return {
+      texto: trazas.listar(40),
+      voz: voz.trazas,
+      // Se dice POR QUE no hay trazas de voz en vez de mostrar una lista
+      // vacia, que se lee como "no ha pasado nada" cuando en realidad puede
+      // ser que el nucleo no este levantado.
+      vozError: voz.error ?? null,
+    };
+  });
 
   app.post<{ Body: { texto?: unknown; sesion?: unknown } }>(
     '/api/chat',
@@ -175,6 +228,10 @@ async function main(): Promise<void> {
           escalamiento: turno.escalate
             ? { motivo: turno.escalate.reason, prioridad: turno.escalate.priority }
             : null,
+          // La traza completa del turno: cada salto, su duracion y su detalle.
+          // Se busca por conversacion, no "la ultima": con dos pestanas
+          // abiertas la mas reciente puede ser la del otro paciente.
+          traza: trazas.ultimaDe(turno.conversationId) ?? null,
         };
       } catch (error) {
         // Un fallo del turno no debe tumbar el servidor ni dejar la pagina en

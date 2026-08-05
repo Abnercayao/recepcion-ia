@@ -430,6 +430,236 @@ a {
   display: none;
 }
 
+/* ---------------------------------------------------------------------------
+   TRAZA DEL TURNO
+
+   Cada salto con su duracion y su detalle. Se usa igual bajo una respuesta del
+   chat y dentro del panel de voz, asi que no depende del contenedor.
+   --------------------------------------------------------------------------- */
+
+.traza {
+  align-self: stretch;
+  font-family: "Cascadia Mono", Consolas, monospace;
+  font-size: 0.72rem;
+  background: #f4f7fb;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.traza[hidden] {
+  display: none;
+}
+
+.traza__resumen {
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  color: var(--marino);
+  line-height: 1.5;
+  list-style: none;
+}
+
+.traza__resumen::-webkit-details-marker {
+  display: none;
+}
+
+.traza__resumen::before {
+  content: "▸ ";
+  color: var(--gris);
+}
+
+.traza[open] > .traza__resumen::before {
+  content: "▾ ";
+}
+
+.traza__resumen:hover {
+  background: #e8eff8;
+}
+
+.traza__cuerpo {
+  border-top: 1px solid var(--borde);
+  padding: 0.35rem;
+  background: var(--blanco);
+}
+
+.salto {
+  border-left: 3px solid var(--gris);
+  margin-bottom: 2px;
+  background: var(--gris-claro);
+  border-radius: 0 4px 4px 0;
+}
+
+.salto__cabecera {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.45rem;
+  list-style: none;
+}
+
+.salto__cabecera::-webkit-details-marker {
+  display: none;
+}
+
+.salto__nombre {
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: 46%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--marino);
+}
+
+/* Escala comun a todos los saltos del turno: el mas largo llena la barra. */
+.salto__barra {
+  flex: 1 1 auto;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.salto__barra > span {
+  display: block;
+  height: 100%;
+  background: currentColor;
+  border-radius: 3px;
+}
+
+.salto__tiempo {
+  flex: 0 0 auto;
+  color: var(--gris);
+  font-variant-numeric: tabular-nums;
+}
+
+.salto__detalle {
+  margin: 0;
+  padding: 0.4rem 0.6rem 0.6rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #334155;
+  background: var(--blanco);
+  border-top: 1px dashed var(--borde);
+  max-height: 320px;
+  overflow: auto;
+}
+
+/* Una familia, un color. Ver de un vistazo si el tiempo se va en el modelo
+   (azul) o en las herramientas (ambar) es el 90% del diagnostico. */
+.salto--modelo { border-left-color: #056dff; color: #056dff; }
+.salto--herramienta { border-left-color: #b45309; color: #b45309; }
+.salto--rag { border-left-color: #7c3aed; color: #7c3aed; }
+.salto--capa1,
+.salto--capa2,
+.salto--capa3 { border-left-color: #0f766e; color: #0f766e; }
+.salto--enrutado { border-left-color: #64748b; color: #64748b; }
+.salto--persistencia { border-left-color: #94a3b8; color: #94a3b8; }
+.salto--prompt { border-left-color: #0891b2; color: #0891b2; }
+.salto--webhook { border-left-color: #c026d3; color: #c026d3; }
+.salto--aviso { border-left-color: var(--alarma); color: var(--alarma); }
+
+/* El estado pisa a la familia: un error tiene que verse aunque sea del modelo. */
+.salto--error {
+  border-left-color: var(--alarma);
+  color: var(--alarma);
+  background: var(--alarma-fondo);
+}
+
+.salto--aviso.salto {
+  background: #fffbeb;
+}
+
+.traza__otros {
+  margin: 0.4rem 0 0.1rem;
+  padding: 0 0.45rem;
+  color: var(--gris);
+  font-size: 0.7rem;
+}
+
+/* ---------------------------------------------------------------------------
+   PANEL DEL CANAL DE VOZ
+   --------------------------------------------------------------------------- */
+
+.panel-voz {
+  margin: 2rem 0 0;
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+
+.panel-voz[hidden] {
+  display: none;
+}
+
+.panel-voz__cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.panel-voz h2 {
+  font-size: 1.05rem;
+  margin: 0 0 0.3rem;
+  color: var(--marino);
+}
+
+.panel-voz__nota {
+  margin: 0;
+  color: var(--gris);
+  font-size: 0.85rem;
+  max-width: 62ch;
+  line-height: 1.5;
+}
+
+.panel-voz__boton {
+  flex: 0 0 auto;
+  border: 1px solid var(--borde);
+  background: var(--azul-suave);
+  color: var(--azul-oscuro);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.panel-voz__boton:hover {
+  background: #dbe9ff;
+}
+
+.panel-voz__estado {
+  margin: 0.9rem 0 0.6rem;
+  font-size: 0.82rem;
+  color: var(--gris);
+}
+
+.voz__evento {
+  border-top: 1px solid var(--borde);
+  padding-top: 0.7rem;
+  margin-top: 0.7rem;
+}
+
+.voz__titulo {
+  margin: 0 0 0.2rem;
+  font-family: "Cascadia Mono", Consolas, monospace;
+  font-size: 0.76rem;
+  color: var(--marino);
+}
+
+.voz__salida {
+  margin: 0 0 0.45rem;
+  font-family: "Cascadia Mono", Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--gris);
+  word-break: break-word;
+}
+
 .escribiendo {
   align-self: flex-start;
   background: var(--blanco);

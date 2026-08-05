@@ -265,6 +265,15 @@ export class RagDoble implements RagPort {
 // Agenda
 // ---------------------------------------------------------------------------
 
+/** «San Borja», `san-borja` y «SAN BORJA» son la misma sede. */
+function normalizarSede(texto: string | undefined): string {
+  return (texto ?? '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+}
+
 export class CalendarDoble implements CalendarPort {
   /** Huecos que devuelve `findAvailableSlots`, antes de filtrar por rango. */
   slots: CalendarSlot[] = [];
@@ -277,21 +286,44 @@ export class CalendarDoble implements CalendarPort {
     from: Date,
     to: Date,
     _durationMin: number,
+    sede?: string,
   ): Promise<CalendarSlot[]> {
-    return this.slots.filter((s) => s.start >= from && s.end <= to);
+    const s = normalizarSede(sede);
+    return this.slots.filter(
+      (x) => x.start >= from && x.end <= to && (s === '' || normalizarSede(x.sede) === s),
+    );
   }
 
-  async isSlotFree(_clinicId: string, start: Date, end: Date): Promise<boolean> {
+  /**
+   * Ocupacion POR SEDE.
+   *
+   * Antes ignoraba la sede y comparaba contra todos los eventos, de modo que
+   * una cita en Comas hacia parecer ocupado el mismo horario en Miraflores. Es
+   * el defecto que se esta corrigiendo, y el doble tiene que reproducir el
+   * comportamiento bueno o la web de demostracion seguiria enseñando el malo.
+   */
+  async isSlotFree(_clinicId: string, start: Date, end: Date, sede?: string): Promise<boolean> {
     if (!this.todoLibre) return false;
-    return !this.eventos.some((e) => e.start < end && start < e.end);
+    const s = normalizarSede(sede);
+    return !this.eventos.some(
+      (e) => e.start < end && start < e.end && normalizarSede(e.sede) === s,
+    );
   }
 
   async createEvent(
     _clinicId: string,
     event: Omit<CalendarEvent, 'id'>,
-    _patientPhone: string,
+    patientPhone: string,
+    sede?: string,
   ): Promise<CalendarEvent> {
-    const creado: CalendarEvent = { id: randomUUID(), ...event };
+    // El telefono se guarda SIEMPRE. Antes se descartaba, y las citas de la
+    // web quedaban sin ningun dato de quien las habia pedido.
+    const creado: CalendarEvent = {
+      id: randomUUID(),
+      ...event,
+      ...(sede ?? event.sede ? { sede: sede ?? event.sede } : {}),
+      pacienteTelefono: event.pacienteTelefono ?? patientPhone,
+    };
     this.eventos.push(creado);
     return creado;
   }

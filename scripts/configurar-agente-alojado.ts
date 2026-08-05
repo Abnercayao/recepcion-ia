@@ -19,6 +19,9 @@ import 'dotenv/config';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
+import { renderizarSedes } from '../src/core/claude/prompt.builder.js';
+import { clinicaDeLaSemilla } from './nucleo-demo.js';
+
 const RAIZ = resolve(import.meta.dirname, '..');
 const AGENTE = process.env['ELEVENLABS_AGENT_ID'];
 const KEY = process.env['ELEVENLABS_API_KEY'];
@@ -73,6 +76,10 @@ async function revertir(): Promise<void> {
 async function construirPrompt(): Promise<string> {
   const maestro = await readFile(join(RAIZ, 'prompts', 'maestro.md'), 'utf8');
   const estilo = await readFile(join(RAIZ, 'prompts', 'estilo.voz.md'), 'utf8');
+  // Las sedes se leen de la MISMA semilla que alimenta a Supabase y se
+  // renderizan con la MISMA funcion que usa el nucleo. Si divergieran, el
+  // defecto de "8 sedes de 24" quedaria arreglado en texto y vivo en voz.
+  const clinica = await clinicaDeLaSemilla();
 
   const bloques = maestro.split(/^## /m).filter((b) => b.trim() !== '');
   // Se conservan los bloques 1-7 (identidad, prohibiciones, urgencia,
@@ -94,14 +101,73 @@ async function construirPrompt(): Promise<string> {
     'clinica que no venga de esa herramienta.',
     '',
     '## SESION',
-    `Clinica: ${process.env['CLINIC_NAME'] ?? 'Clinica Aurora'}. Zona horaria America/Lima.`,
+    `Clinica: ${clinica.nombre}. Zona horaria ${clinica.timezone}.`,
     'Pasa `session_id` en TODAS las llamadas a herramientas, con el mismo valor',
     'durante toda la conversacion, para que las citas y los avisos queden atados',
     'al mismo paciente.',
     '',
+    // Excepcion DECLARADA al parrafo de arriba: ahi se dice que nada se afirma
+    // sin pasar por `consultar_rag`. Las sedes son la excepcion, y es
+    // deliberado: es un censo cerrado, y hacerlo depender de una busqueda es
+    // justo lo que producia la respuesta con 8 sedes de 24.
+    renderizarSedes(clinica.config),
+    '',
     '## ESTILO DE VOZ',
     estilo.trim(),
   ].join('\n');
+}
+
+/**
+ * Compara el prompt VIVO del agente con el que produce este repositorio.
+ *
+ * Existe por un fallo real y caro: se reparo el defecto de las sedes en el
+ * codigo, paso las pruebas, quedo bien por texto... y por VOZ siguio roto una
+ * semana, porque publicar en ElevenLabs es un paso manual que nadie ejecuto. El
+ * repositorio y el agente son dos fuentes de verdad y no hay nada que las ate.
+ *
+ * Esto no las ata --sigue haciendo falta publicar-- pero convierte un desfase
+ * silencioso en una linea de consola. Es barato y se puede correr antes de una
+ * demostracion.
+ *
+ * Uso:  npm run agente:alojado -- --verificar
+ */
+async function verificar(): Promise<void> {
+  const agente = await api('GET', `/v1/convai/agents/${AGENTE}`);
+  const vivo = String(agente['conversation_config']['agent']['prompt']['prompt'] ?? '');
+  const esperado = await construirPrompt();
+
+  // El prompt lleva la URL del tunel dentro de las herramientas, no del texto,
+  // asi que comparar el texto es estable entre reinicios del tunel.
+  if (vivo === esperado) {
+    console.log('El prompt del agente coincide con el del repositorio.');
+  } else {
+    console.error(
+      `DESFASE: el agente NO tiene el prompt de este repositorio.\n` +
+        `  vivo      : ${String(vivo.length)} caracteres\n` +
+        `  repositorio: ${String(esperado.length)} caracteres\n\n` +
+        'Publica con:  npm run agente:alojado -- --tunel https://<dominio>',
+    );
+  }
+
+  // Las sedes se comprueban aparte porque son el caso que ya fallo: si faltan,
+  // el agente contesta con las que le devuelva el RAG, que pueden ser 8 de 24.
+  const clinica = await clinicaDeLaSemilla();
+  const sedes = renderizarSedes(clinica.config);
+  const faltan = vivo.includes(sedes) ? [] : ['la lista completa de sedes'];
+  if (faltan.length > 0) {
+    console.error(`  Falta ademas en el agente: ${faltan.join(', ')}.`);
+  }
+
+  // Se informa de la voz pero NO se toca: este script no la configura, y si
+  // alguna vez lo hiciera, un despliegue de prompt podria pisar el acento.
+  const tts = agente['conversation_config']['tts'] as Record<string, unknown>;
+  console.log(
+    `voz            : ${String(tts['voice_id'])} · ${String(tts['model_id'])} · ` +
+      `stability ${String(tts['stability'])} · expressive ${String(tts['expressive_mode'])} · ` +
+      `optimize_streaming_latency ${String(tts['optimize_streaming_latency'])}`,
+  );
+
+  if (vivo !== esperado) process.exitCode = 1;
 }
 
 async function main(): Promise<void> {
@@ -113,6 +179,11 @@ async function main(): Promise<void> {
 
   if (process.argv.includes('--revertir')) {
     await revertir();
+    return;
+  }
+
+  if (process.argv.includes('--verificar')) {
+    await verificar();
     return;
   }
 

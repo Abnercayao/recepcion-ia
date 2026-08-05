@@ -120,6 +120,8 @@ export interface CalendarSlot {
   start: Date;
   end: Date;
   profesional?: string;
+  /** Sede a la que pertenece el hueco. Ver `CalendarPort`. */
+  sede?: string;
 }
 
 export interface CalendarEvent {
@@ -128,15 +130,52 @@ export interface CalendarEvent {
   end: Date;
   titulo: string;
   profesional?: string;
+  /** Sede en la que se atiende. */
+  sede?: string;
+  /**
+   * QUIEN pidio la cita.
+   *
+   * Una cita sin paciente no es una cita: recepcion no sabe a quien esperar ni
+   * a quien llamar si hay que moverla. El telefono es el minimo imprescindible
+   * --es ademas la clave de identidad del paciente en todo el sistema-- y el
+   * nombre se incluye cuando se conoce.
+   */
+  pacienteTelefono?: string;
+  pacienteNombre?: string;
 }
 
+/**
+ * Agenda de la clinica.
+ *
+ * SOBRE `sede`: es OPCIONAL en la firma y NO por comodidad. Cada sede tiene su
+ * propia agenda, y mezclarlas es un error de negocio con consecuencias
+ * visibles: que Comas este lleno no puede impedir agendar en Miraflores. Una
+ * implementacion que ignore el parametro sigue cumpliendo el contrato --se
+ * comporta como una clinica de sede unica, que es el caso de muchas-- pero una
+ * clinica con varias sedes DEBE atenderlo.
+ *
+ * Se anadio como opcional a proposito para no romper implementaciones
+ * existentes: es un cambio ADITIVO sobre un contrato del que dependen varias
+ * ramas a la vez.
+ */
 export interface CalendarPort {
-  /** Disponibilidad REAL. Nunca se ofrece un horario que no se comprobo. */
-  findAvailableSlots(clinicId: string, from: Date, to: Date, durationMin: number): Promise<CalendarSlot[]>;
+  /** Disponibilidad REAL de esa sede. Nunca se ofrece un horario que no se comprobo. */
+  findAvailableSlots(
+    clinicId: string,
+    from: Date,
+    to: Date,
+    durationMin: number,
+    sede?: string,
+  ): Promise<CalendarSlot[]>;
   /** Comprobacion de colision inmediatamente antes de escribir (control C7). */
-  isSlotFree(clinicId: string, start: Date, end: Date): Promise<boolean>;
-  createEvent(clinicId: string, event: Omit<CalendarEvent, 'id'>, patientPhone: string): Promise<CalendarEvent>;
-  cancelEvent(clinicId: string, eventId: string): Promise<void>;
+  isSlotFree(clinicId: string, start: Date, end: Date, sede?: string): Promise<boolean>;
+  createEvent(
+    clinicId: string,
+    event: Omit<CalendarEvent, 'id'>,
+    patientPhone: string,
+    sede?: string,
+  ): Promise<CalendarEvent>;
+  cancelEvent(clinicId: string, eventId: string, sede?: string): Promise<void>;
 }
 
 // ---------------------------------------------------------------------------

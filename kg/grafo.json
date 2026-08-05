@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "4d5a050d89351faf",
+  "huella": "99b9c420a18fba00",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -160,7 +160,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C10 — Inyeccion hacia herramientas",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 748,
+      "linea": 752,
       "resumen": "Inyeccion hacia herramientas"
     },
     {
@@ -168,7 +168,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C11 — Groserias, provocacion y trato abusivo",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 824,
+      "linea": 828,
       "resumen": "Groserias, provocacion y trato abusivo"
     },
     {
@@ -176,7 +176,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C12 — Audio de baja calidad, acentos, ruido, interrupciones y silencios (voz)",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 886,
+      "linea": 890,
       "resumen": "Audio de baja calidad, acentos, ruido, interrupciones y silencios (voz)"
     },
     {
@@ -184,7 +184,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C13 — Aislamiento entre clinicas y solicitud de datos de otro paciente",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 950,
+      "linea": 954,
       "resumen": "Aislamiento entre clinicas y solicitud de datos de otro paciente"
     },
     {
@@ -200,7 +200,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C3 — Reprogramacion y cancelacion",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 351,
+      "linea": 355,
       "resumen": "Reprogramacion y cancelacion"
     },
     {
@@ -208,7 +208,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C4 — Ortografia deficiente, abreviaturas y mensajes fragmentados (texto)",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 426,
+      "linea": 430,
       "resumen": "Ortografia deficiente, abreviaturas y mensajes fragmentados (texto)"
     },
     {
@@ -216,7 +216,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C5 — Intentos de obtener diagnostico",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 532,
+      "linea": 536,
       "resumen": "Intentos de obtener diagnostico"
     },
     {
@@ -224,7 +224,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C6 — Negociacion agresiva de precios",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 560,
+      "linea": 564,
       "resumen": "Negociacion agresiva de precios"
     },
     {
@@ -232,7 +232,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C7 — Urgencias medicas explicitas e implicitas",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 592,
+      "linea": 596,
       "resumen": "Urgencias medicas explicitas e implicitas"
     },
     {
@@ -240,7 +240,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C8 — Inyeccion directa de prompts",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 660,
+      "linea": 664,
       "resumen": "Inyeccion directa de prompts"
     },
     {
@@ -248,7 +248,7 @@
       "tipo": "categoria_adversarial",
       "nombre": "C9 — Inyeccion a traves de la base de conocimiento (RAG envenenado)",
       "ruta": "tests/adversarial/bateria.test.ts",
-      "linea": 700,
+      "linea": 704,
       "resumen": "Inyeccion a traves de la base de conocimiento (RAG envenenado)"
     },
     {
@@ -305,7 +305,7 @@
       "id": "control:C6",
       "tipo": "control",
       "nombre": "C6",
-      "resumen": "Se registran las categorias y el tamano, que es lo que sirve para auditar sin exponer a nadie (control C6).",
+      "resumen": "describe('RecolectorDeTrazaEnMemoria', () => { it('enmascara PII antes de guardar (control C6)', () => { La traza se sirve por HTTP y lleva lo que dijo el paciente y con que argum…",
       "meta": {
         "clase": "etico",
         "definicionInferida": true
@@ -454,7 +454,7 @@
       "tipo": "herramienta",
       "nombre": "consultar_agenda",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 45,
+      "linea": 78,
       "resumen": "Consulta los horarios libres de la agenda de la clinica dentro de un rango de fechas (maximo",
       "meta": {
         "clase": "ConsultarAgendaTool",
@@ -478,7 +478,7 @@
       "tipo": "herramienta",
       "nombre": "crear_cita",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 109,
+      "linea": 105,
       "resumen": "Crea una cita en la agenda de la clinica. SOLO se puede llamar despues de que el paciente confirmo",
       "meta": {
         "clase": "CrearCitaTool",
@@ -609,7 +609,7 @@
       "nombre": "clinica.json",
       "ruta": "db/seed/clinica-demo/clinica.json",
       "meta": {
-        "lineas": 45,
+        "lineas": 76,
         "capa": "datos"
       }
     },
@@ -661,7 +661,7 @@
       "ruta": "docs/CONTINUAR.md",
       "resumen": "Continuar aquí",
       "meta": {
-        "lineas": 164,
+        "lineas": 350,
         "capa": "documentacion"
       }
     },
@@ -875,7 +875,7 @@
       "ruta": "prompts/maestro.md",
       "resumen": "ROL",
       "meta": {
-        "lineas": 95,
+        "lineas": 114,
         "capa": "prompts",
         "bloques": [
           "ROL",
@@ -914,7 +914,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 211,
+        "lineas": 282,
         "capa": "scripts"
       }
     },
@@ -963,7 +963,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 248,
+        "lineas": 325,
         "capa": "scripts"
       }
     },
@@ -998,7 +998,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 212,
+        "lineas": 269,
         "capa": "scripts"
       }
     },
@@ -1030,7 +1030,7 @@
           "fastify",
           "node:crypto"
         ],
-        "lineas": 256,
+        "lineas": 304,
         "capa": "canales"
       }
     },
@@ -1132,7 +1132,7 @@
           "fastify",
           "node:crypto"
         ],
-        "lineas": 201,
+        "lineas": 266,
         "capa": "canales"
       }
     },
@@ -1191,6 +1191,20 @@
       }
     },
     {
+      "id": "modulo:src/core/agenda/horario.ts",
+      "tipo": "modulo",
+      "nombre": "horario.ts",
+      "ruta": "src/core/agenda/horario.ts",
+      "resumen": "CUANDO ATIENDE LA CLINICA: horario real, tramos y feriados.",
+      "meta": {
+        "externas": [
+          "zod"
+        ],
+        "lineas": 419,
+        "capa": "nucleo"
+      }
+    },
+    {
       "id": "modulo:src/core/claude/claude.service.ts",
       "tipo": "modulo",
       "nombre": "claude.service.ts",
@@ -1212,7 +1226,7 @@
       "ruta": "src/core/claude/guardrails.ts",
       "resumen": "Las tres capas de control (especificacion §9, control C3 del informe etico).",
       "meta": {
-        "lineas": 568,
+        "lineas": 615,
         "capa": "nucleo"
       }
     },
@@ -1227,7 +1241,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 269,
+        "lineas": 411,
         "capa": "nucleo"
       }
     },
@@ -1238,7 +1252,7 @@
       "ruta": "src/core/conversation/conversation.service.ts",
       "resumen": "EL servicio de conversacion. Uno solo, comun a los dos canales.",
       "meta": {
-        "lineas": 862,
+        "lineas": 1162,
         "capa": "nucleo"
       }
     },
@@ -1257,6 +1271,17 @@
       }
     },
     {
+      "id": "modulo:src/core/observabilidad/traza.ts",
+      "tipo": "modulo",
+      "nombre": "traza.ts",
+      "ruta": "src/core/observabilidad/traza.ts",
+      "resumen": "TRAZA DE TURNO: que paso, en que orden y cuanto costo cada salto.",
+      "meta": {
+        "lineas": 337,
+        "capa": "nucleo"
+      }
+    },
+    {
       "id": "modulo:src/core/rag/chunker.ts",
       "tipo": "modulo",
       "nombre": "chunker.ts",
@@ -1264,6 +1289,17 @@
       "resumen": "Fragmentacion de contenido para la base de conocimiento (spec 3.1.3.B).",
       "meta": {
         "lineas": 181,
+        "capa": "nucleo"
+      }
+    },
+    {
+      "id": "modulo:src/core/rag/diagnostico.ts",
+      "tipo": "modulo",
+      "nombre": "diagnostico.ts",
+      "ruta": "src/core/rag/diagnostico.ts",
+      "resumen": "COMO resolvio el RAG una recuperacion, no solo QUE devolvio.",
+      "meta": {
+        "lineas": 30,
         "capa": "nucleo"
       }
     },
@@ -1304,7 +1340,7 @@
       "ruta": "src/core/rag/rag.service.ts",
       "resumen": "Implementacion de RagPort: recupera fragmentos aprobados y activos de la",
       "meta": {
-        "lineas": 218,
+        "lineas": 285,
         "capa": "nucleo"
       }
     },
@@ -1317,7 +1353,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 130,
+        "lineas": 229,
         "capa": "nucleo"
       }
     },
@@ -1343,7 +1379,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 206,
+        "lineas": 254,
         "capa": "nucleo"
       }
     },
@@ -1453,7 +1489,7 @@
       "ruta": "src/core/types/ports.ts",
       "resumen": "PUERTOS: las fronteras del nucleo.",
       "meta": {
-        "lineas": 200,
+        "lineas": 239,
         "capa": "contratos"
       }
     },
@@ -1494,7 +1530,7 @@
           "p-retry",
           "zod"
         ],
-        "lineas": 497,
+        "lineas": 607,
         "capa": "infraestructura"
       }
     },
@@ -1703,6 +1739,17 @@
       }
     },
     {
+      "id": "modulo:src/infra/traza.memoria.ts",
+      "tipo": "modulo",
+      "nombre": "traza.memoria.ts",
+      "ruta": "src/infra/traza.memoria.ts",
+      "resumen": "Recolector de trazas en memoria.",
+      "meta": {
+        "lineas": 151,
+        "capa": "infraestructura"
+      }
+    },
+    {
       "id": "modulo:src/server.ts",
       "tipo": "modulo",
       "nombre": "server.ts",
@@ -1715,7 +1762,7 @@
           "node:path",
           "node:url"
         ],
-        "lineas": 295,
+        "lineas": 341,
         "capa": "composicion"
       }
     },
@@ -1729,7 +1776,7 @@
         "externas": [
           "vitest"
         ],
-        "lineas": 1341,
+        "lineas": 1345,
         "capa": "pruebas",
         "suite": "adversarial"
       }
@@ -1770,7 +1817,7 @@
           "node:path",
           "node:url"
         ],
-        "lineas": 672,
+        "lineas": 704,
         "capa": "pruebas",
         "suite": "helpers"
       }
@@ -1800,7 +1847,7 @@
         "externas": [
           "vitest"
         ],
-        "lineas": 357,
+        "lineas": 358,
         "capa": "pruebas",
         "suite": "integration"
       }
@@ -1877,7 +1924,22 @@
         "externas": [
           "vitest"
         ],
-        "lineas": 509,
+        "lineas": 558,
+        "capa": "pruebas",
+        "suite": "unit"
+      }
+    },
+    {
+      "id": "modulo:tests/unit/horario.test.ts",
+      "tipo": "prueba",
+      "nombre": "horario.test.ts",
+      "ruta": "tests/unit/horario.test.ts",
+      "resumen": "Cuando atiende la clinica.",
+      "meta": {
+        "externas": [
+          "vitest"
+        ],
+        "lineas": 225,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -1941,7 +2003,7 @@
           "node:url",
           "vitest"
         ],
-        "lineas": 218,
+        "lineas": 293,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -2000,7 +2062,22 @@
         "externas": [
           "vitest"
         ],
-        "lineas": 508,
+        "lineas": 740,
+        "capa": "pruebas",
+        "suite": "unit"
+      }
+    },
+    {
+      "id": "modulo:tests/unit/traza.test.ts",
+      "tipo": "prueba",
+      "nombre": "traza.test.ts",
+      "ruta": "tests/unit/traza.test.ts",
+      "resumen": "La traza es un instrumento de diagnostico, y un instrumento que miente es",
+      "meta": {
+        "externas": [
+          "vitest"
+        ],
+        "lineas": 244,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -2141,7 +2218,7 @@
       "tipo": "puerto",
       "nombre": "AuditRepository",
       "ruta": "src/core/types/ports.ts",
-      "linea": 197,
+      "linea": 236,
       "meta": {
         "metodos": [
           "log"
@@ -2153,7 +2230,8 @@
       "tipo": "puerto",
       "nombre": "CalendarPort",
       "ruta": "src/core/types/ports.ts",
-      "linea": 133,
+      "linea": 161,
+      "resumen": "Agenda de la clinica.",
       "meta": {
         "metodos": [
           "findAvailableSlots",
@@ -2182,7 +2260,7 @@
       "tipo": "puerto",
       "nombre": "ClinicRepository",
       "ruta": "src/core/types/ports.ts",
-      "linea": 159,
+      "linea": 198,
       "meta": {
         "metodos": [
           "findById"
@@ -2194,7 +2272,7 @@
       "tipo": "puerto",
       "nombre": "ConversationRepository",
       "ruta": "src/core/types/ports.ts",
-      "linea": 168,
+      "linea": 207,
       "meta": {
         "metodos": [
           "findActiveWithin",
@@ -2239,7 +2317,7 @@
       "tipo": "puerto",
       "nombre": "MessageRepository",
       "ruta": "src/core/types/ports.ts",
-      "linea": 176,
+      "linea": 215,
       "meta": {
         "metodos": [
           "append",
@@ -2252,7 +2330,7 @@
       "tipo": "puerto",
       "nombre": "NotificationPort",
       "ruta": "src/core/types/ports.ts",
-      "linea": 146,
+      "linea": 185,
       "meta": {
         "metodos": [
           "notifyEscalation"
@@ -2264,7 +2342,7 @@
       "tipo": "puerto",
       "nombre": "PatientRepository",
       "ruta": "src/core/types/ports.ts",
-      "linea": 163,
+      "linea": 202,
       "meta": {
         "metodos": [
           "upsert"
@@ -2288,7 +2366,7 @@
       "tipo": "puerto",
       "nombre": "ToolCallRepository",
       "ruta": "src/core/types/ports.ts",
-      "linea": 191,
+      "linea": 230,
       "meta": {
         "metodos": [
           "record",
@@ -2312,7 +2390,7 @@
       "tipo": "simbolo",
       "nombre": "clinicaDeLaSemilla",
       "ruta": "scripts/nucleo-demo.ts",
-      "linea": 124,
+      "linea": 196,
       "meta": {
         "clase": "function"
       }
@@ -2322,7 +2400,7 @@
       "tipo": "simbolo",
       "nombre": "FaltaLaClaveError",
       "ruta": "scripts/nucleo-demo.ts",
-      "linea": 173,
+      "linea": 247,
       "meta": {
         "clase": "class"
       }
@@ -2332,7 +2410,7 @@
       "tipo": "simbolo",
       "nombre": "loggerDeConsola",
       "ruta": "scripts/nucleo-demo.ts",
-      "linea": 145,
+      "linea": 217,
       "resumen": "Logger silencioso salvo errores: en una demo el ruido estorba.",
       "meta": {
         "clase": "function"
@@ -2343,7 +2421,7 @@
       "tipo": "simbolo",
       "nombre": "montarNucleoDeDemostracion",
       "ruta": "scripts/nucleo-demo.ts",
-      "linea": 189,
+      "linea": 263,
       "resumen": "Levanta el nucleo real con infraestructura de demostracion.",
       "meta": {
         "clase": "function"
@@ -2354,7 +2432,7 @@
       "tipo": "simbolo",
       "nombre": "NucleoDeDemostracion",
       "ruta": "scripts/nucleo-demo.ts",
-      "linea": 164,
+      "linea": 236,
       "meta": {
         "clase": "interface"
       }
@@ -2364,7 +2442,7 @@
       "tipo": "simbolo",
       "nombre": "RagDeDemostracion",
       "ruta": "scripts/nucleo-demo.ts",
-      "linea": 67,
+      "linea": 79,
       "meta": {
         "clase": "class"
       }
@@ -2634,7 +2712,7 @@
       "tipo": "simbolo",
       "nombre": "ConversationInitiationDeps",
       "ruta": "src/channels/voice/conversation-initiation.controller.ts",
-      "linea": 34,
+      "linea": 35,
       "meta": {
         "clase": "interface"
       }
@@ -2644,7 +2722,7 @@
       "tipo": "simbolo",
       "nombre": "conversationInitiationPlugin",
       "ruta": "src/channels/voice/conversation-initiation.controller.ts",
-      "linea": 147,
+      "linea": 155,
       "meta": {
         "clase": "const"
       }
@@ -2654,7 +2732,7 @@
       "tipo": "simbolo",
       "nombre": "RUTA_INICIACION",
       "ruta": "src/channels/voice/conversation-initiation.controller.ts",
-      "linea": 30,
+      "linea": 31,
       "meta": {
         "clase": "const"
       }
@@ -2664,7 +2742,7 @@
       "tipo": "simbolo",
       "nombre": "RUTA_INICIACION_CON_SECRETO",
       "ruta": "src/channels/voice/conversation-initiation.controller.ts",
-      "linea": 31,
+      "linea": 32,
       "meta": {
         "clase": "const"
       }
@@ -3731,7 +3809,7 @@
       "tipo": "simbolo",
       "nombre": "RUTA_WEBHOOK_TOOLS",
       "ruta": "src/channels/voice/webhook-tools.controller.ts",
-      "linea": 52,
+      "linea": 53,
       "meta": {
         "clase": "const"
       }
@@ -3741,7 +3819,7 @@
       "tipo": "simbolo",
       "nombre": "WebhookToolsDeps",
       "ruta": "src/channels/voice/webhook-tools.controller.ts",
-      "linea": 54,
+      "linea": 55,
       "meta": {
         "clase": "interface"
       }
@@ -3751,7 +3829,7 @@
       "tipo": "simbolo",
       "nombre": "webhookToolsPlugin",
       "ruta": "src/channels/voice/webhook-tools.controller.ts",
-      "linea": 99,
+      "linea": 108,
       "meta": {
         "clase": "const"
       }
@@ -4018,6 +4096,122 @@
       }
     },
     {
+      "id": "simbolo:src/core/agenda/horario.ts#AgendaDeClinica",
+      "tipo": "simbolo",
+      "nombre": "AgendaDeClinica",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 176,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/core/agenda/horario.ts#cierresProximos",
+      "tipo": "simbolo",
+      "nombre": "cierresProximos",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 401,
+      "resumen": "Los proximos dias cerrados dentro de una ventana, para que el modelo pueda",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/agenda/horario.ts#fechaLocal",
+      "tipo": "simbolo",
+      "nombre": "fechaLocal",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 92,
+      "resumen": "Fecha local de la clinica: `{anio, mes, dia, diaSemana}` con 0=domingo.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/agenda/horario.ts#feriadoDe",
+      "tipo": "simbolo",
+      "nombre": "feriadoDe",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 285,
+      "resumen": "Si ese dia es feriado, devuelve el motivo.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/agenda/horario.ts#formatearMinutos",
+      "tipo": "simbolo",
+      "nombre": "formatearMinutos",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 330,
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/agenda/horario.ts#generarCandidatos",
+      "tipo": "simbolo",
+      "nombre": "generarCandidatos",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 351,
+      "resumen": "Horarios en los que la clinica PODRIA atender dentro del rango, alineados al",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/agenda/horario.ts#instanteLocal",
+      "tipo": "simbolo",
+      "nombre": "instanteLocal",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 78,
+      "resumen": "Instante absoluto de una fecha y hora LOCALES de la clinica.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/agenda/horario.ts#resolverAgenda",
+      "tipo": "simbolo",
+      "nombre": "resolverAgenda",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 205,
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/agenda/horario.ts#Tramo",
+      "tipo": "simbolo",
+      "nombre": "Tramo",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 170,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/core/agenda/horario.ts#VeredictoDeApertura",
+      "tipo": "simbolo",
+      "nombre": "VeredictoDeApertura",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 278,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/core/agenda/horario.ts#verificarApertura",
+      "tipo": "simbolo",
+      "nombre": "verificarApertura",
+      "ruta": "src/core/agenda/horario.ts",
+      "linea": 297,
+      "resumen": "Comprueba que el intervalo [inicio, fin) cae ENTERO dentro de un mismo tramo",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
       "id": "simbolo:src/core/claude/claude.service.ts#admiteTemperature",
       "tipo": "simbolo",
       "nombre": "admiteTemperature",
@@ -4086,7 +4280,7 @@
       "tipo": "simbolo",
       "nombre": "checkInbound",
       "ruta": "src/core/claude/guardrails.ts",
-      "linea": 370,
+      "linea": 412,
       "resumen": "CAPA 1. NO es bloqueante: `pass: false` significa «esto viene marcado»,",
       "meta": {
         "clase": "function"
@@ -4097,7 +4291,7 @@
       "tipo": "simbolo",
       "nombre": "checkOutbound",
       "ruta": "src/core/claude/guardrails.ts",
-      "linea": 468,
+      "linea": 515,
       "resumen": "CAPA 2. BLOQUEANTE.",
       "meta": {
         "clase": "function"
@@ -4108,7 +4302,7 @@
       "tipo": "simbolo",
       "nombre": "detectInboundFlags",
       "ruta": "src/core/claude/guardrails.ts",
-      "linea": 348,
+      "linea": 390,
       "meta": {
         "clase": "function"
       }
@@ -4118,7 +4312,7 @@
       "tipo": "simbolo",
       "nombre": "detectOutboundViolations",
       "ruta": "src/core/claude/guardrails.ts",
-      "linea": 412,
+      "linea": 454,
       "meta": {
         "clase": "function"
       }
@@ -4128,7 +4322,7 @@
       "tipo": "simbolo",
       "nombre": "GuardrailDeps",
       "ruta": "src/core/claude/guardrails.ts",
-      "linea": 488,
+      "linea": 535,
       "meta": {
         "clase": "interface"
       }
@@ -4138,7 +4332,7 @@
       "tipo": "simbolo",
       "nombre": "GuardrailService",
       "ruta": "src/core/claude/guardrails.ts",
-      "linea": 505,
+      "linea": 552,
       "resumen": "Envoltorio con efectos. Las funciones puras de arriba siguen siendo la",
       "meta": {
         "clase": "class"
@@ -4160,7 +4354,7 @@
       "tipo": "simbolo",
       "nombre": "OutboundEvidence",
       "ruta": "src/core/claude/guardrails.ts",
-      "linea": 391,
+      "linea": 433,
       "resumen": "Lo que la capa 2 no puede deducir del texto: si la herramienta se ejecuto.",
       "meta": {
         "clase": "interface"
@@ -4204,7 +4398,7 @@
       "tipo": "simbolo",
       "nombre": "violacionDominante",
       "ruta": "src/core/claude/guardrails.ts",
-      "linea": 455,
+      "linea": 502,
       "resumen": "La violacion que decide el texto sustituto cuando hay mas de una.",
       "meta": {
         "clase": "function"
@@ -4215,7 +4409,7 @@
       "tipo": "simbolo",
       "nombre": "ARCHIVOS_DE_PROMPT",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 27,
+      "linea": 28,
       "meta": {
         "clase": "const"
       }
@@ -4225,7 +4419,7 @@
       "tipo": "simbolo",
       "nombre": "BuildPromptInput",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 61,
+      "linea": 62,
       "meta": {
         "clase": "interface"
       }
@@ -4235,7 +4429,7 @@
       "tipo": "simbolo",
       "nombre": "BuiltPrompt",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 55,
+      "linea": 56,
       "meta": {
         "clase": "interface"
       }
@@ -4245,7 +4439,7 @@
       "tipo": "simbolo",
       "nombre": "loadPromptTemplates",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 80,
+      "linea": 81,
       "resumen": "Lee las plantillas del disco. Se ejecuta una vez al arrancar: el prompt es",
       "meta": {
         "clase": "function"
@@ -4256,7 +4450,7 @@
       "tipo": "simbolo",
       "nombre": "PromptBuilder",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 221,
+      "linea": 361,
       "meta": {
         "clase": "class"
       }
@@ -4266,7 +4460,7 @@
       "tipo": "simbolo",
       "nombre": "PromptSegments",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 44,
+      "linea": 45,
       "resumen": "Segmentos del prompt ya renderizado, para verificacion y para auditoria.",
       "meta": {
         "clase": "interface"
@@ -4277,7 +4471,7 @@
       "tipo": "simbolo",
       "nombre": "PromptTemplateError",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 69,
+      "linea": 70,
       "meta": {
         "clase": "class"
       }
@@ -4287,9 +4481,19 @@
       "tipo": "simbolo",
       "nombre": "PromptTemplates",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 34,
+      "linea": 35,
       "meta": {
         "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/core/claude/prompt.builder.ts#renderizarSedes",
+      "tipo": "simbolo",
+      "nombre": "renderizarSedes",
+      "ruta": "src/core/claude/prompt.builder.ts",
+      "linea": 321,
+      "meta": {
+        "clase": "function"
       }
     },
     {
@@ -4297,7 +4501,7 @@
       "tipo": "simbolo",
       "nombre": "TOTAL_DE_BLOQUES",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 23,
+      "linea": 24,
       "resumen": "Numero de bloques `## ` que debe tener `maestro.md`. Si cambia, el split falla.",
       "meta": {
         "clase": "const"
@@ -4308,7 +4512,7 @@
       "tipo": "simbolo",
       "nombre": "ULTIMO_BLOQUE_INVARIABLE",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 25,
+      "linea": 26,
       "resumen": "Ultimo bloque invariable. Los bloques 8, 9 y 10 se rellenan por turno.",
       "meta": {
         "clase": "const"
@@ -4319,7 +4523,7 @@
       "tipo": "simbolo",
       "nombre": "ClaudeToolLoopPort",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 65,
+      "linea": 67,
       "resumen": "`ClaudePort` mas el bucle de herramientas.",
       "meta": {
         "clase": "interface"
@@ -4330,7 +4534,7 @@
       "tipo": "simbolo",
       "nombre": "ConversationServiceDeps",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 319,
+      "linea": 363,
       "meta": {
         "clase": "interface"
       }
@@ -4340,7 +4544,7 @@
       "tipo": "simbolo",
       "nombre": "ConversationServiceImpl",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 369,
+      "linea": 420,
       "meta": {
         "clase": "class"
       }
@@ -4350,7 +4554,7 @@
       "tipo": "simbolo",
       "nombre": "ConversationServiceOptions",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 332,
+      "linea": 383,
       "meta": {
         "clase": "interface"
       }
@@ -4360,7 +4564,7 @@
       "tipo": "simbolo",
       "nombre": "DecisionDeEmision",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 139,
+      "linea": 166,
       "meta": {
         "clase": "interface"
       }
@@ -4370,7 +4574,7 @@
       "tipo": "simbolo",
       "nombre": "esIrrecuperable",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 135,
+      "linea": 162,
       "resumen": "Las otras dos dependen de una AUSENCIA y pueden limpiarse dentro del mismo",
       "meta": {
         "clase": "function"
@@ -4381,7 +4585,7 @@
       "tipo": "simbolo",
       "nombre": "GuardrailChecker",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 79,
+      "linea": 106,
       "resumen": "Lo unico que el orquestador usa de los guardrails (capas 1 y 2).",
       "meta": {
         "clase": "interface"
@@ -4392,7 +4596,7 @@
       "tipo": "simbolo",
       "nombre": "historialAMensajes",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 292,
+      "linea": 336,
       "resumen": "El hilo que ve el modelo se reconstruye SIEMPRE desde la base propia",
       "meta": {
         "clase": "function"
@@ -4403,7 +4607,7 @@
       "tipo": "simbolo",
       "nombre": "MENSAJE_DE_FALLO_TECNICO",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 101,
+      "linea": 128,
       "resumen": "Fallo tecnico. El modo de fallo del sistema es la reversion a manual, nunca el silencio (O5).",
       "meta": {
         "clase": "const"
@@ -4414,7 +4618,7 @@
       "tipo": "simbolo",
       "nombre": "MENSAJE_DE_URGENCIA",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 95,
+      "linea": 122,
       "resumen": "Protocolo de urgencia (bloque 5 del prompt maestro). Es texto PURO: lo",
       "meta": {
         "clase": "const"
@@ -4425,10 +4629,21 @@
       "tipo": "simbolo",
       "nombre": "MENSAJE_SIN_RESPUESTA",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 106,
+      "linea": 133,
       "resumen": "El modelo no produjo nada emitible. Tampoco aqui se deja al paciente en silencio.",
       "meta": {
         "clase": "const"
+      }
+    },
+    {
+      "id": "simbolo:src/core/conversation/conversation.service.ts#RagConDiagnostico",
+      "tipo": "simbolo",
+      "nombre": "RagConDiagnostico",
+      "ruta": "src/core/conversation/conversation.service.ts",
+      "linea": 93,
+      "resumen": "Capacidad OPCIONAL de un RAG: recuperar declarando como lo hizo.",
+      "meta": {
+        "clase": "interface"
       }
     },
     {
@@ -4436,7 +4651,7 @@
       "tipo": "simbolo",
       "nombre": "UrgencyPort",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 74,
+      "linea": 76,
       "resumen": "Lo unico que el orquestador usa del detector de urgencia (capa 3).",
       "meta": {
         "clase": "interface"
@@ -4447,7 +4662,7 @@
       "tipo": "simbolo",
       "nombre": "VerificadorDeSalida",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 190,
+      "linea": 217,
       "resumen": "COMO SE CONCILIA EL STREAMING CON UN GUARDRAIL BLOQUEANTE.",
       "meta": {
         "clase": "class"
@@ -4458,7 +4673,7 @@
       "tipo": "simbolo",
       "nombre": "VIOLACIONES_IRRECUPERABLES",
       "ruta": "src/core/conversation/conversation.service.ts",
-      "linea": 121,
+      "linea": 148,
       "resumen": "Violaciones que texto posterior NO puede deshacer.",
       "meta": {
         "clase": "const"
@@ -4582,6 +4797,120 @@
       }
     },
     {
+      "id": "simbolo:src/core/observabilidad/traza.ts#CabeceraDeTurno",
+      "tipo": "simbolo",
+      "nombre": "CabeceraDeTurno",
+      "ruta": "src/core/observabilidad/traza.ts",
+      "linea": 93,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/core/observabilidad/traza.ts#EstadoDeSalto",
+      "tipo": "simbolo",
+      "nombre": "EstadoDeSalto",
+      "ruta": "src/core/observabilidad/traza.ts",
+      "linea": 43,
+      "meta": {
+        "clase": "type"
+      }
+    },
+    {
+      "id": "simbolo:src/core/observabilidad/traza.ts#MedidorDeSalto",
+      "tipo": "simbolo",
+      "nombre": "MedidorDeSalto",
+      "ruta": "src/core/observabilidad/traza.ts",
+      "linea": 107,
+      "resumen": "Devuelto por `iniciar`. Cerrarlo dos veces no hace nada: la primera manda.",
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/core/observabilidad/traza.ts#RecolectorDeTraza",
+      "tipo": "simbolo",
+      "nombre": "RecolectorDeTraza",
+      "ruta": "src/core/observabilidad/traza.ts",
+      "linea": 143,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/core/observabilidad/traza.ts#ResumenDeTurno",
+      "tipo": "simbolo",
+      "nombre": "ResumenDeTurno",
+      "ruta": "src/core/observabilidad/traza.ts",
+      "linea": 57,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/core/observabilidad/traza.ts#SaltoDeTraza",
+      "tipo": "simbolo",
+      "nombre": "SaltoDeTraza",
+      "ruta": "src/core/observabilidad/traza.ts",
+      "linea": 45,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/core/observabilidad/traza.ts#TipoDeSalto",
+      "tipo": "simbolo",
+      "nombre": "TipoDeSalto",
+      "ruta": "src/core/observabilidad/traza.ts",
+      "linea": 30,
+      "resumen": "Familia del salto. Es lo que la interfaz agrupa y colorea.",
+      "meta": {
+        "clase": "type"
+      }
+    },
+    {
+      "id": "simbolo:src/core/observabilidad/traza.ts#TRAZA_NULA",
+      "tipo": "simbolo",
+      "nombre": "TRAZA_NULA",
+      "ruta": "src/core/observabilidad/traza.ts",
+      "linea": 168,
+      "resumen": "Recolector que no recoge nada.",
+      "meta": {
+        "clase": "const"
+      }
+    },
+    {
+      "id": "simbolo:src/core/observabilidad/traza.ts#TrazaDeTurno",
+      "tipo": "simbolo",
+      "nombre": "TrazaDeTurno",
+      "ruta": "src/core/observabilidad/traza.ts",
+      "linea": 77,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/core/observabilidad/traza.ts#TurnoEnTraza",
+      "tipo": "simbolo",
+      "nombre": "TurnoEnTraza",
+      "ruta": "src/core/observabilidad/traza.ts",
+      "linea": 111,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/core/observabilidad/traza.ts#TurnoEnTrazaImpl",
+      "tipo": "simbolo",
+      "nombre": "TurnoEnTrazaImpl",
+      "ruta": "src/core/observabilidad/traza.ts",
+      "linea": 195,
+      "resumen": "Acumula los saltos de UN turno y, al cerrarlo, entrega la traza completa.",
+      "meta": {
+        "clase": "class"
+      }
+    },
+    {
       "id": "simbolo:src/core/rag/chunker.ts#Chunk",
       "tipo": "simbolo",
       "nombre": "Chunk",
@@ -4622,6 +4951,17 @@
       "resumen": "Fragmenta el contenido de una fuente en fragmentos de una sola idea.",
       "meta": {
         "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/rag/diagnostico.ts#DiagnosticoDeRag",
+      "tipo": "simbolo",
+      "nombre": "DiagnosticoDeRag",
+      "ruta": "src/core/rag/diagnostico.ts",
+      "linea": 22,
+      "resumen": "COMO resolvio el RAG una recuperacion, no solo QUE devolvio.",
+      "meta": {
+        "clase": "interface"
       }
     },
     {
@@ -4681,7 +5021,7 @@
       "tipo": "simbolo",
       "nombre": "esPuraCortesia",
       "ruta": "src/core/rag/rag.service.ts",
-      "linea": 116,
+      "linea": 117,
       "resumen": "True si el mensaje es solo cortesia y no pide ningun dato.",
       "meta": {
         "clase": "function"
@@ -4692,7 +5032,7 @@
       "tipo": "simbolo",
       "nombre": "RagService",
       "ruta": "src/core/rag/rag.service.ts",
-      "linea": 127,
+      "linea": 128,
       "meta": {
         "clase": "class"
       }
@@ -4702,7 +5042,7 @@
       "tipo": "simbolo",
       "nombre": "RagServiceOptions",
       "ruta": "src/core/rag/rag.service.ts",
-      "linea": 90,
+      "linea": 91,
       "meta": {
         "clase": "interface"
       }
@@ -4712,7 +5052,7 @@
       "tipo": "simbolo",
       "nombre": "ConsultarAgendaInput",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 29,
+      "linea": 54,
       "meta": {
         "clase": "type"
       }
@@ -4722,7 +5062,7 @@
       "tipo": "simbolo",
       "nombre": "consultarAgendaInputSchema",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 23,
+      "linea": 34,
       "meta": {
         "clase": "const"
       }
@@ -4732,7 +5072,7 @@
       "tipo": "simbolo",
       "nombre": "ConsultarAgendaOutput",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 31,
+      "linea": 56,
       "meta": {
         "clase": "interface"
       }
@@ -4742,10 +5082,21 @@
       "tipo": "simbolo",
       "nombre": "ConsultarAgendaTool",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 45,
+      "linea": 78,
       "resumen": "Consulta disponibilidad de agenda.",
       "meta": {
         "clase": "class"
+      }
+    },
+    {
+      "id": "simbolo:src/core/tools/consultar-agenda.tool.ts#MAXIMO_HUECOS_POR_CONSULTA",
+      "tipo": "simbolo",
+      "nombre": "MAXIMO_HUECOS_POR_CONSULTA",
+      "ruta": "src/core/tools/consultar-agenda.tool.ts",
+      "linea": 16,
+      "resumen": "Tope de huecos por consulta.",
+      "meta": {
+        "clase": "const"
       }
     },
     {
@@ -4753,7 +5104,7 @@
       "tipo": "simbolo",
       "nombre": "RANGO_MAXIMO_CONSULTA_DIAS",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 19,
+      "linea": 30,
       "resumen": "Rango maximo de consulta: 30 dias.",
       "meta": {
         "clase": "const"
@@ -4816,7 +5167,7 @@
       "tipo": "simbolo",
       "nombre": "CrearCitaInput",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 103,
+      "linea": 99,
       "meta": {
         "clase": "type"
       }
@@ -4826,7 +5177,7 @@
       "tipo": "simbolo",
       "nombre": "crearCitaInputSchema",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 89,
+      "linea": 26,
       "meta": {
         "clase": "const"
       }
@@ -4836,7 +5187,7 @@
       "tipo": "simbolo",
       "nombre": "CrearCitaOutput",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 105,
+      "linea": 101,
       "meta": {
         "clase": "interface"
       }
@@ -4846,7 +5197,7 @@
       "tipo": "simbolo",
       "nombre": "CrearCitaTool",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 109,
+      "linea": 105,
       "meta": {
         "clase": "class"
       }
@@ -4856,7 +5207,7 @@
       "tipo": "simbolo",
       "nombre": "DURACION_MAX_MINUTOS",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 8,
+      "linea": 9,
       "meta": {
         "clase": "const"
       }
@@ -4866,7 +5217,7 @@
       "tipo": "simbolo",
       "nombre": "DURACION_MIN_MINUTOS",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 7,
+      "linea": 8,
       "meta": {
         "clase": "const"
       }
@@ -4876,10 +5227,32 @@
       "tipo": "simbolo",
       "nombre": "MAXIMO_CITAS_POR_CONVERSACION",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 23,
+      "linea": 24,
       "resumen": "Maximo de citas por conversacion: 5.",
       "meta": {
         "clase": "const"
+      }
+    },
+    {
+      "id": "simbolo:src/core/tools/crear-cita.tool.ts#resolverSede",
+      "tipo": "simbolo",
+      "nombre": "resolverSede",
+      "ruta": "src/core/tools/crear-cita.tool.ts",
+      "linea": 79,
+      "resumen": "Devuelve el nombre canonico de la sede, o `undefined` si no existe.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/tools/crear-cita.tool.ts#sedesDeLaClinica",
+      "tipo": "simbolo",
+      "nombre": "sedesDeLaClinica",
+      "ruta": "src/core/tools/crear-cita.tool.ts",
+      "linea": 68,
+      "resumen": "Sedes declaradas por la clinica, propias y franquicias.",
+      "meta": {
+        "clase": "function"
       }
     },
     {
@@ -5327,7 +5700,7 @@
       "tipo": "simbolo",
       "nombre": "CalendarEvent",
       "ruta": "src/core/types/ports.ts",
-      "linea": 125,
+      "linea": 127,
       "meta": {
         "clase": "interface"
       }
@@ -5599,7 +5972,7 @@
       "tipo": "simbolo",
       "nombre": "CalendarRetryOptions",
       "ruta": "src/infra/calendar.client.ts",
-      "linea": 163,
+      "linea": 188,
       "meta": {
         "clase": "interface"
       }
@@ -5609,7 +5982,7 @@
       "tipo": "simbolo",
       "nombre": "GoogleCalendarClient",
       "ruta": "src/infra/calendar.client.ts",
-      "linea": 250,
+      "linea": 275,
       "meta": {
         "clase": "class"
       }
@@ -5619,7 +5992,7 @@
       "tipo": "simbolo",
       "nombre": "GoogleCalendarClientOptions",
       "ruta": "src/infra/calendar.client.ts",
-      "linea": 238,
+      "linea": 263,
       "meta": {
         "clase": "interface"
       }
@@ -5948,11 +6321,31 @@
       }
     },
     {
+      "id": "simbolo:src/infra/traza.memoria.ts#OpcionesDeRecolector",
+      "tipo": "simbolo",
+      "nombre": "OpcionesDeRecolector",
+      "ruta": "src/infra/traza.memoria.ts",
+      "linea": 35,
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
+      "id": "simbolo:src/infra/traza.memoria.ts#RecolectorDeTrazaEnMemoria",
+      "tipo": "simbolo",
+      "nombre": "RecolectorDeTrazaEnMemoria",
+      "ruta": "src/infra/traza.memoria.ts",
+      "linea": 47,
+      "meta": {
+        "clase": "class"
+      }
+    },
+    {
       "id": "simbolo:src/server.ts#construirServidor",
       "tipo": "simbolo",
       "nombre": "construirServidor",
       "ruta": "src/server.ts",
-      "linea": 63,
+      "linea": 64,
       "meta": {
         "clase": "function"
       }
@@ -6372,7 +6765,7 @@
       "tipo": "simbolo",
       "nombre": "AuditRepositoryDoble",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 466,
+      "linea": 498,
       "meta": {
         "clase": "class"
       }
@@ -6382,7 +6775,7 @@
       "tipo": "simbolo",
       "nombre": "CalendarDoble",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 268,
+      "linea": 277,
       "meta": {
         "clase": "class"
       }
@@ -6403,7 +6796,7 @@
       "tipo": "simbolo",
       "nombre": "CLINICA_DE_PRUEBA",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 488,
+      "linea": 520,
       "meta": {
         "clase": "const"
       }
@@ -6413,7 +6806,7 @@
       "tipo": "simbolo",
       "nombre": "ClinicRepositoryDoble",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 324,
+      "linea": 356,
       "meta": {
         "clase": "class"
       }
@@ -6423,7 +6816,7 @@
       "tipo": "simbolo",
       "nombre": "ConversationRepositoryDoble",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 354,
+      "linea": 386,
       "meta": {
         "clase": "class"
       }
@@ -6433,7 +6826,7 @@
       "tipo": "simbolo",
       "nombre": "crearDobles",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 522,
+      "linea": 554,
       "resumen": "Monta el juego completo de dobles con las herramientas reales encima.",
       "meta": {
         "clase": "function"
@@ -6444,7 +6837,7 @@
       "tipo": "simbolo",
       "nombre": "crearEntornoDePrueba",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 609,
+      "linea": 641,
       "resumen": "Monta el nucleo COMPLETO con dobles solo en la frontera.",
       "meta": {
         "clase": "function"
@@ -6455,7 +6848,7 @@
       "tipo": "simbolo",
       "nombre": "Dobles",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 498,
+      "linea": 530,
       "meta": {
         "clase": "interface"
       }
@@ -6465,7 +6858,7 @@
       "tipo": "simbolo",
       "nombre": "EntornoDePrueba",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 584,
+      "linea": 616,
       "meta": {
         "clase": "interface"
       }
@@ -6475,7 +6868,7 @@
       "tipo": "simbolo",
       "nombre": "EventoDeAuditoria",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 459,
+      "linea": 491,
       "meta": {
         "clase": "interface"
       }
@@ -6506,7 +6899,7 @@
       "tipo": "simbolo",
       "nombre": "MessageRepositoryDoble",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 415,
+      "linea": 447,
       "meta": {
         "clase": "class"
       }
@@ -6516,7 +6909,7 @@
       "tipo": "simbolo",
       "nombre": "NotificationDoble",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 309,
+      "linea": 341,
       "meta": {
         "clase": "class"
       }
@@ -6526,7 +6919,7 @@
       "tipo": "simbolo",
       "nombre": "OpcionesDeEntorno",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 592,
+      "linea": 624,
       "meta": {
         "clase": "interface"
       }
@@ -6536,7 +6929,7 @@
       "tipo": "simbolo",
       "nombre": "partirSystemEnBloques",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 658,
+      "linea": 690,
       "resumen": "Parte un `system` ya renderizado en sus bloques `## `.",
       "meta": {
         "clase": "function"
@@ -6558,7 +6951,7 @@
       "tipo": "simbolo",
       "nombre": "PatientRepositoryDoble",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 336,
+      "linea": 368,
       "meta": {
         "clase": "class"
       }
@@ -6568,7 +6961,7 @@
       "tipo": "simbolo",
       "nombre": "plantillasDePrompt",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 579,
+      "linea": 611,
       "meta": {
         "clase": "function"
       }
@@ -6588,7 +6981,7 @@
       "tipo": "simbolo",
       "nombre": "ToolCallRepositoryDoble",
       "ruta": "tests/helpers/dobles.ts",
-      "linea": 446,
+      "linea": 478,
       "meta": {
         "clase": "class"
       }
@@ -7187,6 +7580,12 @@
     },
     {
       "desde": "modulo:db/seed/clinica-demo/clinica.json",
+      "relacion": "menciona",
+      "hacia": "control:O5",
+      "origen": "db/seed/clinica-demo/clinica.json:41"
+    },
+    {
+      "desde": "modulo:db/seed/clinica-demo/clinica.json",
       "relacion": "pertenece_a",
       "hacia": "capa:datos",
       "origen": "db/seed/clinica-demo/clinica.json"
@@ -7237,13 +7636,13 @@
       "desde": "modulo:docs/CONTINUAR.md",
       "relacion": "menciona",
       "hacia": "control:C7",
-      "origen": "docs/CONTINUAR.md:142"
+      "origen": "docs/CONTINUAR.md:327"
     },
     {
       "desde": "modulo:docs/CONTINUAR.md",
       "relacion": "menciona",
       "hacia": "control:O2",
-      "origen": "docs/CONTINUAR.md:159"
+      "origen": "docs/CONTINUAR.md:344"
     },
     {
       "desde": "modulo:docs/CONTINUAR.md",
@@ -7643,6 +8042,18 @@
     },
     {
       "desde": "modulo:scripts/configurar-agente-alojado.ts",
+      "relacion": "importa",
+      "hacia": "modulo:scripts/nucleo-demo.ts",
+      "origen": "scripts/configurar-agente-alojado.ts:22"
+    },
+    {
+      "desde": "modulo:scripts/configurar-agente-alojado.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/prompt.builder.ts",
+      "origen": "scripts/configurar-agente-alojado.ts:20"
+    },
+    {
+      "desde": "modulo:scripts/configurar-agente-alojado.ts",
       "relacion": "pertenece_a",
       "hacia": "capa:scripts",
       "origen": "scripts/configurar-agente-alojado.ts"
@@ -7699,37 +8110,37 @@
       "desde": "modulo:scripts/nucleo-demo.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/nucleo-demo.ts#clinicaDeLaSemilla",
-      "origen": "scripts/nucleo-demo.ts:124"
+      "origen": "scripts/nucleo-demo.ts:196"
     },
     {
       "desde": "modulo:scripts/nucleo-demo.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/nucleo-demo.ts#FaltaLaClaveError",
-      "origen": "scripts/nucleo-demo.ts:173"
+      "origen": "scripts/nucleo-demo.ts:247"
     },
     {
       "desde": "modulo:scripts/nucleo-demo.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/nucleo-demo.ts#loggerDeConsola",
-      "origen": "scripts/nucleo-demo.ts:145"
+      "origen": "scripts/nucleo-demo.ts:217"
     },
     {
       "desde": "modulo:scripts/nucleo-demo.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/nucleo-demo.ts#montarNucleoDeDemostracion",
-      "origen": "scripts/nucleo-demo.ts:189"
+      "origen": "scripts/nucleo-demo.ts:263"
     },
     {
       "desde": "modulo:scripts/nucleo-demo.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/nucleo-demo.ts#NucleoDeDemostracion",
-      "origen": "scripts/nucleo-demo.ts:164"
+      "origen": "scripts/nucleo-demo.ts:236"
     },
     {
       "desde": "modulo:scripts/nucleo-demo.ts",
       "relacion": "exporta",
       "hacia": "simbolo:scripts/nucleo-demo.ts#RagDeDemostracion",
-      "origen": "scripts/nucleo-demo.ts:67"
+      "origen": "scripts/nucleo-demo.ts:79"
     },
     {
       "desde": "modulo:scripts/nucleo-demo.ts",
@@ -7770,8 +8181,20 @@
     {
       "desde": "modulo:scripts/nucleo-demo.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/core/types/index.ts",
+      "hacia": "modulo:src/core/rag/diagnostico.ts",
+      "origen": "scripts/nucleo-demo.ts:34"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/rag.service.ts",
       "origen": "scripts/nucleo-demo.ts:33"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "scripts/nucleo-demo.ts:36"
     },
     {
       "desde": "modulo:scripts/nucleo-demo.ts",
@@ -7782,8 +8205,20 @@
     {
       "desde": "modulo:scripts/nucleo-demo.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/infra/traza.memoria.ts",
+      "origen": "scripts/nucleo-demo.ts:35"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "importa",
       "hacia": "modulo:tests/helpers/dobles.ts",
-      "origen": "scripts/nucleo-demo.ts:34"
+      "origen": "scripts/nucleo-demo.ts:37"
+    },
+    {
+      "desde": "modulo:scripts/nucleo-demo.ts",
+      "relacion": "menciona",
+      "hacia": "control:C9",
+      "origen": "scripts/nucleo-demo.ts:135"
     },
     {
       "desde": "modulo:scripts/nucleo-demo.ts",
@@ -8053,37 +8488,43 @@
       "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/conversation-initiation.controller.ts#ConversationInitiationDeps",
-      "origen": "src/channels/voice/conversation-initiation.controller.ts:34"
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:35"
     },
     {
       "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/conversation-initiation.controller.ts#conversationInitiationPlugin",
-      "origen": "src/channels/voice/conversation-initiation.controller.ts:147"
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:155"
     },
     {
       "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/conversation-initiation.controller.ts#RUTA_INICIACION",
-      "origen": "src/channels/voice/conversation-initiation.controller.ts:30"
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:31"
     },
     {
       "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/conversation-initiation.controller.ts#RUTA_INICIACION_CON_SECRETO",
-      "origen": "src/channels/voice/conversation-initiation.controller.ts:31"
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:32"
     },
     {
       "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
       "relacion": "importa",
       "hacia": "modulo:src/channels/voice/voice.types.ts",
-      "origen": "src/channels/voice/conversation-initiation.controller.ts:27"
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:28"
     },
     {
       "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/conversation/message.router.ts",
       "origen": "src/channels/voice/conversation-initiation.controller.ts:26"
+    },
+    {
+      "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/observabilidad/traza.ts",
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:27"
     },
     {
       "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
@@ -8899,25 +9340,31 @@
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/webhook-tools.controller.ts#RUTA_WEBHOOK_TOOLS",
-      "origen": "src/channels/voice/webhook-tools.controller.ts:52"
+      "origen": "src/channels/voice/webhook-tools.controller.ts:53"
     },
     {
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/webhook-tools.controller.ts#WebhookToolsDeps",
-      "origen": "src/channels/voice/webhook-tools.controller.ts:54"
+      "origen": "src/channels/voice/webhook-tools.controller.ts:55"
     },
     {
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/webhook-tools.controller.ts#webhookToolsPlugin",
-      "origen": "src/channels/voice/webhook-tools.controller.ts:99"
+      "origen": "src/channels/voice/webhook-tools.controller.ts:108"
     },
     {
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/conversation/message.router.ts",
       "origen": "src/channels/voice/webhook-tools.controller.ts:48"
+    },
+    {
+      "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/observabilidad/traza.ts",
+      "origen": "src/channels/voice/webhook-tools.controller.ts:49"
     },
     {
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
@@ -8929,7 +9376,7 @@
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
       "relacion": "importa",
       "hacia": "modulo:src/infra/pii-masker.ts",
-      "origen": "src/channels/voice/webhook-tools.controller.ts:49"
+      "origen": "src/channels/voice/webhook-tools.controller.ts:50"
     },
     {
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
@@ -9202,6 +9649,90 @@
       "origen": "src/channels/whatsapp/whatsapp.types.ts"
     },
     {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#AgendaDeClinica",
+      "origen": "src/core/agenda/horario.ts:176"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#cierresProximos",
+      "origen": "src/core/agenda/horario.ts:401"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#fechaLocal",
+      "origen": "src/core/agenda/horario.ts:92"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#feriadoDe",
+      "origen": "src/core/agenda/horario.ts:285"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#formatearMinutos",
+      "origen": "src/core/agenda/horario.ts:330"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#generarCandidatos",
+      "origen": "src/core/agenda/horario.ts:351"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#instanteLocal",
+      "origen": "src/core/agenda/horario.ts:78"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#resolverAgenda",
+      "origen": "src/core/agenda/horario.ts:205"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#Tramo",
+      "origen": "src/core/agenda/horario.ts:170"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#VeredictoDeApertura",
+      "origen": "src/core/agenda/horario.ts:278"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/agenda/horario.ts#verificarApertura",
+      "origen": "src/core/agenda/horario.ts:297"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/conversation.ts",
+      "origen": "src/core/agenda/horario.ts:36"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/ports.ts",
+      "origen": "src/core/agenda/horario.ts:37"
+    },
+    {
+      "desde": "modulo:src/core/agenda/horario.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:nucleo",
+      "origen": "src/core/agenda/horario.ts"
+    },
+    {
       "desde": "modulo:src/core/claude/claude.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/claude.service.ts#admiteTemperature",
@@ -9253,37 +9784,37 @@
       "desde": "modulo:src/core/claude/guardrails.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/guardrails.ts#checkInbound",
-      "origen": "src/core/claude/guardrails.ts:370"
-    },
-    {
-      "desde": "modulo:src/core/claude/guardrails.ts",
-      "relacion": "exporta",
-      "hacia": "simbolo:src/core/claude/guardrails.ts#checkOutbound",
-      "origen": "src/core/claude/guardrails.ts:468"
-    },
-    {
-      "desde": "modulo:src/core/claude/guardrails.ts",
-      "relacion": "exporta",
-      "hacia": "simbolo:src/core/claude/guardrails.ts#detectInboundFlags",
-      "origen": "src/core/claude/guardrails.ts:348"
-    },
-    {
-      "desde": "modulo:src/core/claude/guardrails.ts",
-      "relacion": "exporta",
-      "hacia": "simbolo:src/core/claude/guardrails.ts#detectOutboundViolations",
       "origen": "src/core/claude/guardrails.ts:412"
     },
     {
       "desde": "modulo:src/core/claude/guardrails.ts",
       "relacion": "exporta",
+      "hacia": "simbolo:src/core/claude/guardrails.ts#checkOutbound",
+      "origen": "src/core/claude/guardrails.ts:515"
+    },
+    {
+      "desde": "modulo:src/core/claude/guardrails.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/claude/guardrails.ts#detectInboundFlags",
+      "origen": "src/core/claude/guardrails.ts:390"
+    },
+    {
+      "desde": "modulo:src/core/claude/guardrails.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/claude/guardrails.ts#detectOutboundViolations",
+      "origen": "src/core/claude/guardrails.ts:454"
+    },
+    {
+      "desde": "modulo:src/core/claude/guardrails.ts",
+      "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/guardrails.ts#GuardrailDeps",
-      "origen": "src/core/claude/guardrails.ts:488"
+      "origen": "src/core/claude/guardrails.ts:535"
     },
     {
       "desde": "modulo:src/core/claude/guardrails.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/guardrails.ts#GuardrailService",
-      "origen": "src/core/claude/guardrails.ts:505"
+      "origen": "src/core/claude/guardrails.ts:552"
     },
     {
       "desde": "modulo:src/core/claude/guardrails.ts",
@@ -9295,7 +9826,7 @@
       "desde": "modulo:src/core/claude/guardrails.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/guardrails.ts#OutboundEvidence",
-      "origen": "src/core/claude/guardrails.ts:391"
+      "origen": "src/core/claude/guardrails.ts:433"
     },
     {
       "desde": "modulo:src/core/claude/guardrails.ts",
@@ -9319,7 +9850,7 @@
       "desde": "modulo:src/core/claude/guardrails.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/guardrails.ts#violacionDominante",
-      "origen": "src/core/claude/guardrails.ts:455"
+      "origen": "src/core/claude/guardrails.ts:502"
     },
     {
       "desde": "modulo:src/core/claude/guardrails.ts",
@@ -9337,7 +9868,7 @@
       "desde": "modulo:src/core/claude/guardrails.ts",
       "relacion": "menciona",
       "hacia": "control:C6",
-      "origen": "src/core/claude/guardrails.ts:503"
+      "origen": "src/core/claude/guardrails.ts:550"
     },
     {
       "desde": "modulo:src/core/claude/guardrails.ts",
@@ -9349,61 +9880,73 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#ARCHIVOS_DE_PROMPT",
-      "origen": "src/core/claude/prompt.builder.ts:27"
+      "origen": "src/core/claude/prompt.builder.ts:28"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#BuildPromptInput",
-      "origen": "src/core/claude/prompt.builder.ts:61"
+      "origen": "src/core/claude/prompt.builder.ts:62"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#BuiltPrompt",
-      "origen": "src/core/claude/prompt.builder.ts:55"
+      "origen": "src/core/claude/prompt.builder.ts:56"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#loadPromptTemplates",
-      "origen": "src/core/claude/prompt.builder.ts:80"
+      "origen": "src/core/claude/prompt.builder.ts:81"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/core/claude/prompt.builder.ts:221"
+      "origen": "src/core/claude/prompt.builder.ts:361"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptSegments",
-      "origen": "src/core/claude/prompt.builder.ts:44"
+      "origen": "src/core/claude/prompt.builder.ts:45"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptTemplateError",
-      "origen": "src/core/claude/prompt.builder.ts:69"
+      "origen": "src/core/claude/prompt.builder.ts:70"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptTemplates",
-      "origen": "src/core/claude/prompt.builder.ts:34"
+      "origen": "src/core/claude/prompt.builder.ts:35"
+    },
+    {
+      "desde": "modulo:src/core/claude/prompt.builder.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/claude/prompt.builder.ts#renderizarSedes",
+      "origen": "src/core/claude/prompt.builder.ts:321"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#TOTAL_DE_BLOQUES",
-      "origen": "src/core/claude/prompt.builder.ts:23"
+      "origen": "src/core/claude/prompt.builder.ts:24"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#ULTIMO_BLOQUE_INVARIABLE",
-      "origen": "src/core/claude/prompt.builder.ts:25"
+      "origen": "src/core/claude/prompt.builder.ts:26"
+    },
+    {
+      "desde": "modulo:src/core/claude/prompt.builder.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/agenda/horario.ts",
+      "origen": "src/core/claude/prompt.builder.ts:20"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
@@ -9415,7 +9958,7 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "menciona",
       "hacia": "control:C9",
-      "origen": "src/core/claude/prompt.builder.ts:177"
+      "origen": "src/core/claude/prompt.builder.ts:178"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
@@ -9427,85 +9970,91 @@
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/conversation/conversation.service.ts#ClaudeToolLoopPort",
-      "origen": "src/core/conversation/conversation.service.ts:65"
+      "origen": "src/core/conversation/conversation.service.ts:67"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceDeps",
-      "origen": "src/core/conversation/conversation.service.ts:319"
+      "origen": "src/core/conversation/conversation.service.ts:363"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
-      "origen": "src/core/conversation/conversation.service.ts:369"
+      "origen": "src/core/conversation/conversation.service.ts:420"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceOptions",
-      "origen": "src/core/conversation/conversation.service.ts:332"
+      "origen": "src/core/conversation/conversation.service.ts:383"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/conversation/conversation.service.ts#DecisionDeEmision",
-      "origen": "src/core/conversation/conversation.service.ts:139"
+      "origen": "src/core/conversation/conversation.service.ts:166"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/conversation/conversation.service.ts#esIrrecuperable",
-      "origen": "src/core/conversation/conversation.service.ts:135"
+      "origen": "src/core/conversation/conversation.service.ts:162"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/conversation/conversation.service.ts#GuardrailChecker",
-      "origen": "src/core/conversation/conversation.service.ts:79"
-    },
-    {
-      "desde": "modulo:src/core/conversation/conversation.service.ts",
-      "relacion": "exporta",
-      "hacia": "simbolo:src/core/conversation/conversation.service.ts#historialAMensajes",
-      "origen": "src/core/conversation/conversation.service.ts:292"
-    },
-    {
-      "desde": "modulo:src/core/conversation/conversation.service.ts",
-      "relacion": "exporta",
-      "hacia": "simbolo:src/core/conversation/conversation.service.ts#MENSAJE_DE_FALLO_TECNICO",
-      "origen": "src/core/conversation/conversation.service.ts:101"
-    },
-    {
-      "desde": "modulo:src/core/conversation/conversation.service.ts",
-      "relacion": "exporta",
-      "hacia": "simbolo:src/core/conversation/conversation.service.ts#MENSAJE_DE_URGENCIA",
-      "origen": "src/core/conversation/conversation.service.ts:95"
-    },
-    {
-      "desde": "modulo:src/core/conversation/conversation.service.ts",
-      "relacion": "exporta",
-      "hacia": "simbolo:src/core/conversation/conversation.service.ts#MENSAJE_SIN_RESPUESTA",
       "origen": "src/core/conversation/conversation.service.ts:106"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "exporta",
+      "hacia": "simbolo:src/core/conversation/conversation.service.ts#historialAMensajes",
+      "origen": "src/core/conversation/conversation.service.ts:336"
+    },
+    {
+      "desde": "modulo:src/core/conversation/conversation.service.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/conversation/conversation.service.ts#MENSAJE_DE_FALLO_TECNICO",
+      "origen": "src/core/conversation/conversation.service.ts:128"
+    },
+    {
+      "desde": "modulo:src/core/conversation/conversation.service.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/conversation/conversation.service.ts#MENSAJE_DE_URGENCIA",
+      "origen": "src/core/conversation/conversation.service.ts:122"
+    },
+    {
+      "desde": "modulo:src/core/conversation/conversation.service.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/conversation/conversation.service.ts#MENSAJE_SIN_RESPUESTA",
+      "origen": "src/core/conversation/conversation.service.ts:133"
+    },
+    {
+      "desde": "modulo:src/core/conversation/conversation.service.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/conversation/conversation.service.ts#RagConDiagnostico",
+      "origen": "src/core/conversation/conversation.service.ts:93"
+    },
+    {
+      "desde": "modulo:src/core/conversation/conversation.service.ts",
+      "relacion": "exporta",
       "hacia": "simbolo:src/core/conversation/conversation.service.ts#UrgencyPort",
-      "origen": "src/core/conversation/conversation.service.ts:74"
+      "origen": "src/core/conversation/conversation.service.ts:76"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/conversation/conversation.service.ts#VerificadorDeSalida",
-      "origen": "src/core/conversation/conversation.service.ts:190"
+      "origen": "src/core/conversation/conversation.service.ts:217"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/conversation/conversation.service.ts#VIOLACIONES_IRRECUPERABLES",
-      "origen": "src/core/conversation/conversation.service.ts:121"
+      "origen": "src/core/conversation/conversation.service.ts:148"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
@@ -9517,7 +10066,7 @@
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/claude/guardrails.ts",
-      "origen": "src/core/conversation/conversation.service.ts:45"
+      "origen": "src/core/conversation/conversation.service.ts:47"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
@@ -9529,13 +10078,25 @@
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/conversation/message.router.ts",
-      "origen": "src/core/conversation/conversation.service.ts:47"
+      "origen": "src/core/conversation/conversation.service.ts:49"
+    },
+    {
+      "desde": "modulo:src/core/conversation/conversation.service.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/observabilidad/traza.ts",
+      "origen": "src/core/conversation/conversation.service.ts:45"
+    },
+    {
+      "desde": "modulo:src/core/conversation/conversation.service.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/diagnostico.ts",
+      "origen": "src/core/conversation/conversation.service.ts:46"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
-      "origen": "src/core/conversation/conversation.service.ts:46"
+      "origen": "src/core/conversation/conversation.service.ts:48"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
@@ -9553,7 +10114,7 @@
       "desde": "modulo:src/core/conversation/conversation.service.ts",
       "relacion": "menciona",
       "hacia": "control:O5",
-      "origen": "src/core/conversation/conversation.service.ts:100"
+      "origen": "src/core/conversation/conversation.service.ts:127"
     },
     {
       "desde": "modulo:src/core/conversation/conversation.service.ts",
@@ -9646,6 +10207,84 @@
       "origen": "src/core/conversation/message.router.ts"
     },
     {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/observabilidad/traza.ts#CabeceraDeTurno",
+      "origen": "src/core/observabilidad/traza.ts:93"
+    },
+    {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/observabilidad/traza.ts#EstadoDeSalto",
+      "origen": "src/core/observabilidad/traza.ts:43"
+    },
+    {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/observabilidad/traza.ts#MedidorDeSalto",
+      "origen": "src/core/observabilidad/traza.ts:107"
+    },
+    {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/observabilidad/traza.ts#RecolectorDeTraza",
+      "origen": "src/core/observabilidad/traza.ts:143"
+    },
+    {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/observabilidad/traza.ts#ResumenDeTurno",
+      "origen": "src/core/observabilidad/traza.ts:57"
+    },
+    {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/observabilidad/traza.ts#SaltoDeTraza",
+      "origen": "src/core/observabilidad/traza.ts:45"
+    },
+    {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/observabilidad/traza.ts#TipoDeSalto",
+      "origen": "src/core/observabilidad/traza.ts:30"
+    },
+    {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/observabilidad/traza.ts#TRAZA_NULA",
+      "origen": "src/core/observabilidad/traza.ts:168"
+    },
+    {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/observabilidad/traza.ts#TrazaDeTurno",
+      "origen": "src/core/observabilidad/traza.ts:77"
+    },
+    {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/observabilidad/traza.ts#TurnoEnTraza",
+      "origen": "src/core/observabilidad/traza.ts:111"
+    },
+    {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/observabilidad/traza.ts#TurnoEnTrazaImpl",
+      "origen": "src/core/observabilidad/traza.ts:195"
+    },
+    {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "menciona",
+      "hacia": "control:C6",
+      "origen": "src/core/observabilidad/traza.ts:22"
+    },
+    {
+      "desde": "modulo:src/core/observabilidad/traza.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:nucleo",
+      "origen": "src/core/observabilidad/traza.ts"
+    },
+    {
       "desde": "modulo:src/core/rag/chunker.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/chunker.ts#Chunk",
@@ -9680,6 +10319,18 @@
       "relacion": "pertenece_a",
       "hacia": "capa:nucleo",
       "origen": "src/core/rag/chunker.ts"
+    },
+    {
+      "desde": "modulo:src/core/rag/diagnostico.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/rag/diagnostico.ts#DiagnosticoDeRag",
+      "origen": "src/core/rag/diagnostico.ts:22"
+    },
+    {
+      "desde": "modulo:src/core/rag/diagnostico.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:nucleo",
+      "origen": "src/core/rag/diagnostico.ts"
     },
     {
       "desde": "modulo:src/core/rag/embedding.service.ts",
@@ -9757,25 +10408,31 @@
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#esPuraCortesia",
-      "origen": "src/core/rag/rag.service.ts:116"
+      "origen": "src/core/rag/rag.service.ts:117"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/core/rag/rag.service.ts:127"
+      "origen": "src/core/rag/rag.service.ts:128"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagServiceOptions",
-      "origen": "src/core/rag/rag.service.ts:90"
+      "origen": "src/core/rag/rag.service.ts:91"
+    },
+    {
+      "desde": "modulo:src/core/rag/rag.service.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/diagnostico.ts",
+      "origen": "src/core/rag/rag.service.ts:87"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/rag/knowledge.repository.ts",
-      "origen": "src/core/rag/rag.service.ts:87"
+      "origen": "src/core/rag/rag.service.ts:88"
     },
     {
       "desde": "modulo:src/core/rag/rag.service.ts",
@@ -9799,37 +10456,49 @@
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaInput",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:29"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:54"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#consultarAgendaInputSchema",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:23"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:34"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaOutput",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:31"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:56"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:45"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:78"
+    },
+    {
+      "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#MAXIMO_HUECOS_POR_CONSULTA",
+      "origen": "src/core/tools/consultar-agenda.tool.ts:16"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#RANGO_MAXIMO_CONSULTA_DIAS",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:19"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:30"
+    },
+    {
+      "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/agenda/horario.ts",
+      "origen": "src/core/tools/consultar-agenda.tool.ts:4"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/tools/tool.registry.ts",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:4"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:5"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
@@ -9848,6 +10517,12 @@
       "relacion": "importa",
       "hacia": "modulo:src/core/types/tool.ts",
       "origen": "src/core/tools/consultar-agenda.tool.ts:1"
+    },
+    {
+      "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
+      "relacion": "menciona",
+      "hacia": "control:C7",
+      "origen": "src/core/tools/consultar-agenda.tool.ts:155"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
@@ -9937,49 +10612,67 @@
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaInput",
-      "origen": "src/core/tools/crear-cita.tool.ts:103"
+      "origen": "src/core/tools/crear-cita.tool.ts:99"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#crearCitaInputSchema",
-      "origen": "src/core/tools/crear-cita.tool.ts:89"
+      "origen": "src/core/tools/crear-cita.tool.ts:26"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaOutput",
-      "origen": "src/core/tools/crear-cita.tool.ts:105"
+      "origen": "src/core/tools/crear-cita.tool.ts:101"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
-      "origen": "src/core/tools/crear-cita.tool.ts:109"
+      "origen": "src/core/tools/crear-cita.tool.ts:105"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#DURACION_MAX_MINUTOS",
-      "origen": "src/core/tools/crear-cita.tool.ts:8"
+      "origen": "src/core/tools/crear-cita.tool.ts:9"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#DURACION_MIN_MINUTOS",
-      "origen": "src/core/tools/crear-cita.tool.ts:7"
+      "origen": "src/core/tools/crear-cita.tool.ts:8"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#MAXIMO_CITAS_POR_CONVERSACION",
-      "origen": "src/core/tools/crear-cita.tool.ts:23"
+      "origen": "src/core/tools/crear-cita.tool.ts:24"
+    },
+    {
+      "desde": "modulo:src/core/tools/crear-cita.tool.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#resolverSede",
+      "origen": "src/core/tools/crear-cita.tool.ts:79"
+    },
+    {
+      "desde": "modulo:src/core/tools/crear-cita.tool.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#sedesDeLaClinica",
+      "origen": "src/core/tools/crear-cita.tool.ts:68"
+    },
+    {
+      "desde": "modulo:src/core/tools/crear-cita.tool.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/agenda/horario.ts",
+      "origen": "src/core/tools/crear-cita.tool.ts:4"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/tools/tool.registry.ts",
-      "origen": "src/core/tools/crear-cita.tool.ts:4"
+      "origen": "src/core/tools/crear-cita.tool.ts:5"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
@@ -10465,13 +11158,13 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:AuditRepository",
-      "origen": "src/core/types/ports.ts:197"
+      "origen": "src/core/types/ports.ts:236"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:CalendarPort",
-      "origen": "src/core/types/ports.ts:133"
+      "origen": "src/core/types/ports.ts:161"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10483,13 +11176,13 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:ClinicRepository",
-      "origen": "src/core/types/ports.ts:159"
+      "origen": "src/core/types/ports.ts:198"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:ConversationRepository",
-      "origen": "src/core/types/ports.ts:168"
+      "origen": "src/core/types/ports.ts:207"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10507,19 +11200,19 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:MessageRepository",
-      "origen": "src/core/types/ports.ts:176"
+      "origen": "src/core/types/ports.ts:215"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:NotificationPort",
-      "origen": "src/core/types/ports.ts:146"
+      "origen": "src/core/types/ports.ts:185"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:PatientRepository",
-      "origen": "src/core/types/ports.ts:163"
+      "origen": "src/core/types/ports.ts:202"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10531,19 +11224,19 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "declara_puerto",
       "hacia": "puerto:ToolCallRepository",
-      "origen": "src/core/types/ports.ts:191"
+      "origen": "src/core/types/ports.ts:230"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:AuditRepository",
-      "origen": "src/core/types/ports.ts:197"
+      "origen": "src/core/types/ports.ts:236"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:CalendarPort",
-      "origen": "src/core/types/ports.ts:133"
+      "origen": "src/core/types/ports.ts:161"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10555,13 +11248,13 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:ClinicRepository",
-      "origen": "src/core/types/ports.ts:159"
+      "origen": "src/core/types/ports.ts:198"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:ConversationRepository",
-      "origen": "src/core/types/ports.ts:168"
+      "origen": "src/core/types/ports.ts:207"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10579,19 +11272,19 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:MessageRepository",
-      "origen": "src/core/types/ports.ts:176"
+      "origen": "src/core/types/ports.ts:215"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:NotificationPort",
-      "origen": "src/core/types/ports.ts:146"
+      "origen": "src/core/types/ports.ts:185"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:PatientRepository",
-      "origen": "src/core/types/ports.ts:163"
+      "origen": "src/core/types/ports.ts:202"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10603,13 +11296,13 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "puerto:ToolCallRepository",
-      "origen": "src/core/types/ports.ts:191"
+      "origen": "src/core/types/ports.ts:230"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/types/ports.ts#CalendarEvent",
-      "origen": "src/core/types/ports.ts:125"
+      "origen": "src/core/types/ports.ts:127"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10681,7 +11374,7 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "menciona",
       "hacia": "control:C7",
-      "origen": "src/core/types/ports.ts:136"
+      "origen": "src/core/types/ports.ts:170"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10693,7 +11386,7 @@
       "desde": "modulo:src/core/types/ports.ts",
       "relacion": "menciona",
       "hacia": "control:O5",
-      "origen": "src/core/types/ports.ts:150"
+      "origen": "src/core/types/ports.ts:189"
     },
     {
       "desde": "modulo:src/core/types/ports.ts",
@@ -10861,19 +11554,19 @@
       "desde": "modulo:src/infra/calendar.client.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/calendar.client.ts#CalendarRetryOptions",
-      "origen": "src/infra/calendar.client.ts:163"
+      "origen": "src/infra/calendar.client.ts:188"
     },
     {
       "desde": "modulo:src/infra/calendar.client.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/infra/calendar.client.ts:250"
+      "origen": "src/infra/calendar.client.ts:275"
     },
     {
       "desde": "modulo:src/infra/calendar.client.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClientOptions",
-      "origen": "src/infra/calendar.client.ts:238"
+      "origen": "src/infra/calendar.client.ts:263"
     },
     {
       "desde": "modulo:src/infra/calendar.client.ts",
@@ -10903,7 +11596,7 @@
       "desde": "modulo:src/infra/calendar.client.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:GOOGLE_CALENDAR_CREDENTIALS",
-      "origen": "src/infra/calendar.client.ts:294"
+      "origen": "src/infra/calendar.client.ts:354"
     },
     {
       "desde": "modulo:src/infra/calendar.client.ts",
@@ -11404,154 +12097,190 @@
       "origen": "src/infra/supabase.client.ts"
     },
     {
+      "desde": "modulo:src/infra/traza.memoria.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/infra/traza.memoria.ts#OpcionesDeRecolector",
+      "origen": "src/infra/traza.memoria.ts:35"
+    },
+    {
+      "desde": "modulo:src/infra/traza.memoria.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/infra/traza.memoria.ts#RecolectorDeTrazaEnMemoria",
+      "origen": "src/infra/traza.memoria.ts:47"
+    },
+    {
+      "desde": "modulo:src/infra/traza.memoria.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/observabilidad/traza.ts",
+      "origen": "src/infra/traza.memoria.ts:22"
+    },
+    {
+      "desde": "modulo:src/infra/traza.memoria.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/pii-masker.ts",
+      "origen": "src/infra/traza.memoria.ts:29"
+    },
+    {
+      "desde": "modulo:src/infra/traza.memoria.ts",
+      "relacion": "menciona",
+      "hacia": "control:C6",
+      "origen": "src/infra/traza.memoria.ts:16"
+    },
+    {
+      "desde": "modulo:src/infra/traza.memoria.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:infraestructura",
+      "origen": "src/infra/traza.memoria.ts"
+    },
+    {
       "desde": "modulo:src/server.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/server.ts#construirServidor",
-      "origen": "src/server.ts:63"
+      "origen": "src/server.ts:64"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
       "hacia": "modulo:src/channels/voice/conversation-initiation.controller.ts",
-      "origen": "src/server.ts:54"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/channels/voice/post-call.controller.ts",
-      "origen": "src/server.ts:53"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/channels/voice/voice-gateway.controller.ts",
-      "origen": "src/server.ts:52"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/channels/voice/voice-session.service.ts",
-      "origen": "src/server.ts:56"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/channels/voice/webhook-tools.controller.ts",
       "origen": "src/server.ts:55"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/channels/voice/post-call.controller.ts",
+      "origen": "src/server.ts:54"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/channels/voice/voice-gateway.controller.ts",
+      "origen": "src/server.ts:53"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/channels/voice/voice-session.service.ts",
+      "origen": "src/server.ts:57"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/channels/voice/webhook-tools.controller.ts",
+      "origen": "src/server.ts:56"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/channels/whatsapp/whatsapp.adapter.ts",
-      "origen": "src/server.ts:50"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/channels/whatsapp/whatsapp.controller.ts",
-      "origen": "src/server.ts:48"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/channels/whatsapp/whatsapp.types.ts",
       "origen": "src/server.ts:51"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/channels/whatsapp/whatsapp.controller.ts",
+      "origen": "src/server.ts:49"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/channels/whatsapp/whatsapp.types.ts",
+      "origen": "src/server.ts:52"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/core/claude/claude.service.ts",
-      "origen": "src/server.ts:32"
+      "origen": "src/server.ts:33"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/claude/guardrails.ts",
-      "origen": "src/server.ts:34"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/claude/prompt.builder.ts",
       "origen": "src/server.ts:35"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
-      "hacia": "modulo:src/core/conversation/conversation.service.ts",
-      "origen": "src/server.ts:47"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/conversation/message.router.ts",
-      "origen": "src/server.ts:46"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/embedding.service.ts",
-      "origen": "src/server.ts:37"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/knowledge.repository.ts",
-      "origen": "src/server.ts:38"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/rag/rag.service.ts",
-      "origen": "src/server.ts:39"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/consultar-agenda.tool.ts",
-      "origen": "src/server.ts:41"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/consultar-rag.tool.ts",
-      "origen": "src/server.ts:43"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/crear-cita.tool.ts",
-      "origen": "src/server.ts:42"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
-      "origen": "src/server.ts:45"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/guardar-lead.tool.ts",
-      "origen": "src/server.ts:44"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/tools/tool.registry.ts",
-      "origen": "src/server.ts:40"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/core/urgency/urgency.detector.ts",
+      "hacia": "modulo:src/core/claude/prompt.builder.ts",
       "origen": "src/server.ts:36"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/conversation.service.ts",
+      "origen": "src/server.ts:48"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/conversation/message.router.ts",
+      "origen": "src/server.ts:47"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/embedding.service.ts",
+      "origen": "src/server.ts:38"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/knowledge.repository.ts",
+      "origen": "src/server.ts:39"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/rag/rag.service.ts",
+      "origen": "src/server.ts:40"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/consultar-agenda.tool.ts",
+      "origen": "src/server.ts:42"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/consultar-rag.tool.ts",
+      "origen": "src/server.ts:44"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/crear-cita.tool.ts",
+      "origen": "src/server.ts:43"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/escalar-humano.tool.ts",
+      "origen": "src/server.ts:46"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/guardar-lead.tool.ts",
+      "origen": "src/server.ts:45"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/tools/tool.registry.ts",
+      "origen": "src/server.ts:41"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/urgency/urgency.detector.ts",
+      "origen": "src/server.ts:37"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/infra/calendar.client.ts",
-      "origen": "src/server.ts:20"
+      "origen": "src/server.ts:21"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -11569,157 +12298,163 @@
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
       "hacia": "modulo:src/infra/notification.client.ts",
-      "origen": "src/server.ts:21"
-    },
-    {
-      "desde": "modulo:src/server.ts",
-      "relacion": "importa",
-      "hacia": "modulo:src/infra/repositories/index.ts",
       "origen": "src/server.ts:22"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "importa",
+      "hacia": "modulo:src/infra/repositories/index.ts",
+      "origen": "src/server.ts:23"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
       "hacia": "modulo:src/infra/supabase.client.ts",
+      "origen": "src/server.ts:20"
+    },
+    {
+      "desde": "modulo:src/server.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/traza.memoria.ts",
       "origen": "src/server.ts:19"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ANTHROPIC_API_KEY",
-      "origen": "src/server.ts:96"
+      "origen": "src/server.ts:108"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
-      "origen": "src/server.ts:98"
+      "origen": "src/server.ts:110"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
-      "origen": "src/server.ts:112"
+      "origen": "src/server.ts:124"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
-      "origen": "src/server.ts:97"
+      "origen": "src/server.ts:109"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:CLAUDE_MODEL_VOZ",
-      "origen": "src/server.ts:141"
+      "origen": "src/server.ts:153"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:DEFAULT_PHONE_REGION",
-      "origen": "src/server.ts:131"
+      "origen": "src/server.ts:143"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ELEVENLABS_WEBHOOK_SECRET",
-      "origen": "src/server.ts:245"
+      "origen": "src/server.ts:291"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:EMBEDDING_DIMENSIONS",
-      "origen": "src/server.ts:89"
+      "origen": "src/server.ts:101"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:EMBEDDING_MODEL",
-      "origen": "src/server.ts:88"
+      "origen": "src/server.ts:100"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:N8N_WEBHOOK_URL",
-      "origen": "src/server.ts:81"
+      "origen": "src/server.ts:93"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:PORT",
-      "origen": "src/server.ts:267"
+      "origen": "src/server.ts:313"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:RETENCION_AUDIO_DIAS",
-      "origen": "src/server.ts:246"
+      "origen": "src/server.ts:292"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:SIP_PROVIDER",
-      "origen": "src/server.ts:235"
+      "origen": "src/server.ts:281"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VENTANA_CONTINUIDAD_HORAS",
-      "origen": "src/server.ts:130"
+      "origen": "src/server.ts:142"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_BUFFER_WORD_MS",
-      "origen": "src/server.ts:197"
+      "origen": "src/server.ts:241"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_ENABLED",
-      "origen": "src/server.ts:151"
+      "origen": "src/server.ts:163"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOICE_GATEWAY_SECRET",
-      "origen": "src/server.ts:196"
+      "origen": "src/server.ts:178"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:VOYAGE_API_KEY",
-      "origen": "src/server.ts:87"
+      "origen": "src/server.ts:99"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_APP_SECRET",
-      "origen": "src/server.ts:177"
+      "origen": "src/server.ts:221"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_BSP_TOKEN",
-      "origen": "src/server.ts:160"
+      "origen": "src/server.ts:204"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_ENABLED",
-      "origen": "src/server.ts:151"
+      "origen": "src/server.ts:163"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_PHONE_ID",
-      "origen": "src/server.ts:159"
+      "origen": "src/server.ts:203"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:WHATSAPP_WEBHOOK_SECRET",
-      "origen": "src/server.ts:175"
+      "origen": "src/server.ts:219"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -11737,25 +12472,25 @@
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C10",
-      "origen": "tests/adversarial/bateria.test.ts:748"
+      "origen": "tests/adversarial/bateria.test.ts:752"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C11",
-      "origen": "tests/adversarial/bateria.test.ts:824"
+      "origen": "tests/adversarial/bateria.test.ts:828"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C12",
-      "origen": "tests/adversarial/bateria.test.ts:886"
+      "origen": "tests/adversarial/bateria.test.ts:890"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C13",
-      "origen": "tests/adversarial/bateria.test.ts:950"
+      "origen": "tests/adversarial/bateria.test.ts:954"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
@@ -11767,43 +12502,43 @@
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C3",
-      "origen": "tests/adversarial/bateria.test.ts:351"
+      "origen": "tests/adversarial/bateria.test.ts:355"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C4",
-      "origen": "tests/adversarial/bateria.test.ts:426"
+      "origen": "tests/adversarial/bateria.test.ts:430"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C5",
-      "origen": "tests/adversarial/bateria.test.ts:532"
+      "origen": "tests/adversarial/bateria.test.ts:536"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C6",
-      "origen": "tests/adversarial/bateria.test.ts:560"
+      "origen": "tests/adversarial/bateria.test.ts:564"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C7",
-      "origen": "tests/adversarial/bateria.test.ts:592"
+      "origen": "tests/adversarial/bateria.test.ts:596"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C8",
-      "origen": "tests/adversarial/bateria.test.ts:660"
+      "origen": "tests/adversarial/bateria.test.ts:664"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "cubre_categoria",
       "hacia": "categoria_adversarial:C9",
-      "origen": "tests/adversarial/bateria.test.ts:700"
+      "origen": "tests/adversarial/bateria.test.ts:704"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
@@ -11905,25 +12640,25 @@
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ANTHROPIC_API_KEY",
-      "origen": "tests/adversarial/bateria.test.ts:1205"
+      "origen": "tests/adversarial/bateria.test.ts:1209"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:CLAUDE_MAX_TOKENS",
-      "origen": "tests/adversarial/bateria.test.ts:1223"
+      "origen": "tests/adversarial/bateria.test.ts:1227"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:CLAUDE_MODEL_CLASIFICACION",
-      "origen": "tests/adversarial/bateria.test.ts:1247"
+      "origen": "tests/adversarial/bateria.test.ts:1251"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:CLAUDE_MODEL_CONVERSACION",
-      "origen": "tests/adversarial/bateria.test.ts:1222"
+      "origen": "tests/adversarial/bateria.test.ts:1226"
     },
     {
       "desde": "modulo:tests/adversarial/bateria.test.ts",
@@ -12271,13 +13006,13 @@
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#AuditRepositoryDoble",
-      "origen": "tests/helpers/dobles.ts:466"
+      "origen": "tests/helpers/dobles.ts:498"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#CalendarDoble",
-      "origen": "tests/helpers/dobles.ts:268"
+      "origen": "tests/helpers/dobles.ts:277"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
@@ -12289,49 +13024,49 @@
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#CLINICA_DE_PRUEBA",
-      "origen": "tests/helpers/dobles.ts:488"
+      "origen": "tests/helpers/dobles.ts:520"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#ClinicRepositoryDoble",
-      "origen": "tests/helpers/dobles.ts:324"
+      "origen": "tests/helpers/dobles.ts:356"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#ConversationRepositoryDoble",
-      "origen": "tests/helpers/dobles.ts:354"
+      "origen": "tests/helpers/dobles.ts:386"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#crearDobles",
-      "origen": "tests/helpers/dobles.ts:522"
+      "origen": "tests/helpers/dobles.ts:554"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#crearEntornoDePrueba",
-      "origen": "tests/helpers/dobles.ts:609"
+      "origen": "tests/helpers/dobles.ts:641"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#Dobles",
-      "origen": "tests/helpers/dobles.ts:498"
+      "origen": "tests/helpers/dobles.ts:530"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#EntornoDePrueba",
-      "origen": "tests/helpers/dobles.ts:584"
+      "origen": "tests/helpers/dobles.ts:616"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#EventoDeAuditoria",
-      "origen": "tests/helpers/dobles.ts:459"
+      "origen": "tests/helpers/dobles.ts:491"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
@@ -12349,25 +13084,25 @@
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#MessageRepositoryDoble",
-      "origen": "tests/helpers/dobles.ts:415"
+      "origen": "tests/helpers/dobles.ts:447"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#NotificationDoble",
-      "origen": "tests/helpers/dobles.ts:309"
+      "origen": "tests/helpers/dobles.ts:341"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#OpcionesDeEntorno",
-      "origen": "tests/helpers/dobles.ts:592"
+      "origen": "tests/helpers/dobles.ts:624"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#partirSystemEnBloques",
-      "origen": "tests/helpers/dobles.ts:658"
+      "origen": "tests/helpers/dobles.ts:690"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
@@ -12379,13 +13114,13 @@
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#PatientRepositoryDoble",
-      "origen": "tests/helpers/dobles.ts:336"
+      "origen": "tests/helpers/dobles.ts:368"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#plantillasDePrompt",
-      "origen": "tests/helpers/dobles.ts:579"
+      "origen": "tests/helpers/dobles.ts:611"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
@@ -12397,7 +13132,7 @@
       "desde": "modulo:tests/helpers/dobles.ts",
       "relacion": "exporta",
       "hacia": "simbolo:tests/helpers/dobles.ts#ToolCallRepositoryDoble",
-      "origen": "tests/helpers/dobles.ts:446"
+      "origen": "tests/helpers/dobles.ts:478"
     },
     {
       "desde": "modulo:tests/helpers/dobles.ts",
@@ -12886,6 +13621,36 @@
       "origen": "tests/unit/guardrails.test.ts:19"
     },
     {
+      "desde": "modulo:tests/unit/horario.test.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/agenda/horario.ts",
+      "origen": "tests/unit/horario.test.ts:14"
+    },
+    {
+      "desde": "modulo:tests/unit/horario.test.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "tests/unit/horario.test.ts:23"
+    },
+    {
+      "desde": "modulo:tests/unit/horario.test.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:pruebas",
+      "origen": "tests/unit/horario.test.ts"
+    },
+    {
+      "desde": "modulo:tests/unit/horario.test.ts",
+      "relacion": "verifica",
+      "hacia": "modulo:src/core/agenda/horario.ts",
+      "origen": "tests/unit/horario.test.ts:14"
+    },
+    {
+      "desde": "modulo:tests/unit/horario.test.ts",
+      "relacion": "verifica",
+      "hacia": "modulo:src/core/types/index.ts",
+      "origen": "tests/unit/horario.test.ts:23"
+    },
+    {
       "desde": "modulo:tests/unit/openai-sse.mapper.test.ts",
       "relacion": "importa",
       "hacia": "modulo:src/channels/voice/openai-sse.mapper.ts",
@@ -13205,6 +13970,12 @@
     },
     {
       "desde": "modulo:tests/unit/tools.test.ts",
+      "relacion": "importa",
+      "hacia": "modulo:tests/helpers/dobles.ts",
+      "origen": "tests/unit/tools.test.ts:20"
+    },
+    {
+      "desde": "modulo:tests/unit/tools.test.ts",
       "relacion": "pertenece_a",
       "hacia": "capa:pruebas",
       "origen": "tests/unit/tools.test.ts"
@@ -13268,6 +14039,48 @@
       "relacion": "verifica",
       "hacia": "modulo:src/core/types/tool.ts",
       "origen": "tests/unit/tools.test.ts:11"
+    },
+    {
+      "desde": "modulo:tests/unit/traza.test.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/observabilidad/traza.ts",
+      "origen": "tests/unit/traza.test.ts:10"
+    },
+    {
+      "desde": "modulo:tests/unit/traza.test.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/infra/traza.memoria.ts",
+      "origen": "tests/unit/traza.test.ts:16"
+    },
+    {
+      "desde": "modulo:tests/unit/traza.test.ts",
+      "relacion": "menciona",
+      "hacia": "control:C6",
+      "origen": "tests/unit/traza.test.ts:8"
+    },
+    {
+      "desde": "modulo:tests/unit/traza.test.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:pruebas",
+      "origen": "tests/unit/traza.test.ts"
+    },
+    {
+      "desde": "modulo:tests/unit/traza.test.ts",
+      "relacion": "verifica",
+      "hacia": "control:C6",
+      "origen": "tests/unit/traza.test.ts:8"
+    },
+    {
+      "desde": "modulo:tests/unit/traza.test.ts",
+      "relacion": "verifica",
+      "hacia": "modulo:src/core/observabilidad/traza.ts",
+      "origen": "tests/unit/traza.test.ts:10"
+    },
+    {
+      "desde": "modulo:tests/unit/traza.test.ts",
+      "relacion": "verifica",
+      "hacia": "modulo:src/infra/traza.memoria.ts",
+      "origen": "tests/unit/traza.test.ts:16"
     },
     {
       "desde": "modulo:tests/unit/wer.test.ts",
@@ -13459,19 +14272,19 @@
       "desde": "simbolo:scripts/nucleo-demo.ts#RagDeDemostracion",
       "relacion": "implementa",
       "hacia": "puerto:RagPort",
-      "origen": "scripts/nucleo-demo.ts:67"
+      "origen": "scripts/nucleo-demo.ts:79"
     },
     {
       "desde": "simbolo:src/channels/voice/voice-session.service.ts#VoiceSessionService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/call.repository.ts#SupabaseCallRepository",
-      "origen": "src/server.ts:189"
+      "origen": "src/server.ts:233"
     },
     {
       "desde": "simbolo:src/channels/voice/voice-session.service.ts#VoiceSessionService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/transcript.repository.ts#SupabaseTranscriptRepository",
-      "origen": "src/server.ts:189"
+      "origen": "src/server.ts:233"
     },
     {
       "desde": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
@@ -13519,85 +14332,91 @@
       "desde": "simbolo:src/core/claude/guardrails.ts#GuardrailService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:106"
+      "origen": "src/server.ts:118"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:148"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/guardrails.ts#GuardrailService",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:148"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:148"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:148"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:148"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:148"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:148"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:148"
     },
     {
       "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/message.repository.ts#SupabaseMessageRepository",
-      "origen": "src/server.ts:136"
+      "origen": "src/server.ts:148"
+    },
+    {
+      "desde": "simbolo:src/core/conversation/conversation.service.ts#ConversationServiceImpl",
+      "relacion": "inyecta",
+      "hacia": "simbolo:src/infra/traza.memoria.ts#RecolectorDeTrazaEnMemoria",
+      "origen": "src/server.ts:148"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/clinic.repository.ts#SupabaseClinicRepository",
-      "origen": "src/server.ts:127"
+      "origen": "src/server.ts:139"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/conversation.repository.ts#SupabaseConversationRepository",
-      "origen": "src/server.ts:127"
+      "origen": "src/server.ts:139"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/message.repository.ts#SupabaseMessageRepository",
-      "origen": "src/server.ts:127"
+      "origen": "src/server.ts:139"
     },
     {
       "desde": "simbolo:src/core/conversation/message.router.ts#MessageRouter",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/patient.repository.ts#SupabasePatientRepository",
-      "origen": "src/server.ts:127"
+      "origen": "src/server.ts:139"
     },
     {
       "desde": "simbolo:src/core/rag/embedding.service.ts#VoyageEmbeddingService",
@@ -13609,13 +14428,13 @@
       "desde": "simbolo:src/core/rag/rag.service.ts#RagService",
       "relacion": "implementa",
       "hacia": "puerto:RagPort",
-      "origen": "src/core/rag/rag.service.ts:127"
+      "origen": "src/core/rag/rag.service.ts:128"
     },
     {
       "desde": "simbolo:src/core/rag/rag.service.ts#RagService",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/embedding.service.ts#VoyageEmbeddingService",
-      "origen": "src/server.ts:91"
+      "origen": "src/server.ts:103"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
@@ -13627,13 +14446,13 @@
       "desde": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/server.ts:117"
+      "origen": "src/server.ts:129"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:117"
+      "origen": "src/server.ts:129"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-rag.tool.ts#ConsultarRagTool",
@@ -13645,13 +14464,13 @@
       "desde": "simbolo:src/core/tools/consultar-rag.tool.ts#ConsultarRagTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/server.ts:119"
+      "origen": "src/server.ts:131"
     },
     {
       "desde": "simbolo:src/core/tools/consultar-rag.tool.ts#ConsultarRagTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:119"
+      "origen": "src/server.ts:131"
     },
     {
       "desde": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
@@ -13663,13 +14482,13 @@
       "desde": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/server.ts:118"
+      "origen": "src/server.ts:130"
     },
     {
       "desde": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:118"
+      "origen": "src/server.ts:130"
     },
     {
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
@@ -13681,19 +14500,19 @@
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/notification.client.ts#NotificationClient",
-      "origen": "src/server.ts:121"
+      "origen": "src/server.ts:133"
     },
     {
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/conversation.repository.ts#SupabaseConversationRepository",
-      "origen": "src/server.ts:121"
+      "origen": "src/server.ts:133"
     },
     {
       "desde": "simbolo:src/core/tools/escalar-humano.tool.ts#EscalarHumanoTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:121"
+      "origen": "src/server.ts:133"
     },
     {
       "desde": "simbolo:src/core/tools/guardar-lead.tool.ts#GuardarLeadTool",
@@ -13705,73 +14524,73 @@
       "desde": "simbolo:src/core/tools/guardar-lead.tool.ts#GuardarLeadTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:120"
+      "origen": "src/server.ts:132"
     },
     {
       "desde": "simbolo:src/core/tools/guardar-lead.tool.ts#GuardarLeadTool",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:120"
+      "origen": "src/server.ts:132"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/rag/rag.service.ts#RagService",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:127"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:127"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/notification.client.ts#NotificationClient",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:127"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/audit.repository.ts#SupabaseAuditRepository",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:127"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/conversation.repository.ts#SupabaseConversationRepository",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:127"
     },
     {
       "desde": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/tool-call.repository.ts#SupabaseToolCallRepository",
-      "origen": "src/server.ts:115"
+      "origen": "src/server.ts:127"
     },
     {
       "desde": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/claude.service.ts#ClaudeService",
-      "origen": "src/server.ts:108"
+      "origen": "src/server.ts:120"
     },
     {
       "desde": "simbolo:src/core/urgency/urgency.detector.ts#UrgencyDetector",
       "relacion": "inyecta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/server.ts:108"
+      "origen": "src/server.ts:120"
     },
     {
       "desde": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
       "relacion": "implementa",
       "hacia": "puerto:CalendarPort",
-      "origen": "src/infra/calendar.client.ts:250"
+      "origen": "src/infra/calendar.client.ts:275"
     },
     {
       "desde": "simbolo:src/infra/calendar.client.ts#GoogleCalendarClient",
       "relacion": "inyecta",
       "hacia": "simbolo:src/infra/repositories/clinic.repository.ts#SupabaseClinicRepository",
-      "origen": "src/server.ts:78"
+      "origen": "src/server.ts:90"
     },
     {
       "desde": "simbolo:src/infra/notification.client.ts#NotificationClient",
@@ -13819,13 +14638,13 @@
       "desde": "simbolo:tests/helpers/dobles.ts#AuditRepositoryDoble",
       "relacion": "implementa",
       "hacia": "puerto:AuditRepository",
-      "origen": "tests/helpers/dobles.ts:466"
+      "origen": "tests/helpers/dobles.ts:498"
     },
     {
       "desde": "simbolo:tests/helpers/dobles.ts#CalendarDoble",
       "relacion": "implementa",
       "hacia": "puerto:CalendarPort",
-      "origen": "tests/helpers/dobles.ts:268"
+      "origen": "tests/helpers/dobles.ts:277"
     },
     {
       "desde": "simbolo:tests/helpers/dobles.ts#ClaudeDoble",
@@ -13837,13 +14656,13 @@
       "desde": "simbolo:tests/helpers/dobles.ts#ClinicRepositoryDoble",
       "relacion": "implementa",
       "hacia": "puerto:ClinicRepository",
-      "origen": "tests/helpers/dobles.ts:324"
+      "origen": "tests/helpers/dobles.ts:356"
     },
     {
       "desde": "simbolo:tests/helpers/dobles.ts#ConversationRepositoryDoble",
       "relacion": "implementa",
       "hacia": "puerto:ConversationRepository",
-      "origen": "tests/helpers/dobles.ts:354"
+      "origen": "tests/helpers/dobles.ts:386"
     },
     {
       "desde": "simbolo:tests/helpers/dobles.ts#LoggerDoble",
@@ -13855,19 +14674,19 @@
       "desde": "simbolo:tests/helpers/dobles.ts#MessageRepositoryDoble",
       "relacion": "implementa",
       "hacia": "puerto:MessageRepository",
-      "origen": "tests/helpers/dobles.ts:415"
+      "origen": "tests/helpers/dobles.ts:447"
     },
     {
       "desde": "simbolo:tests/helpers/dobles.ts#NotificationDoble",
       "relacion": "implementa",
       "hacia": "puerto:NotificationPort",
-      "origen": "tests/helpers/dobles.ts:309"
+      "origen": "tests/helpers/dobles.ts:341"
     },
     {
       "desde": "simbolo:tests/helpers/dobles.ts#PatientRepositoryDoble",
       "relacion": "implementa",
       "hacia": "puerto:PatientRepository",
-      "origen": "tests/helpers/dobles.ts:336"
+      "origen": "tests/helpers/dobles.ts:368"
     },
     {
       "desde": "simbolo:tests/helpers/dobles.ts#RagDoble",
@@ -13879,7 +14698,7 @@
       "desde": "simbolo:tests/helpers/dobles.ts#ToolCallRepositoryDoble",
       "relacion": "implementa",
       "hacia": "puerto:ToolCallRepository",
-      "origen": "tests/helpers/dobles.ts:446"
+      "origen": "tests/helpers/dobles.ts:478"
     }
   ]
 }

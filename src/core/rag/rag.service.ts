@@ -85,6 +85,7 @@
  *    por similitud coseno, tal como hace match_knowledge.
  */
 import type { EmbeddingPort, KnowledgeChunk, Logger, RagPort } from '../types/index.js';
+import type { DiagnosticoDeRag } from './diagnostico.js';
 import type { KnowledgeRepository } from './knowledge.repository.js';
 
 export interface RagServiceOptions {
@@ -141,38 +142,104 @@ export class RagService implements RagPort {
   }
 
   async retrieve(clinicId: string, query: string, limit?: number): Promise<KnowledgeChunk[]> {
+    const { fragmentos } = await this.retrieveConDiagnostico(clinicId, query, limit);
+    return fragmentos;
+  }
+
+  /**
+   * Igual que `retrieve`, pero declarando COMO se resolvio.
+   *
+   * Las cuatro salidas de este metodo producen la MISMA lista vacia vista desde
+   * fuera --cortesia, nada sobre el umbral, fallo del proveedor, base sin el
+   * dato-- y solo una de ellas es normal. Sin distinguirlas, una respuesta
+   * inventada se diagnostica a ciegas: no se sabe si el prompt fallo, si Voyage
+   * devolvio 429 o si el dato sencillamente no esta aprobado.
+   *
+   * El diagnostico se devuelve EN LA LLAMADA, no en una propiedad del servicio:
+   * este servicio es unico y lo comparten los dos canales, asi que un ultimo
+   * estado mutable se pisaria entre turnos concurrentes.
+   */
+  async retrieveConDiagnostico(
+    clinicId: string,
+    query: string,
+    limit?: number,
+  ): Promise<{ fragmentos: KnowledgeChunk[]; diagnostico: DiagnosticoDeRag }> {
     const consulta = query.trim();
-    if (consulta.length === 0) return [];
+    if (consulta.length === 0) {
+      return { fragmentos: [], diagnostico: { estrategia: 'vacio', motivo: 'consulta vacia' } };
+    }
 
     // Un saludo no necesita recuperar nada, y recuperarlo cuesta ~1,7 s de
     // llamada a Voyage sobre un turno que el paciente esta esperando.
     if (esPuraCortesia(consulta)) {
       this.logger.debug({ clinicId }, 'consulta de cortesia: se omite la recuperacion');
-      return [];
+      return {
+        fragmentos: [],
+        diagnostico: {
+          estrategia: 'cortesia',
+          motivo: 'el mensaje es solo saludo o agradecimiento; recuperar costaria ~1,7 s y no aporta',
+        },
+      };
     }
 
     const limiteEfectivo = limit ?? this.limiteFragmentos;
+    let msEmbedding: number | undefined;
+    let msConsulta: number | undefined;
+    let motivoDelRespaldo = 'sin determinar';
 
     try {
+      const t0 = Date.now();
       const [vector] = await this.embeddings.embed([consulta], 'query');
+      msEmbedding = Date.now() - t0;
+
       if (vector) {
+        const t1 = Date.now();
         const vectorial = await this.repository.matchKnowledge(
           clinicId,
           vector,
           limiteEfectivo,
           this.umbralSimilitud,
         );
-        if (vectorial.length > 0) return vectorial;
+        msConsulta = Date.now() - t1;
+
+        if (vectorial.length > 0) {
+          return {
+            fragmentos: vectorial,
+            diagnostico: {
+              estrategia: 'vectorial',
+              ...(msEmbedding !== undefined ? { msEmbedding } : {}),
+              ...(msConsulta !== undefined ? { msConsulta } : {}),
+              umbral: this.umbralSimilitud,
+            },
+          };
+        }
+        motivoDelRespaldo = `ningun fragmento supero el umbral ${String(this.umbralSimilitud)}`;
+      } else {
+        motivoDelRespaldo = 'el proveedor de embeddings no devolvio vector';
       }
     } catch (err) {
       // No se devuelve lista vacia todavia: primero se intenta el lexico.
+      motivoDelRespaldo = `fallo la busqueda vectorial: ${err instanceof Error ? err.message : String(err)}`;
       this.logger.warn(
         { clinicId, error: err instanceof Error ? err.message : String(err) },
         'fallo la busqueda vectorial; se intenta el respaldo lexico',
       );
     }
 
-    return this.respaldoLexico(clinicId, consulta, limiteEfectivo);
+    const t2 = Date.now();
+    const lexico = await this.respaldoLexico(clinicId, consulta, limiteEfectivo);
+    const msLexico = Date.now() - t2;
+
+    return {
+      fragmentos: lexico,
+      diagnostico: {
+        estrategia: lexico.length > 0 ? 'respaldo_lexico' : 'vacio',
+        ...(msEmbedding !== undefined ? { msEmbedding } : {}),
+        ...(msConsulta !== undefined ? { msConsulta: msConsulta + msLexico } : { msConsulta: msLexico }),
+        umbral: this.umbralSimilitud,
+        motivo: motivoDelRespaldo,
+      },
+    };
   }
 
   /**

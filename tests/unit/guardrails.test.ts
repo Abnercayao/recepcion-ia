@@ -264,6 +264,55 @@ describe('capa 2 — cita afirmada sin tool_call exitoso', () => {
     );
   });
 
+  /**
+   * REGRESION. En espanol la primera persona del preterito y la del presente
+   * de subjuntivo se escriben igual: «ya le AGENDE la cita» (hecho) frente a
+   * «¿quiere que le AGENDE una cita?» (ofrecimiento). El patron solo veia la
+   * forma verbal y bloqueaba las dos.
+   *
+   * Detectado con el modelo real desde el panel de traza de la web: el agente
+   * cerro con «¿Le gustaria que le agende una cita de evaluacion?» y al
+   * paciente le llego pegado un «todavia no le puedo dar la cita por segura».
+   * No era un caso raro: ofrecer la cita es EL cierre comercial del prompt.
+   */
+  const ofrecimientos = [
+    '¿Le gustaría que le agende una cita de evaluación?',
+    '¿Quiere que le reserve el jueves a las 10?',
+    '¿Prefiere que le separe un espacio esta semana?',
+    'Si gusta, puedo ver que le agende algo para mañana.',
+    '¿Le parece que le registre la cita para el viernes?',
+  ];
+
+  for (const texto of ofrecimientos) {
+    it(`OFRECER agendar no es afirmar que se agendo: "${texto}"`, () => {
+      expect(detectOutboundViolations(texto, ctx)).not.toContain('cita_afirmada_sin_tool_call');
+      expect(checkOutbound(texto, ctx).pass).toBe(true);
+    });
+  }
+
+  it('la exencion no tapa una afirmacion con «que» delante', () => {
+    // «confirmo» no ofrece nada: aqui el «que» es completivo, no subjuntivo de
+    // ofrecimiento. Si esto dejara de bloquear, la exencion seria un agujero.
+    expect(
+      detectOutboundViolations('Le confirmo que ya le agendé la cita del jueves.', ctx),
+    ).toContain('cita_afirmada_sin_tool_call');
+  });
+
+  it('la exencion tampoco alcanza a una afirmacion posterior en el mismo turno', () => {
+    // Ofrecer primero no da barra libre para afirmar despues.
+    expect(
+      detectOutboundViolations('¿Quiere que le agende? Listo, ya quedó agendada.', ctx),
+    ).toContain('cita_afirmada_sin_tool_call');
+  });
+
+  it('una afirmacion posterior del MISMO patron tampoco se salva por la primera exencion', () => {
+    // Las dos frases casan el mismo patron («(te|le) agende»). Antes, la
+    // primera --exenta-- hacia abandonar ese patron y la segunda se colaba.
+    expect(
+      detectOutboundViolations('¿Quiere que le agende algo? De hecho ya le agendé el jueves.', ctx),
+    ).toContain('cita_afirmada_sin_tool_call');
+  });
+
   it('acepta la evidencia que quedo en el historial de tool_calls', () => {
     const historial: StoredMessage[] = [
       {

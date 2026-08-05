@@ -17,6 +17,7 @@ import 'dotenv/config';
 
 import { loadConfig, type Config } from './infra/config.js';
 import { createLogger } from './infra/logger.js';
+import { RecolectorDeTrazaEnMemoria } from './infra/traza.memoria.js';
 import { createSupabaseClient } from './infra/supabase.client.js';
 import { GoogleCalendarClient } from './infra/calendar.client.js';
 import { NotificationClient } from './infra/notification.client.js';
@@ -62,6 +63,17 @@ const DIRECTORIO_DE_PROMPTS = join(AQUI, '..', 'prompts');
 
 export async function construirServidor(config: Config) {
   const logger = createLogger(config);
+
+  /**
+   * Traza de diagnostico del proceso.
+   *
+   * Se monta aqui, en la raiz de composicion, y se inyecta en el nucleo y en
+   * los dos webhooks de voz. No sustituye a la auditoria --esa va a
+   * `audit_log`, `tool_calls` y `messages`, con retencion--: esto se pierde al
+   * reiniciar a proposito. Es un instrumento para mirar en vivo, no un
+   * registro.
+   */
+  const trazas = new RecolectorDeTrazaEnMemoria();
 
   // --- Persistencia -------------------------------------------------------
   const supabase = createSupabaseClient(config);
@@ -134,7 +146,7 @@ export async function construirServidor(config: Config) {
 
   // UN solo servicio de conversacion para los dos canales.
   const conversationService = new ConversationServiceImpl(
-    { router, claude, promptBuilder, rag, urgency, guardrails, tools, messages, logger, audit },
+    { router, claude, promptBuilder, rag, urgency, guardrails, tools, messages, logger, audit, traza: trazas },
     {
       model: config.CLAUDE_MODEL_CONVERSACION,
       maxTokens: config.CLAUDE_MAX_TOKENS,
@@ -150,6 +162,38 @@ export async function construirServidor(config: Config) {
     estado: 'ok',
     canales: { whatsapp: config.WHATSAPP_ENABLED, voz: config.VOICE_ENABLED },
   }));
+
+  /**
+   * Trazas de este proceso, para el panel de diagnostico de la web.
+   *
+   * PROTEGIDO por `VOICE_GATEWAY_SECRET` y con el secreto en la RUTA, igual que
+   * los webhooks de voz. No es opcional: este proceso se publica por un tunel,
+   * y las trazas llevan lo que dijo el paciente y con que argumentos se llamo a
+   * las herramientas. Aunque todo pasa por `maskPII`, seguir dejandolo abierto
+   * seria publicar conversaciones clinicas en internet.
+   *
+   * Sin secreto configurado NO se registra la ruta: preferimos que el panel
+   * diga "no hay trazas de voz" a exponerlas por olvido.
+   */
+  const secretoDeTrazas = config.VOICE_GATEWAY_SECRET ?? '';
+  if (secretoDeTrazas !== '') {
+    app.get('/v1/g/:secret/trazas', async (peticion, respuesta) => {
+      const { secret } = peticion.params as { secret: string };
+      // Comparacion en tiempo constante, como en el resto de la frontera.
+      let diferencia = secret.length ^ secretoDeTrazas.length;
+      for (let i = 0; i < secret.length && i < secretoDeTrazas.length; i += 1) {
+        diferencia |= secret.charCodeAt(i) ^ secretoDeTrazas.charCodeAt(i);
+      }
+      if (diferencia !== 0) return respuesta.code(401).send({ error: 'no autorizado' });
+
+      return { total: trazas.total, trazas: trazas.listar(40) };
+    });
+  } else {
+    logger.warn(
+      { componente: 'trazas' },
+      'sin VOICE_GATEWAY_SECRET no se expone /trazas: el panel de la web no vera el canal de voz',
+    );
+  }
 
   if (config.WHATSAPP_ENABLED) {
     // Un `phone_number_id` de Meta corresponde a una clinica. Con varias
@@ -222,6 +266,7 @@ export async function construirServidor(config: Config) {
       audit,
       logger,
       gatewaySecret: config.VOICE_GATEWAY_SECRET ?? '',
+      traza: trazas,
     });
 
     await app.register(conversationInitiationPlugin, {
@@ -232,6 +277,7 @@ export async function construirServidor(config: Config) {
       gatewaySecret: config.VOICE_GATEWAY_SECRET ?? '',
       clinicId: clinicIdVoz,
       clinica: clinicaDeVoz,
+      traza: trazas,
       ...(config.SIP_PROVIDER ? { proveedorSip: config.SIP_PROVIDER } : {}),
     });
 

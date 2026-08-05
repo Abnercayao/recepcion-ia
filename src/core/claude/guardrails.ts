@@ -110,18 +110,60 @@ const NEGACION_PREVIA = new RegExp(
  * si fuera una promesa de resultado. Censurar el contenido aprobado degrada
  * el criterio de «respuestas correctas >= 95%» sin proteger de nada.
  */
-function primerMatchAfirmativo(texto: string, patrones: readonly RegExp[]): string | undefined {
+function primerMatchAfirmativo(
+  texto: string,
+  patrones: readonly RegExp[],
+  /** Contexto previo que convierte el match en NO violacion. Ver `OFRECIMIENTO_PREVIO`. */
+  exencion?: RegExp,
+): string | undefined {
   for (const re of patrones) {
-    const m = re.exec(texto);
-    if (!m) continue;
-    // Ventana amplia para que quepa «no le puedo » y similares; lo que la
-    // acota de verdad no es la longitud sino la lista cerrada de intercalables.
-    const antes = texto.slice(Math.max(0, m.index - 40), m.index);
-    if (NEGACION_PREVIA.test(antes)) continue;
-    return m[0];
+    // TODAS las apariciones del patron, no solo la primera.
+    //
+    // Con `exec` a secas, un primer match exento --negado u ofrecido-- hacia
+    // pasar al patron siguiente y se perdian los match POSTERIORES del mismo
+    // patron. Es decir: «no le puedo asegurar nada. Pero se lo aseguro» se
+    // salvaba por el primer «no». Escanear entero cierra ese hueco para las
+    // dos exenciones a la vez.
+    const global = new RegExp(re.source, re.flags.includes('g') ? re.flags : `${re.flags}g`);
+    let m: RegExpExecArray | null;
+    while ((m = global.exec(texto)) !== null) {
+      // Ventana amplia para que quepa «no le puedo » y similares; lo que la
+      // acota de verdad no es la longitud sino la lista cerrada de intercalables.
+      const antes = texto.slice(Math.max(0, m.index - 40), m.index);
+      const exento = NEGACION_PREVIA.test(antes) || exencion?.test(antes) === true;
+      if (!exento) return m[0];
+      // Un patron que puede casar vacio dejaria `lastIndex` quieto y colgaria
+      // el bucle. No hay ninguno asi hoy; la guarda evita que anadir uno
+      // manana cuelgue un turno de un paciente.
+      if (m[0] === '') global.lastIndex += 1;
+    }
   }
   return undefined;
 }
+
+/**
+ * OFRECER agendar no es AFIRMAR que se agendo.
+ *
+ * En espanol, la primera persona del preterito y la del presente de subjuntivo
+ * se escriben IGUAL: «ya le *agende* la cita» (hecho) y «¿quiere que le
+ * *agende* una cita?» (ofrecimiento). Ningun patron sobre la forma verbal
+ * puede separarlas; lo que las separa es lo que va delante.
+ *
+ * Medido en la web con el modelo real: ante una pregunta por precios, el
+ * agente cerro con «¿Le gustaria que le agende una cita de evaluacion?» y la
+ * capa 2 lo bloqueo como `cita_afirmada_sin_tool_call`, pegandole al paciente
+ * un «todavia no le puedo dar la cita por segura» que no venia a cuento. El
+ * ofrecimiento de cita es EL cierre comercial del prompt (bloque 4: «¿le busco
+ * un espacio esta semana?»), asi que el falso positivo no era raro: caia en la
+ * respuesta canonica del propio sistema.
+ *
+ * La lista de verbos es CERRADA, y solo se aplica a la afirmacion de cita. Un
+ * «que» suelto no basta: «le confirmo que le agende la cita» sigue siendo una
+ * violacion, porque «confirmo» no ofrece nada.
+ */
+const OFRECIMIENTO_PREVIO = new RegExp(
+  '\\b(gustaria|gusta|quiere|quieres|quiere usted|desea|deseas|prefiere|prefieres|prefiero|quiero|puedo|podemos|podria|necesita|necesitas|le parece|te parece|si gusta|si quiere)\\b[^.?!]{0,25}\\bque\\s+$',
+);
 
 function alguno(texto: string, patrones: readonly RegExp[]): string | undefined {
   for (const re of patrones) {
@@ -439,7 +481,12 @@ export function detectOutboundViolations(
   }
 
   // 4. Cita dada por hecha sin herramienta ejecutada con exito.
-  if (!pruebas.citaCreada && primerMatchAfirmativo(t, PATRONES_DE_CITA_AFIRMADA) !== undefined) {
+  //    La exencion cubre el OFRECIMIENTO en subjuntivo, que se escribe igual
+  //    que el preterito: «¿quiere que le agende?» no afirma nada.
+  if (
+    !pruebas.citaCreada &&
+    primerMatchAfirmativo(t, PATRONES_DE_CITA_AFIRMADA, OFRECIMIENTO_PREVIO) !== undefined
+  ) {
     violaciones.push('cita_afirmada_sin_tool_call');
   }
 

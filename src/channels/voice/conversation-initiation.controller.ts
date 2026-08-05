@@ -25,6 +25,7 @@ import { randomUUID } from 'node:crypto';
 
 import type { AuditRepository, Clinic, Logger } from '../../core/types/index.js';
 import type { MessageRouter } from '../../core/conversation/message.router.js';
+import { TRAZA_NULA, type RecolectorDeTraza } from '../../core/observabilidad/traza.js';
 import type { CallRepository } from './voice.types.js';
 
 export const RUTA_INICIACION = '/webhooks/elevenlabs/conversation-initiation';
@@ -53,6 +54,13 @@ export interface ConversationInitiationDeps {
   clinicId: string;
   clinica?: Clinic;
   proveedorSip?: string;
+  /**
+   * Instrumentacion. OPCIONAL. Aqui es donde se ve si una llamada arranco bien:
+   * si no se resuelve el numero de origen, el agente puede informar pero no
+   * agendar ni dar continuidad, y hoy eso solo se sabe leyendo el log del
+   * proceso justo cuando pasa.
+   */
+  traza?: RecolectorDeTraza;
 }
 
 /**
@@ -169,6 +177,23 @@ export const conversationInitiationPlugin: FastifyPluginAsync<
     // gateway encontrara la llamada en cada turno.
     const sessionId = randomUUID();
 
+    const traza = (deps.traza ?? TRAZA_NULA).abrir({
+      canal: 'voz (iniciacion)',
+      entrada: 'entra una llamada',
+      sesion: sessionId,
+    });
+    traza.identificar({ clinicId: deps.clinicId });
+    traza.marcar('webhook', 'iniciacion de conversacion', 'ok', {
+      // Los NOMBRES de las claves, no los valores: el cuerpo lleva PII y esto
+      // se sirve por HTTP. Con las claves basta para ajustar CAMPOS_DE_ORIGEN
+      // contra una llamada real, que es para lo que hace falta.
+      clavesRecibidas: typeof cuerpo === 'object' && cuerpo !== null ? Object.keys(cuerpo) : [],
+      numeroOrigenResuelto: Boolean(numeroOrigen),
+      numeroDestinoResuelto: Boolean(numeroDestino),
+      callSidResuelto: Boolean(callSid),
+      sessionId,
+    });
+
     const variables: Record<string, string> = {
       clinic_id: deps.clinicId,
       session_id: sessionId,
@@ -187,9 +212,15 @@ export const conversationInitiationPlugin: FastifyPluginAsync<
         },
         'iniciacion: no se encontro el numero de origen; revisa CAMPOS_DE_ORIGEN contra este cuerpo',
       );
+      traza.marcar('webhook', 'SIN numero de origen: la llamada arranca degradada', 'error', {
+        efecto: 'el agente puede informar, pero NO agendar ni dar continuidad multicanal',
+        arreglo: 'revisa CAMPOS_DE_ORIGEN contra las claves recibidas de arriba',
+      });
+      traza.cerrar('iniciacion sin telefono');
       return { type: 'conversation_initiation_client_data', dynamic_variables: variables };
     }
 
+    const medidor = traza.iniciar('enrutado', 'resolver paciente y registrar la llamada');
     try {
       // `route` resuelve paciente y conversacion respetando la ventana de
       // continuidad multicanal, y NO persiste ningun mensaje. Es exactamente lo
@@ -233,16 +264,33 @@ export const conversationInitiationPlugin: FastifyPluginAsync<
         },
         'iniciacion: llamada registrada',
       );
+
+      medidor.fin({
+        detalle: {
+          callId: llamada.id,
+          conversationId: contexto.conversationId,
+          conversacionNueva: contexto.history.length === 0,
+          cambioDeCanal: contexto.channelSwitched,
+        },
+      });
+      traza.identificar({ conversationId: contexto.conversationId });
+      traza.cerrar('llamada registrada; el agente ya puede agendar');
     } catch (error) {
       // La llamada NO se cae por esto. Se pierde la transcripcion y las
       // latencias de esta llamada, y queda dicho en el log por que.
+      const mensaje = error instanceof Error ? error.message : String(error);
       deps.logger.error(
-        {
-          componente: 'conversation-initiation',
-          error: error instanceof Error ? error.message : String(error),
-        },
+        { componente: 'conversation-initiation', error: mensaje },
         'iniciacion: no se pudo registrar la llamada; la conversacion continua sin persistencia de voz',
       );
+      medidor.fin({
+        estado: 'error',
+        detalle: {
+          error: mensaje,
+          efecto: 'la llamada sigue, pero SIN transcripcion ni latencias persistidas',
+        },
+      });
+      traza.cerrar('iniciacion degradada: sin persistencia de voz');
     }
 
     return { type: 'conversation_initiation_client_data', dynamic_variables: variables };
