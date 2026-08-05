@@ -9,7 +9,7 @@ import {
   resolverAgenda,
   verificarApertura,
 } from '../agenda/horario.js';
-import { maskArgsForLog } from './tool.registry.js';
+import { maskArgsForLog, sinVacio, textoOpcional } from './tool.registry.js';
 
 export const DURACION_MIN_MINUTOS = 15;
 export const DURACION_MAX_MINUTOS = 180;
@@ -48,13 +48,18 @@ export const crearCitaInputSchema = z.object({
     .max(DURACION_MAX_MINUTOS)
     .default(30)
     .describe('Duracion en minutos.'),
-  motivo: z.string().min(1).max(200).optional().describe('Motivo de la cita, en pocas palabras.'),
-  profesional: z
-    .string()
-    .min(1)
-    .max(120)
-    .optional()
-    .describe('Profesional solicitado. NUNCA pongas aqui la sede.'),
+  motivo: textoOpcional(200).describe('Motivo de la cita, en pocas palabras. Puede ir vacio.'),
+  /**
+   * OPCIONAL de verdad: se puede agendar sin profesional.
+   *
+   * Antes era `.min(1).optional()` y el agente de voz --que manda todos los
+   * campos, rellenando los que no tiene con ""-- chocaba contra el minimo y no
+   * podia agendar nunca. Ver `textoOpcional`.
+   */
+  profesional: textoOpcional(120).describe(
+    'Profesional que pidio el paciente, si pidio alguno. DEJALO VACIO si no lo menciono: ' +
+      'la cita se agenda igual y recepcion asigna. NUNCA pongas aqui la sede.',
+  ),
   /**
    * SEDE. Requerida, y no por burocracia.
    *
@@ -171,7 +176,11 @@ export class CrearCitaTool implements BusinessTool<CrearCitaInput, CrearCitaOutp
     }
 
     const clinicId = ctx.clinic.id; // jamas de los argumentos del modelo
-    const { duracionMin, motivo, profesional } = parsed.data;
+    const { duracionMin } = parsed.data;
+    // El agente de voz manda todos los campos y rellena con "" los que no
+    // tiene. Aqui "" significa "no lo dijo", no "un profesional llamado nada".
+    const motivo = sinVacio(parsed.data.motivo);
+    const profesional = sinVacio(parsed.data.profesional);
 
     // En la zona de la CLINICA. Nunca `new Date(texto)` sobre un texto sin
     // zona: lo resolveria con el reloj del servidor y la cita quedaria a otra

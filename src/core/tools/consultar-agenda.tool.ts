@@ -9,7 +9,7 @@ import {
   interpretarInstante,
   resolverAgenda,
 } from '../agenda/horario.js';
-import { maskArgsForLog } from './tool.registry.js';
+import { maskArgsForLog, sinVacio, textoOpcional } from './tool.registry.js';
 
 /**
  * Tope de huecos por consulta.
@@ -62,12 +62,11 @@ export const consultarAgendaInputSchema = z.object({
     .max(240)
     .default(30)
     .describe('Duracion de la cita en minutos. Si no la sabes, usa la habitual de la clinica.'),
-  profesional: z
-    .string()
-    .min(1)
-    .max(120)
-    .optional()
-    .describe('Nombre del profesional, si el paciente pidio uno. NUNCA pongas aqui la sede.'),
+  // Opcional de verdad: la cadena vacia se trata como "no lo dijo". Ver
+  // `textoOpcional`: el agente de voz manda todos los campos y rellena con "".
+  profesional: textoOpcional(120).describe(
+    'Profesional que pidio el paciente, si pidio alguno. DEJALO VACIO si no lo menciono. NUNCA pongas aqui la sede.',
+  ),
   /**
    * Sede sobre la que se pregunta.
    *
@@ -81,12 +80,9 @@ export const consultarAgendaInputSchema = z.object({
    * creia el modelo estar preguntando, que es justo lo que hace falta el dia
    * que se separen los calendarios.
    */
-  sede: z
-    .string()
-    .min(1)
-    .max(80)
-    .optional()
-    .describe('Sede sobre la que se consulta. Cada sede tiene su propia agenda.'),
+  sede: textoOpcional(80).describe(
+    'Sede sobre la que se consulta. Cada sede tiene su propia agenda.',
+  ),
 });
 export type ConsultarAgendaInput = z.infer<typeof consultarAgendaInputSchema>;
 
@@ -236,7 +232,8 @@ export class ConsultarAgendaTool implements BusinessTool<ConsultarAgendaInput, C
     try {
       // La disponibilidad se pregunta SOBRE LA SEDE. Cada sede tiene su
       // agenda: que Comas este lleno no dice nada de Miraflores.
-      const sedePedida = parsed.data.sede;
+      // `sinVacio` porque el agente de voz manda "" cuando no tiene el dato.
+      const sedePedida = sinVacio(parsed.data.sede);
       const libres = await Promise.all(
         candidatos.map(async (c) =>
           (await this.calendarPort.isSlotFree(clinicId, c.start, c.end, sedePedida)) ? c : undefined,

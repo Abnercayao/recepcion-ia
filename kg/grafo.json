@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "e044e72a4e664301",
+  "huella": "9e3c3aea5bdafbc3",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -454,7 +454,7 @@
       "tipo": "herramienta",
       "nombre": "consultar_agenda",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 115,
+      "linea": 111,
       "resumen": "Consulta los horarios libres de la agenda de la clinica dentro de un rango de fechas (maximo",
       "meta": {
         "clase": "ConsultarAgendaTool",
@@ -478,7 +478,7 @@
       "tipo": "herramienta",
       "nombre": "crear_cita",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 138,
+      "linea": 143,
       "resumen": "Crea una cita en la agenda de la clinica. SOLO se puede llamar despues de que el paciente confirmo",
       "meta": {
         "clase": "CrearCitaTool",
@@ -609,7 +609,7 @@
       "nombre": "clinica.json",
       "ruta": "db/seed/clinica-demo/clinica.json",
       "meta": {
-        "lineas": 76,
+        "lineas": 84,
         "capa": "datos"
       }
     },
@@ -661,7 +661,7 @@
       "ruta": "docs/CONTINUAR.md",
       "resumen": "Continuar aquí",
       "meta": {
-        "lineas": 410,
+        "lineas": 395,
         "capa": "documentacion"
       }
     },
@@ -875,7 +875,7 @@
       "ruta": "prompts/maestro.md",
       "resumen": "ROL",
       "meta": {
-        "lineas": 114,
+        "lineas": 120,
         "capa": "prompts",
         "bloques": [
           "ROL",
@@ -914,7 +914,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 314,
+        "lineas": 318,
         "capa": "scripts"
       }
     },
@@ -1132,7 +1132,7 @@
           "fastify",
           "node:crypto"
         ],
-        "lineas": 326,
+        "lineas": 266,
         "capa": "canales"
       }
     },
@@ -1241,7 +1241,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 416,
+        "lineas": 471,
         "capa": "nucleo"
       }
     },
@@ -1353,7 +1353,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 283,
+        "lineas": 280,
         "capa": "nucleo"
       }
     },
@@ -1379,7 +1379,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 304,
+        "lineas": 313,
         "capa": "nucleo"
       }
     },
@@ -1418,7 +1418,7 @@
         "externas": [
           "zod"
         ],
-        "lineas": 246,
+        "lineas": 282,
         "capa": "nucleo"
       }
     },
@@ -1762,7 +1762,7 @@
           "node:path",
           "node:url"
         ],
-        "lineas": 372,
+        "lineas": 341,
         "capa": "composicion"
       }
     },
@@ -2062,7 +2062,7 @@
         "externas": [
           "vitest"
         ],
-        "lineas": 740,
+        "lineas": 804,
         "capa": "pruebas",
         "suite": "unit"
       }
@@ -3805,17 +3805,6 @@
       }
     },
     {
-      "id": "simbolo:src/channels/voice/webhook-tools.controller.ts#AvisoDeCitaCreada",
-      "tipo": "simbolo",
-      "nombre": "AvisoDeCitaCreada",
-      "ruta": "src/channels/voice/webhook-tools.controller.ts",
-      "linea": 86,
-      "resumen": "Lo justo para que recepcion pueda confirmar la cita al paciente.",
-      "meta": {
-        "clase": "interface"
-      }
-    },
-    {
       "id": "simbolo:src/channels/voice/webhook-tools.controller.ts#RUTA_WEBHOOK_TOOLS",
       "tipo": "simbolo",
       "nombre": "RUTA_WEBHOOK_TOOLS",
@@ -3840,7 +3829,7 @@
       "tipo": "simbolo",
       "nombre": "webhookToolsPlugin",
       "ruta": "src/channels/voice/webhook-tools.controller.ts",
-      "linea": 135,
+      "linea": 108,
       "meta": {
         "clase": "const"
       }
@@ -4505,7 +4494,7 @@
       "tipo": "simbolo",
       "nombre": "PromptBuilder",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 366,
+      "linea": 420,
       "meta": {
         "clase": "class"
       }
@@ -4542,11 +4531,22 @@
       }
     },
     {
+      "id": "simbolo:src/core/claude/prompt.builder.ts#renderizarProfesionales",
+      "tipo": "simbolo",
+      "nombre": "renderizarProfesionales",
+      "ruta": "src/core/claude/prompt.builder.ts",
+      "linea": 340,
+      "resumen": "Profesionales por sede, para poder OFRECERLOS.",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
       "id": "simbolo:src/core/claude/prompt.builder.ts#renderizarSedes",
       "tipo": "simbolo",
       "nombre": "renderizarSedes",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 326,
+      "linea": 380,
       "meta": {
         "clase": "function"
       }
@@ -5107,7 +5107,7 @@
       "tipo": "simbolo",
       "nombre": "ConsultarAgendaInput",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 91,
+      "linea": 87,
       "meta": {
         "clase": "type"
       }
@@ -5127,7 +5127,7 @@
       "tipo": "simbolo",
       "nombre": "ConsultarAgendaOutput",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 93,
+      "linea": 89,
       "meta": {
         "clase": "interface"
       }
@@ -5137,7 +5137,7 @@
       "tipo": "simbolo",
       "nombre": "ConsultarAgendaTool",
       "ruta": "src/core/tools/consultar-agenda.tool.ts",
-      "linea": 115,
+      "linea": 111,
       "resumen": "Consulta disponibilidad de agenda.",
       "meta": {
         "clase": "class"
@@ -5222,7 +5222,7 @@
       "tipo": "simbolo",
       "nombre": "CrearCitaInput",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 132,
+      "linea": 137,
       "meta": {
         "clase": "type"
       }
@@ -5242,7 +5242,7 @@
       "tipo": "simbolo",
       "nombre": "CrearCitaOutput",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 134,
+      "linea": 139,
       "meta": {
         "clase": "interface"
       }
@@ -5252,7 +5252,7 @@
       "tipo": "simbolo",
       "nombre": "CrearCitaTool",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 138,
+      "linea": 143,
       "meta": {
         "clase": "class"
       }
@@ -5293,7 +5293,7 @@
       "tipo": "simbolo",
       "nombre": "resolverSede",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 112,
+      "linea": 117,
       "resumen": "Devuelve el nombre canonico de la sede, o `undefined` si no existe.",
       "meta": {
         "clase": "function"
@@ -5304,7 +5304,7 @@
       "tipo": "simbolo",
       "nombre": "sedesDeLaClinica",
       "ruta": "src/core/tools/crear-cita.tool.ts",
-      "linea": 101,
+      "linea": 106,
       "resumen": "Sedes declaradas por la clinica, propias y franquicias.",
       "meta": {
         "clase": "function"
@@ -5398,7 +5398,7 @@
       "tipo": "simbolo",
       "nombre": "enmascararTexto",
       "ruta": "src/core/tools/tool.registry.ts",
-      "linea": 206,
+      "linea": 242,
       "resumen": "Enmascara PII evidente dentro de un texto libre antes de que se registre en cualquier log.",
       "meta": {
         "clase": "function"
@@ -5409,8 +5409,30 @@
       "tipo": "simbolo",
       "nombre": "maskArgsForLog",
       "ruta": "src/core/tools/tool.registry.ts",
-      "linea": 239,
+      "linea": 275,
       "resumen": "Punto unico de enmascarado antes de escribir `argumentosEnmascarados` en",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/tools/tool.registry.ts#sinVacio",
+      "tipo": "simbolo",
+      "nombre": "sinVacio",
+      "ruta": "src/core/tools/tool.registry.ts",
+      "linea": 34,
+      "resumen": "`\"\"` y los espacios en blanco significan \"el paciente no lo dijo\".",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
+      "id": "simbolo:src/core/tools/tool.registry.ts#textoOpcional",
+      "tipo": "simbolo",
+      "nombre": "textoOpcional",
+      "ruta": "src/core/tools/tool.registry.ts",
+      "linea": 19,
+      "resumen": "Campo de texto OPCIONAL que tolera la cadena vacia.",
       "meta": {
         "clase": "function"
       }
@@ -5420,7 +5442,7 @@
       "tipo": "simbolo",
       "nombre": "ToolRegistryImpl",
       "ruta": "src/core/tools/tool.registry.ts",
-      "linea": 15,
+      "linea": 51,
       "resumen": "Registro central de herramientas de negocio.",
       "meta": {
         "clase": "class"
@@ -7691,7 +7713,7 @@
       "desde": "modulo:docs/CONTINUAR.md",
       "relacion": "menciona",
       "hacia": "control:C7",
-      "origen": "docs/CONTINUAR.md:387"
+      "origen": "docs/CONTINUAR.md:372"
     },
     {
       "desde": "modulo:docs/CONTINUAR.md",
@@ -9406,12 +9428,6 @@
     {
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
       "relacion": "exporta",
-      "hacia": "simbolo:src/channels/voice/webhook-tools.controller.ts#AvisoDeCitaCreada",
-      "origen": "src/channels/voice/webhook-tools.controller.ts:86"
-    },
-    {
-      "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
-      "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/webhook-tools.controller.ts#RUTA_WEBHOOK_TOOLS",
       "origen": "src/channels/voice/webhook-tools.controller.ts:53"
     },
@@ -9425,7 +9441,7 @@
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/webhook-tools.controller.ts#webhookToolsPlugin",
-      "origen": "src/channels/voice/webhook-tools.controller.ts:135"
+      "origen": "src/channels/voice/webhook-tools.controller.ts:108"
     },
     {
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
@@ -10001,7 +10017,7 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/core/claude/prompt.builder.ts:366"
+      "origen": "src/core/claude/prompt.builder.ts:420"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
@@ -10024,8 +10040,14 @@
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
+      "hacia": "simbolo:src/core/claude/prompt.builder.ts#renderizarProfesionales",
+      "origen": "src/core/claude/prompt.builder.ts:340"
+    },
+    {
+      "desde": "modulo:src/core/claude/prompt.builder.ts",
+      "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#renderizarSedes",
-      "origen": "src/core/claude/prompt.builder.ts:326"
+      "origen": "src/core/claude/prompt.builder.ts:380"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
@@ -10553,7 +10575,7 @@
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaInput",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:91"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:87"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
@@ -10565,13 +10587,13 @@
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaOutput",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:93"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:89"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/consultar-agenda.tool.ts#ConsultarAgendaTool",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:115"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:111"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
@@ -10619,7 +10641,7 @@
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
       "relacion": "menciona",
       "hacia": "control:C7",
-      "origen": "src/core/tools/consultar-agenda.tool.ts:209"
+      "origen": "src/core/tools/consultar-agenda.tool.ts:205"
     },
     {
       "desde": "modulo:src/core/tools/consultar-agenda.tool.ts",
@@ -10709,7 +10731,7 @@
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaInput",
-      "origen": "src/core/tools/crear-cita.tool.ts:132"
+      "origen": "src/core/tools/crear-cita.tool.ts:137"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
@@ -10721,13 +10743,13 @@
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaOutput",
-      "origen": "src/core/tools/crear-cita.tool.ts:134"
+      "origen": "src/core/tools/crear-cita.tool.ts:139"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#CrearCitaTool",
-      "origen": "src/core/tools/crear-cita.tool.ts:138"
+      "origen": "src/core/tools/crear-cita.tool.ts:143"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
@@ -10751,13 +10773,13 @@
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#resolverSede",
-      "origen": "src/core/tools/crear-cita.tool.ts:112"
+      "origen": "src/core/tools/crear-cita.tool.ts:117"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/crear-cita.tool.ts#sedesDeLaClinica",
-      "origen": "src/core/tools/crear-cita.tool.ts:101"
+      "origen": "src/core/tools/crear-cita.tool.ts:106"
     },
     {
       "desde": "modulo:src/core/tools/crear-cita.tool.ts",
@@ -10937,31 +10959,43 @@
       "desde": "modulo:src/core/tools/tool.registry.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/tool.registry.ts#enmascararTexto",
-      "origen": "src/core/tools/tool.registry.ts:206"
+      "origen": "src/core/tools/tool.registry.ts:242"
     },
     {
       "desde": "modulo:src/core/tools/tool.registry.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/tool.registry.ts#maskArgsForLog",
-      "origen": "src/core/tools/tool.registry.ts:239"
+      "origen": "src/core/tools/tool.registry.ts:275"
+    },
+    {
+      "desde": "modulo:src/core/tools/tool.registry.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/tools/tool.registry.ts#sinVacio",
+      "origen": "src/core/tools/tool.registry.ts:34"
+    },
+    {
+      "desde": "modulo:src/core/tools/tool.registry.ts",
+      "relacion": "exporta",
+      "hacia": "simbolo:src/core/tools/tool.registry.ts#textoOpcional",
+      "origen": "src/core/tools/tool.registry.ts:19"
     },
     {
       "desde": "modulo:src/core/tools/tool.registry.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/tools/tool.registry.ts#ToolRegistryImpl",
-      "origen": "src/core/tools/tool.registry.ts:15"
+      "origen": "src/core/tools/tool.registry.ts:51"
     },
     {
       "desde": "modulo:src/core/tools/tool.registry.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/types/ports.ts",
-      "origen": "src/core/tools/tool.registry.ts:2"
+      "origen": "src/core/tools/tool.registry.ts:38"
     },
     {
       "desde": "modulo:src/core/tools/tool.registry.ts",
       "relacion": "importa",
       "hacia": "modulo:src/core/types/tool.ts",
-      "origen": "src/core/tools/tool.registry.ts:1"
+      "origen": "src/core/tools/tool.registry.ts:37"
     },
     {
       "desde": "modulo:src/core/tools/tool.registry.ts",
@@ -12455,7 +12489,7 @@
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ELEVENLABS_WEBHOOK_SECRET",
-      "origen": "src/server.ts:322"
+      "origen": "src/server.ts:291"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -12479,19 +12513,19 @@
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:PORT",
-      "origen": "src/server.ts:344"
+      "origen": "src/server.ts:313"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:RETENCION_AUDIO_DIAS",
-      "origen": "src/server.ts:323"
+      "origen": "src/server.ts:292"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:SIP_PROVIDER",
-      "origen": "src/server.ts:312"
+      "origen": "src/server.ts:281"
     },
     {
       "desde": "modulo:src/server.ts",

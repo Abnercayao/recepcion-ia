@@ -19,7 +19,7 @@ import 'dotenv/config';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
-import { renderizarSedes } from '../src/core/claude/prompt.builder.js';
+import { renderizarProfesionales, renderizarSedes } from '../src/core/claude/prompt.builder.js';
 import { clinicaDeLaSemilla } from './nucleo-demo.js';
 
 const RAIZ = resolve(import.meta.dirname, '..');
@@ -143,6 +143,10 @@ async function construirPrompt(): Promise<string> {
     // deliberado: es un censo cerrado, y hacerlo depender de una busqueda es
     // justo lo que producia la respuesta con 8 sedes de 24.
     renderizarSedes(clinica.config),
+    '',
+    // Elegir doctor es OPCIONAL. Se ofrece para que la conversacion suene a
+    // recepcion de verdad, nunca como requisito para agendar.
+    renderizarProfesionales(clinica.config),
     '',
     '## ESTILO DE VOZ',
     estilo.trim(),

@@ -40,6 +40,14 @@
       "surquillo": "Calle Las Tiendas 331, dpto. 101",
       "ventanilla": "Av. Los Licenciados Mz. O5 Lt. 25, 2do piso"
     },
+    "_profesionales": "Nombres de DEMOSTRACION, inventados para que la llamada suene real. Elegir profesional es OPCIONAL: si el paciente no lo menciona, la cita se agenda igual y recepcion asigna. La agenda NO esta separada por profesional (CalendarPort no lo lleva), asi que el nombre queda registrado en la cita pero no reserva a esa persona en concreto.",
+    "profesionales_por_sede": {
+      "comas": [
+        { "nombre": "Dra. Ana Quispe", "especialidad": "Odontologia general y limpiezas" },
+        { "nombre": "Dr. Luis Palomino", "especialidad": "Ortodoncia" },
+        { "nombre": "Dra. Carmen Rios", "especialidad": "Endodoncia y rehabilitacion" }
+      ]
+    },
     "sede_por_defecto": "miraflores",
     "duracion_cita_min": 40,
     "horarios": {

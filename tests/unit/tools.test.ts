@@ -463,6 +463,70 @@ describe('CrearCitaTool', () => {
     expect(calendario.eventos[0]?.titulo).toContain('+51987654321');
   });
 
+  /**
+   * REGRESION. El agente de voz en modo alojado manda TODOS los campos del
+   * esquema y rellena con "" los que no tiene. Con `.min(1).optional()` la
+   * cadena vacia chocaba contra el minimo --`optional()` admite que el campo
+   * FALTE, no que venga vacio-- y el turno moria con:
+   *
+   *   argumentos invalidos: profesional: Too small: expected string to have
+   *   >=1 characters
+   *
+   * Para el paciente eso era: el agente le pedia el nombre de un doctor, que no
+   * tiene por que saberse, y dijera lo que dijera no se podia agendar. Un campo
+   * opcional que bloquea es peor que no tenerlo.
+   */
+  it('el profesional VACIO no impide agendar', async () => {
+    const calendarPort = crearCalendarPortFake();
+    const tool = new CrearCitaTool(calendarPort, new FakeToolCallRepository(), crearLoggerFake());
+    const conVacios = {
+      inicio: '2026-08-03T10:00:00-05:00',
+      duracionMin: 40,
+      sede: 'comas',
+      profesional: '',
+      motivo: '',
+      confirmadoPorPaciente: true,
+    };
+    const resultado = await tool.execute(conVacios as unknown as CrearCitaInput, crearContexto({ clinic: clinicaReal }));
+
+    expect(resultado.status).toBe('ok');
+    expect(calendarPort.createEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it('el profesional vacio tampoco impide consultar la agenda', async () => {
+    const calendarPort = crearCalendarPortFake();
+    const tool = new ConsultarAgendaTool(calendarPort, new FakeToolCallRepository(), crearLoggerFake());
+    const resultado = await tool.execute(
+      {
+        desde: '2026-08-03T09:00:00-05:00',
+        hasta: '2026-08-03T13:00:00-05:00',
+        duracionMin: 40,
+        profesional: '',
+        sede: 'comas',
+      } as never,
+      crearContexto({ clinic: clinicaReal }),
+    );
+
+    expect(resultado.status).toBe('ok');
+    expect((resultado.data as { slots: unknown[] }).slots.length).toBeGreaterThan(0);
+  });
+
+  it('un profesional de verdad si se conserva', async () => {
+    const calendarPort = crearCalendarPortFake();
+    const tool = new CrearCitaTool(calendarPort, new FakeToolCallRepository(), crearLoggerFake());
+    await tool.execute(
+      { ...citaEn('2026-08-03T10:00:00-05:00', 'comas'), profesional: 'Dra. Ana Quispe' },
+      crearContexto({ clinic: clinicaReal }),
+    );
+
+    expect(calendarPort.createEvent).toHaveBeenCalledWith(
+      clinicaReal.id,
+      expect.objectContaining({ profesional: 'Dra. Ana Quispe' }),
+      '+51987654321',
+      'comas',
+    );
+  });
+
   it('acepta la sede como la dice el paciente y la normaliza', async () => {
     const calendarPort = crearCalendarPortFake();
     const tool = new CrearCitaTool(calendarPort, new FakeToolCallRepository(), crearLoggerFake());

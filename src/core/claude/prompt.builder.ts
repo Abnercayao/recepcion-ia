@@ -323,6 +323,60 @@ function renderizarCierres(ctx: TurnContext): string {
   return lineas.join('\n');
 }
 
+/**
+ * Profesionales por sede, para poder OFRECERLOS.
+ *
+ * Nace de un fallo con dos mitades. La tecnica: el campo `profesional` era
+ * opcional pero rechazaba la cadena vacia, y el agente de voz manda todos los
+ * campos rellenando con `""`, asi que no se podia agendar nunca (ver
+ * `textoOpcional`). La conversacional: el agente le pedia al paciente el nombre
+ * de un doctor sin darle ninguna lista, y el paciente no tiene por que
+ * saberselo.
+ *
+ * Elegir profesional es OPCIONAL y debe seguir siendolo: se ofrece, no se
+ * exige. Por eso el texto insiste tanto en ello -- un campo opcional que en la
+ * practica bloquea es peor que no tenerlo.
+ */
+export function renderizarProfesionales(config: Record<string, unknown>): string {
+  const crudo = config['profesionales_por_sede'];
+  if (crudo === null || typeof crudo !== 'object') {
+    return 'PROFESIONALES: no hay lista por sede. No le pidas al paciente el nombre de un doctor: agenda sin profesional y recepcion asigna.';
+  }
+
+  const lineas: string[] = [];
+  for (const [sede, lista] of Object.entries(crudo as Record<string, unknown>)) {
+    if (!Array.isArray(lista) || lista.length === 0) continue;
+    const nombres = lista
+      .map((p) => {
+        if (p === null || typeof p !== 'object') return undefined;
+        const { nombre, especialidad } = p as { nombre?: unknown; especialidad?: unknown };
+        if (typeof nombre !== 'string' || nombre.trim() === '') return undefined;
+        return typeof especialidad === 'string' && especialidad.trim() !== ''
+          ? `${nombre} (${especialidad})`
+          : nombre;
+      })
+      .filter((n): n is string => n !== undefined);
+    if (nombres.length > 0) {
+      lineas.push(`  ${sede.replace(/-/g, ' ')}: ${nombres.join(' · ')}`);
+    }
+  }
+
+  if (lineas.length === 0) {
+    return 'PROFESIONALES: no hay lista por sede. No le pidas al paciente el nombre de un doctor: agenda sin profesional y recepcion asigna.';
+  }
+
+  return (
+    'PROFESIONALES POR SEDE:\n' +
+    `${lineas.join('\n')}\n` +
+    'Elegir profesional es OPCIONAL y NUNCA es requisito para agendar. Si el paciente ' +
+    'pregunta por quien atiende, o duda, LEELE los de esa sede y deja que elija. Si no ' +
+    'lo menciona, NO se lo preguntes: agenda sin profesional y dile que recepcion le ' +
+    'asigna al que corresponda. Jamas le pidas que adivine un nombre, ni bloquees la ' +
+    'cita por no tenerlo. En las sedes que no aparecen aqui, no inventes nombres: di ' +
+    'que recepcion le confirma quien le atendera.'
+  );
+}
+
 export function renderizarSedes(config: Record<string, unknown>): string {
   const grupos: Array<[string, unknown]> = [
     ['propias', config['sedes_informativas']],
@@ -391,6 +445,7 @@ export class PromptBuilder {
       fecha_hora: formatearFechaHora(ctx.now, ctx.clinic.timezone),
       sede: sedeDe(ctx, input.sede),
       sedes_de_la_clinica: renderizarSedes(ctx.clinic.config),
+      profesionales: renderizarProfesionales(ctx.clinic.config),
       dias_cerrados: renderizarCierres(ctx),
       paciente_nombre_si_conocido: ctx.patient.nombre?.trim() || 'no identificado',
       notas_de_sesion: notasDeSesion(ctx),

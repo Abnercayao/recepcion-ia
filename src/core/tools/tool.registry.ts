@@ -1,4 +1,40 @@
 import { z } from 'zod';
+
+/**
+ * Campo de texto OPCIONAL que tolera la cadena vacia.
+ *
+ * `z.string().min(1).optional()` NO vale: `optional()` admite que el campo
+ * falte, no que venga vacio, asi que `""` sigue chocando contra `min(1)`.
+ *
+ * Y viene vacio a menudo. El agente de voz en modo alojado manda TODOS los
+ * campos del esquema y rellena los que no tiene con `""`. Medido en la traza:
+ *
+ *   crear_cita -> argumentos invalidos: profesional: Too small:
+ *                 expected string to have >=1 characters
+ *
+ * El efecto para el paciente era que el agente le pedia el nombre de un doctor
+ * --que no tenia por que saber-- y, dijera lo que dijera, no podia agendar. Un
+ * campo opcional que bloquea es peor que no tenerlo.
+ */
+export function textoOpcional(maximo: number) {
+  // SIN `.min(1)` y SIN `.transform()`.
+  //
+  // Sin `min` porque "" tiene que ENTRAR, no rebotar. Y sin `transform` porque
+  // estos esquemas se convierten a JSON Schema para publicarlos como
+  // herramientas --a Claude y a ElevenLabs-- y Zod no sabe representar una
+  // transformacion ahi: `toClaudeToolDefinitions` revienta con "Transforms
+  // cannot be represented in JSON Schema". Hay una prueba que lo vigila.
+  //
+  // La normalizacion de "" a "no dijo nada" se hace en la herramienta, con
+  // `sinVacio`.
+  return z.string().max(maximo).optional();
+}
+
+/** `""` y los espacios en blanco significan "el paciente no lo dijo". */
+export function sinVacio(valor: string | undefined): string | undefined {
+  const limpio = valor?.trim();
+  return limpio === undefined || limpio === '' ? undefined : limpio;
+}
 import type { BusinessTool, ToolRegistry, ToolStatus } from '../types/tool.js';
 import type { Logger, ToolCallRepository } from '../types/ports.js';
 
