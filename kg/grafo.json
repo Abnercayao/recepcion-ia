@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "bb12c2f1e1647f30",
+  "huella": "e044e72a4e664301",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -661,7 +661,7 @@
       "ruta": "docs/CONTINUAR.md",
       "resumen": "Continuar aquí",
       "meta": {
-        "lineas": 382,
+        "lineas": 410,
         "capa": "documentacion"
       }
     },
@@ -863,7 +863,7 @@
       "nombre": "estilo.voz.md",
       "ruta": "prompts/estilo.voz.md",
       "meta": {
-        "lineas": 31,
+        "lineas": 46,
         "capa": "prompts",
         "bloques": []
       }
@@ -914,7 +914,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 307,
+        "lineas": 314,
         "capa": "scripts"
       }
     },
@@ -1132,7 +1132,7 @@
           "fastify",
           "node:crypto"
         ],
-        "lineas": 266,
+        "lineas": 326,
         "capa": "canales"
       }
     },
@@ -1762,7 +1762,7 @@
           "node:path",
           "node:url"
         ],
-        "lineas": 341,
+        "lineas": 372,
         "capa": "composicion"
       }
     },
@@ -3805,6 +3805,17 @@
       }
     },
     {
+      "id": "simbolo:src/channels/voice/webhook-tools.controller.ts#AvisoDeCitaCreada",
+      "tipo": "simbolo",
+      "nombre": "AvisoDeCitaCreada",
+      "ruta": "src/channels/voice/webhook-tools.controller.ts",
+      "linea": 86,
+      "resumen": "Lo justo para que recepcion pueda confirmar la cita al paciente.",
+      "meta": {
+        "clase": "interface"
+      }
+    },
+    {
       "id": "simbolo:src/channels/voice/webhook-tools.controller.ts#RUTA_WEBHOOK_TOOLS",
       "tipo": "simbolo",
       "nombre": "RUTA_WEBHOOK_TOOLS",
@@ -3829,7 +3840,7 @@
       "tipo": "simbolo",
       "nombre": "webhookToolsPlugin",
       "ruta": "src/channels/voice/webhook-tools.controller.ts",
-      "linea": 108,
+      "linea": 135,
       "meta": {
         "clase": "const"
       }
@@ -7680,7 +7691,7 @@
       "desde": "modulo:docs/CONTINUAR.md",
       "relacion": "menciona",
       "hacia": "control:C7",
-      "origen": "docs/CONTINUAR.md:359"
+      "origen": "docs/CONTINUAR.md:387"
     },
     {
       "desde": "modulo:docs/CONTINUAR.md",
@@ -9395,6 +9406,12 @@
     {
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
       "relacion": "exporta",
+      "hacia": "simbolo:src/channels/voice/webhook-tools.controller.ts#AvisoDeCitaCreada",
+      "origen": "src/channels/voice/webhook-tools.controller.ts:86"
+    },
+    {
+      "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
+      "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/webhook-tools.controller.ts#RUTA_WEBHOOK_TOOLS",
       "origen": "src/channels/voice/webhook-tools.controller.ts:53"
     },
@@ -9408,7 +9425,7 @@
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/webhook-tools.controller.ts#webhookToolsPlugin",
-      "origen": "src/channels/voice/webhook-tools.controller.ts:108"
+      "origen": "src/channels/voice/webhook-tools.controller.ts:135"
     },
     {
       "desde": "modulo:src/channels/voice/webhook-tools.controller.ts",
@@ -12438,7 +12455,7 @@
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:ELEVENLABS_WEBHOOK_SECRET",
-      "origen": "src/server.ts:291"
+      "origen": "src/server.ts:322"
     },
     {
       "desde": "modulo:src/server.ts",
@@ -12462,19 +12479,19 @@
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:PORT",
-      "origen": "src/server.ts:313"
+      "origen": "src/server.ts:344"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:RETENCION_AUDIO_DIAS",
-      "origen": "src/server.ts:292"
+      "origen": "src/server.ts:323"
     },
     {
       "desde": "modulo:src/server.ts",
       "relacion": "lee_variable",
       "hacia": "variable_entorno:SIP_PROVIDER",
-      "origen": "src/server.ts:281"
+      "origen": "src/server.ts:312"
     },
     {
       "desde": "modulo:src/server.ts",

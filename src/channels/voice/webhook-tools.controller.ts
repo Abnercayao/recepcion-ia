@@ -68,6 +68,33 @@ export interface WebhookToolsDeps {
    * mal cuando el paciente lo cuenta.
    */
   traza?: RecolectorDeTraza;
+  /**
+   * Aviso de cita creada, para que la confirmacion llegue al paciente.
+   *
+   * El agente cierra la llamada diciendo que le mandara los detalles por
+   * WhatsApp. Eso solo es verdad si alguien los manda: el canal de WhatsApp
+   * esta DESACTIVADO y sin credenciales, asi que hoy quien puede hacerlo es el
+   * flujo de n8n. Esto es lo que le entrega los datos.
+   *
+   * Es OPCIONAL y no bloquea el turno: si falla, la cita ya esta creada y el
+   * paciente ya la oyo confirmar. Se registra y se sigue.
+   */
+  avisarCitaCreada?: (aviso: AvisoDeCitaCreada) => Promise<void>;
+}
+
+/** Lo justo para que recepcion pueda confirmar la cita al paciente. */
+export interface AvisoDeCitaCreada {
+  conversationId: string;
+  clinicId: string;
+  clinicaNombre: string;
+  telefonoPaciente: string;
+  pacienteNombre?: string;
+  sede?: string;
+  inicio: string;
+  fin: string;
+  motivo: string;
+  canal: string;
+  creadaEn: string;
 }
 
 function cabecera(valor: string | string[] | undefined): string | undefined {
@@ -225,6 +252,39 @@ export const webhookToolsPlugin: FastifyPluginAsync<WebhookToolsDeps> = async (a
         },
         'herramienta ejecutada por el modelo alojado',
       );
+
+      /**
+       * Cita creada -> aviso para que le llegue al paciente.
+       *
+       * Sin esto, el cierre de llamada («le mando los detalles por WhatsApp»)
+       * seria una promesa que nadie cumple. No se espera (`void`) ni se deja
+       * que un fallo aqui tumbe la respuesta: la cita YA existe y el paciente
+       * la esta oyendo confirmar.
+       */
+      if (herramienta === 'crear_cita' && resultado.status === 'ok' && deps.avisarCitaCreada) {
+        const evento = (resultado.data as { evento?: Record<string, unknown> } | undefined)?.evento;
+        const args = validados.data as Record<string, unknown>;
+        void deps
+          .avisarCitaCreada({
+            conversationId: ctx.conversationId,
+            clinicId,
+            clinicaNombre: ctx.clinic.nombre,
+            telefonoPaciente: ctx.patient.telefonoE164,
+            ...(ctx.patient.nombre ? { pacienteNombre: ctx.patient.nombre } : {}),
+            ...(typeof args['sede'] === 'string' ? { sede: args['sede'] } : {}),
+            inicio: String((evento?.['start'] as Date | undefined)?.toISOString() ?? args['inicio']),
+            fin: String((evento?.['end'] as Date | undefined)?.toISOString() ?? ''),
+            motivo: String(args['motivo'] ?? 'Cita'),
+            canal: 'voice',
+            creadaEn: new Date().toISOString(),
+          })
+          .catch((e: unknown) => {
+            deps.logger.error(
+              { componente: 'webhook-tools', error: e instanceof Error ? e.message : String(e) },
+              'la cita se creo pero NO se pudo avisar para la confirmacion al paciente',
+            );
+          });
+      }
 
       traza.cerrar(
         resultado.status === 'ok'

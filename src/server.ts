@@ -267,6 +267,37 @@ export async function construirServidor(config: Config) {
       logger,
       gatewaySecret: config.VOICE_GATEWAY_SECRET ?? '',
       traza: trazas,
+      /**
+       * Confirmacion de la cita al paciente.
+       *
+       * El agente cierra la llamada prometiendo los detalles por WhatsApp. Ese
+       * envio NO lo hace este sistema: `WHATSAPP_ENABLED` esta en false y las
+       * credenciales de Meta estan vacias. Lo que se hace aqui es ENTREGAR los
+       * datos a n8n, que es donde la clinica ya recibe los escalamientos, para
+       * que el flujo correspondiente los mande.
+       *
+       * Mientras ese flujo no exista, la promesa del agente no se cumple. Queda
+       * dicho en `docs/CONTINUAR.md` y avisado por el log en cada cita.
+       */
+      ...(config.N8N_WEBHOOK_URL
+        ? {
+            avisarCitaCreada: async (aviso): Promise<void> => {
+              const respuesta = await fetch(config.N8N_WEBHOOK_URL as string, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ tipo: 'cita_creada', ...aviso }),
+                signal: AbortSignal.timeout(10_000),
+              });
+              if (!respuesta.ok) {
+                throw new Error(`n8n respondio ${String(respuesta.status)}`);
+              }
+              logger.info(
+                { conversationId: aviso.conversationId, sede: aviso.sede },
+                'cita entregada a n8n para la confirmacion al paciente',
+              );
+            },
+          }
+        : {}),
     });
 
     await app.register(conversationInitiationPlugin, {

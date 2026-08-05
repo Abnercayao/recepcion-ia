@@ -153,6 +153,34 @@ npm run agente:alojado -- --verificar
 Compara el prompt vivo con el del repositorio, avisa si falta la lista de sedes
 y muestra la configuración de voz. Sale con código 1 si hay desfase.
 
+### ⚠ El agente promete un WhatsApp que HOY no se envía
+
+El cierre de llamada (`prompts/estilo.voz.md`) obliga al agente a confirmar el
+número y a decir que **le llegarán los detalles por WhatsApp**, y que por ahí
+puede reagendar o preguntar. Es lo que se pidió, y es buena práctica.
+
+**Pero este sistema no envía WhatsApp.** `WHATSAPP_ENABLED=false` y las cuatro
+credenciales de Meta están vacías. Lo que sí se hace, para que la promesa tenga
+por dónde cumplirse:
+
+```
+crear_cita (voz) → POST a N8N_WEBHOOK_URL con { tipo: "cita_creada", ... }
+```
+
+Va en `src/server.ts` (`avisarCitaCreada`) y lleva teléfono, nombre, sede,
+inicio, fin y motivo. **Falta el flujo de n8n que lo reciba y mande el
+mensaje.** Hasta que exista, el agente le está diciendo a un paciente que
+recibirá algo que no llega — y en una clínica eso significa citas perdidas.
+
+Dos salidas, por orden de esfuerzo:
+1. Crear el flujo en n8n que escuche `tipo: "cita_creada"` y mande el WhatsApp
+   por el proveedor que la clínica ya use.
+2. Configurar el canal de WhatsApp del propio sistema (`WHATSAPP_*`) y enviar
+   desde aquí.
+
+Si ninguna de las dos va a estar lista pronto, lo honesto es quitar la frase del
+WhatsApp del bloque de cierre y dejar solo la confirmación del número.
+
 ⚠ **La fecha del agente alojado viaja por variable dinámica, no en el prompt.**
 El prompt se publica una sola vez, así que una fecha escrita dentro caducaría al
 día siguiente. Lleva `{{fecha_y_hora}}` y lo rellena ElevenLabs en cada

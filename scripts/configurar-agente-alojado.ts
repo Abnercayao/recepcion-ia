@@ -122,6 +122,13 @@ async function construirPrompt(): Promise<string> {
      * entrenamiento: un martes 4 de agosto afirmaba que "manana" era el 6 y
      * que el viernes era el 8. Todo corrido un dia.
      */
+    // El numero desde el que llaman. Sin el, el agente no puede cumplir el
+    // paso 1 del cierre --confirmar a que numero se manda todo-- y acabaria
+    // pidiendoselo a alguien que ya nos lo esta dando por el propio canal.
+    'NUMERO DESDE EL QUE LLAMA EL PACIENTE: {{phone}}',
+    'Usalo para confirmar a que numero se manda la informacion. Si viene vacio o no',
+    'parece un numero, pideselo al paciente en vez de inventarlo o de leerlo tal cual.',
+    '',
     'FECHA Y HORA ACTUALES: {{fecha_y_hora}}',
     'Esa linea es la UNICA fuente valida para saber en que dia estas. No deduzcas',
     'la fecha de hoy, ni el dia de la semana, ni que dia cae "manana" o "el viernes":',
