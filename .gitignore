@@ -9,3 +9,6 @@ coverage/
 Thumbs.db
 .vitest/
 tmp/
+
+# Ficheros de bloqueo de Office: basura temporal, nunca se versionan.
+~$*
