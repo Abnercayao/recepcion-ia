@@ -85,10 +85,17 @@ async function construirPrompt(): Promise<string> {
   // Se conservan los bloques 1-7 (identidad, prohibiciones, urgencia,
   // herramientas...) y se descartan el 8 (contexto RAG) y el 9 (sesion), que
   // en este modo no se pueden prerrellenar.
+  //
+  // `{{clinica_nombre}}` SI se sustituye aqui: es un marcador del prompt
+  // maestro que este modo no rellenaba, asi que viajaba literal al proveedor.
+  // ElevenLabs intenta resolver los `{{...}}` contra sus variables dinamicas y
+  // esa no existe, de modo que el agente podia acabar diciendole el marcador al
+  // paciente.
   const invariables = bloques
     .slice(0, 7)
     .map((b) => `## ${b.trim()}`)
-    .join('\n\n');
+    .join('\n\n')
+    .replaceAll('{{clinica_nombre}}', clinica.nombre);
 
   return [
     invariables,
@@ -102,6 +109,24 @@ async function construirPrompt(): Promise<string> {
     '',
     '## SESION',
     `Clinica: ${clinica.nombre}. Zona horaria ${clinica.timezone}.`,
+    '',
+    /**
+     * LA FECHA, POR VARIABLE DINAMICA.
+     *
+     * No se puede escribir aqui: este prompt se publica UNA vez y se queda
+     * fijo, asi que una fecha literal caducaria al dia siguiente. `{{...}}` lo
+     * resuelve ElevenLabs en CADA conversacion con lo que le devuelve el
+     * webhook de iniciacion (llamadas) o con lo que trae el widget (web).
+     *
+     * Sin esto el agente no sabia en que dia vivia y lo deducia de su
+     * entrenamiento: un martes 4 de agosto afirmaba que "manana" era el 6 y
+     * que el viernes era el 8. Todo corrido un dia.
+     */
+    'FECHA Y HORA ACTUALES: {{fecha_y_hora}}',
+    'Esa linea es la UNICA fuente valida para saber en que dia estas. No deduzcas',
+    'la fecha de hoy, ni el dia de la semana, ni que dia cae "manana" o "el viernes":',
+    'usa los dias ya calculados que aparecen ahi. Si te falta ese dato, preguntale al',
+    'paciente la fecha concreta en vez de suponerla.',
     'Pasa `session_id` en TODAS las llamadas a herramientas, con el mismo valor',
     'durante toda la conversacion, para que las citas y los avisos queden atados',
     'al mismo paciente.',

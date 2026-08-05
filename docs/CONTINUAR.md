@@ -153,6 +153,22 @@ npm run agente:alojado -- --verificar
 Compara el prompt vivo con el del repositorio, avisa si falta la lista de sedes
 y muestra la configuración de voz. Sale con código 1 si hay desfase.
 
+⚠ **La fecha del agente alojado viaja por variable dinámica, no en el prompt.**
+El prompt se publica una sola vez, así que una fecha escrita dentro caducaría al
+día siguiente. Lleva `{{fecha_y_hora}}` y lo rellena ElevenLabs en cada
+conversación desde dos sitios que hay que mantener sincronizados:
+
+| Camino | Quién manda la fecha |
+|---|---|
+| Llamada telefónica | `conversation-initiation.controller.ts` → `dynamic_variables` |
+| Widget de la web | `web/index.html`, que la pide a `/api/estado` (puerto 4000) |
+
+Las dos usan `formatearFechaHora()`, la misma del núcleo, con los próximos siete
+días **ya calculados**. Sin esto el agente deducía el día de su entrenamiento y
+lo corría entero: un martes 4 de agosto decía que «mañana» era el 6 y que el
+viernes era el 8. Si añades un tercer camino de entrada a voz, tiene que mandar
+`fecha_y_hora` o volverá el mismo fallo.
+
 ⚠ **Los túneles cambian de dominio cada vez que se reinician.** Cuando le pase al
 de 3000 hay que actualizar en el panel de ElevenLabs: el Custom LLM, el webhook
 de iniciación y el post-llamada; y volver a ejecutar

@@ -26,6 +26,7 @@ import { randomUUID } from 'node:crypto';
 import type { AuditRepository, Clinic, Logger } from '../../core/types/index.js';
 import type { MessageRouter } from '../../core/conversation/message.router.js';
 import { TRAZA_NULA, type RecolectorDeTraza } from '../../core/observabilidad/traza.js';
+import { formatearFechaHora } from '../../core/claude/prompt.builder.js';
 import type { CallRepository } from './voice.types.js';
 
 export const RUTA_INICIACION = '/webhooks/elevenlabs/conversation-initiation';
@@ -197,6 +198,18 @@ export const conversationInitiationPlugin: FastifyPluginAsync<
     const variables: Record<string, string> = {
       clinic_id: deps.clinicId,
       session_id: sessionId,
+      /**
+       * LA FECHA, CALCULADA AQUI Y NO POR EL MODELO.
+       *
+       * En modo alojado el prompt se publica una sola vez, asi que la fecha no
+       * puede ir escrita dentro: llega por variable dinamica y se resuelve en
+       * cada llamada. Sin esto el agente deducia el dia de su entrenamiento y
+       * lo corria: un martes 4 de agosto decia que "manana" era el 6.
+       *
+       * Va con los proximos siete dias YA resueltos, el mismo texto que usa el
+       * nucleo, para que el modelo no tenga que hacer aritmetica de fechas.
+       */
+      fecha_y_hora: formatearFechaHora(new Date(), deps.clinica?.timezone ?? 'America/Lima'),
     };
     if (deps.clinica) variables['clinica'] = deps.clinica.nombre;
     if (numeroOrigen) variables['phone'] = numeroOrigen;

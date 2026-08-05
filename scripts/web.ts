@@ -22,6 +22,7 @@ import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import Fastify from 'fastify';
 
+import { formatearFechaHora } from '../src/core/claude/prompt.builder.js';
 import { FaltaLaClaveError, montarNucleoDeDemostracion } from './nucleo-demo.js';
 
 const RAIZ = resolve(import.meta.dirname, '..');
@@ -137,6 +138,15 @@ async function main(): Promise<void> {
     modelo,
     fragmentos: rag.total,
     sedes: (clinica.config as Record<string, unknown>)['sedes_informativas'] ?? {},
+    /**
+     * Fecha para el widget de voz.
+     *
+     * El agente alojado no sabe en que dia vive --su prompt se publica una vez
+     * y no lleva fecha-- y la deducia de su entrenamiento: corria los dias.
+     * El widget la manda como variable dinamica, y se calcula AQUI, en el
+     * servidor y en la zona de la clinica, no con el reloj del visitante.
+     */
+    fechaYHora: formatearFechaHora(new Date(), clinica.timezone),
   }));
 
   /**

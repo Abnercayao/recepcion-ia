@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "daa42ce76050f5b1",
+  "huella": "bb12c2f1e1647f30",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -661,7 +661,7 @@
       "ruta": "docs/CONTINUAR.md",
       "resumen": "Continuar aquí",
       "meta": {
-        "lineas": 366,
+        "lineas": 382,
         "capa": "documentacion"
       }
     },
@@ -914,7 +914,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 282,
+        "lineas": 307,
         "capa": "scripts"
       }
     },
@@ -998,7 +998,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 269,
+        "lineas": 279,
         "capa": "scripts"
       }
     },
@@ -1030,7 +1030,7 @@
           "fastify",
           "node:crypto"
         ],
-        "lineas": 304,
+        "lineas": 317,
         "capa": "canales"
       }
     },
@@ -1241,7 +1241,7 @@
           "node:fs/promises",
           "node:path"
         ],
-        "lineas": 411,
+        "lineas": 416,
         "capa": "nucleo"
       }
     },
@@ -2712,7 +2712,7 @@
       "tipo": "simbolo",
       "nombre": "ConversationInitiationDeps",
       "ruta": "src/channels/voice/conversation-initiation.controller.ts",
-      "linea": 35,
+      "linea": 36,
       "meta": {
         "clase": "interface"
       }
@@ -2722,7 +2722,7 @@
       "tipo": "simbolo",
       "nombre": "conversationInitiationPlugin",
       "ruta": "src/channels/voice/conversation-initiation.controller.ts",
-      "linea": 155,
+      "linea": 156,
       "meta": {
         "clase": "const"
       }
@@ -2732,7 +2732,7 @@
       "tipo": "simbolo",
       "nombre": "RUTA_INICIACION",
       "ruta": "src/channels/voice/conversation-initiation.controller.ts",
-      "linea": 31,
+      "linea": 32,
       "meta": {
         "clase": "const"
       }
@@ -2742,7 +2742,7 @@
       "tipo": "simbolo",
       "nombre": "RUTA_INICIACION_CON_SECRETO",
       "ruta": "src/channels/voice/conversation-initiation.controller.ts",
-      "linea": 32,
+      "linea": 33,
       "meta": {
         "clase": "const"
       }
@@ -4468,6 +4468,17 @@
       }
     },
     {
+      "id": "simbolo:src/core/claude/prompt.builder.ts#formatearFechaHora",
+      "tipo": "simbolo",
+      "nombre": "formatearFechaHora",
+      "ruta": "src/core/claude/prompt.builder.ts",
+      "linea": 150,
+      "resumen": "Fecha y hora en la zona de la clinica, MAS el calendario de los proximos",
+      "meta": {
+        "clase": "function"
+      }
+    },
+    {
       "id": "simbolo:src/core/claude/prompt.builder.ts#loadPromptTemplates",
       "tipo": "simbolo",
       "nombre": "loadPromptTemplates",
@@ -4483,7 +4494,7 @@
       "tipo": "simbolo",
       "nombre": "PromptBuilder",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 361,
+      "linea": 366,
       "meta": {
         "clase": "class"
       }
@@ -4524,7 +4535,7 @@
       "tipo": "simbolo",
       "nombre": "renderizarSedes",
       "ruta": "src/core/claude/prompt.builder.ts",
-      "linea": 321,
+      "linea": 326,
       "meta": {
         "clase": "function"
       }
@@ -7669,7 +7680,7 @@
       "desde": "modulo:docs/CONTINUAR.md",
       "relacion": "menciona",
       "hacia": "control:C7",
-      "origen": "docs/CONTINUAR.md:343"
+      "origen": "docs/CONTINUAR.md:359"
     },
     {
       "desde": "modulo:docs/CONTINUAR.md",
@@ -8341,13 +8352,19 @@
       "desde": "modulo:scripts/web.ts",
       "relacion": "importa",
       "hacia": "modulo:scripts/nucleo-demo.ts",
+      "origen": "scripts/web.ts:25"
+    },
+    {
+      "desde": "modulo:scripts/web.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/prompt.builder.ts",
       "origen": "scripts/web.ts:23"
     },
     {
       "desde": "modulo:scripts/web.ts",
       "relacion": "menciona",
       "hacia": "control:O5",
-      "origen": "scripts/web.ts:56"
+      "origen": "scripts/web.ts:57"
     },
     {
       "desde": "modulo:scripts/web.ts",
@@ -8521,30 +8538,36 @@
       "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/conversation-initiation.controller.ts#ConversationInitiationDeps",
-      "origen": "src/channels/voice/conversation-initiation.controller.ts:35"
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:36"
     },
     {
       "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/conversation-initiation.controller.ts#conversationInitiationPlugin",
-      "origen": "src/channels/voice/conversation-initiation.controller.ts:155"
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:156"
     },
     {
       "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/conversation-initiation.controller.ts#RUTA_INICIACION",
-      "origen": "src/channels/voice/conversation-initiation.controller.ts:31"
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:32"
     },
     {
       "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/channels/voice/conversation-initiation.controller.ts#RUTA_INICIACION_CON_SECRETO",
-      "origen": "src/channels/voice/conversation-initiation.controller.ts:32"
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:33"
     },
     {
       "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
       "relacion": "importa",
       "hacia": "modulo:src/channels/voice/voice.types.ts",
+      "origen": "src/channels/voice/conversation-initiation.controller.ts:29"
+    },
+    {
+      "desde": "modulo:src/channels/voice/conversation-initiation.controller.ts",
+      "relacion": "importa",
+      "hacia": "modulo:src/core/claude/prompt.builder.ts",
       "origen": "src/channels/voice/conversation-initiation.controller.ts:28"
     },
     {
@@ -9948,6 +9971,12 @@
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
+      "hacia": "simbolo:src/core/claude/prompt.builder.ts#formatearFechaHora",
+      "origen": "src/core/claude/prompt.builder.ts:150"
+    },
+    {
+      "desde": "modulo:src/core/claude/prompt.builder.ts",
+      "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#loadPromptTemplates",
       "origen": "src/core/claude/prompt.builder.ts:81"
     },
@@ -9955,7 +9984,7 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#PromptBuilder",
-      "origen": "src/core/claude/prompt.builder.ts:361"
+      "origen": "src/core/claude/prompt.builder.ts:366"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
@@ -9979,7 +10008,7 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "exporta",
       "hacia": "simbolo:src/core/claude/prompt.builder.ts#renderizarSedes",
-      "origen": "src/core/claude/prompt.builder.ts:321"
+      "origen": "src/core/claude/prompt.builder.ts:326"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",
@@ -10009,7 +10038,7 @@
       "desde": "modulo:src/core/claude/prompt.builder.ts",
       "relacion": "menciona",
       "hacia": "control:C9",
-      "origen": "src/core/claude/prompt.builder.ts:178"
+      "origen": "src/core/claude/prompt.builder.ts:183"
     },
     {
       "desde": "modulo:src/core/claude/prompt.builder.ts",

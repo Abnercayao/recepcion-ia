@@ -386,24 +386,61 @@
     <script>
       (function () {
         var sesion = sessionStorage.getItem('aurora-sesion') || 'web-' + Date.now().toString(36);
-        var el = document.createElement('elevenlabs-convai');
-        el.setAttribute('agent-id', 'agent_3001kyfz28j4f728rxkp7a3bnerp');
-        el.setAttribute(
-          'dynamic-variables',
-          JSON.stringify({
-            clinic_id: '00000000-0000-4000-8000-000000000001',
-            session_id: 'voz-' + sesion,
-            phone: '+51999111222',
-            clinica: 'Clinica Aurora',
-          }),
-        );
-        document.getElementById('anfitrion-voz').appendChild(el);
 
-        var s = document.createElement('script');
-        s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-        s.async = true;
-        s.type = 'text/javascript';
-        document.body.appendChild(s);
+        /* El agente alojado NO sabe en qué día vive: su prompt se publica una
+           sola vez y no puede llevar la fecha escrita dentro. Sin este dato la
+           deducía de su entrenamiento y corría los días — un martes 4 de agosto
+           decía que «mañana» era el 6 y que el viernes era el 8.
+           Se pide al servidor, que la calcula en la zona de la clínica: el reloj
+           del visitante puede estar en otro huso o sencillamente mal. */
+        function montarWidget(fechaYHora) {
+          var el = document.createElement('elevenlabs-convai');
+          el.setAttribute('agent-id', 'agent_3001kyfz28j4f728rxkp7a3bnerp');
+          el.setAttribute(
+            'dynamic-variables',
+            JSON.stringify({
+              clinic_id: '00000000-0000-4000-8000-000000000001',
+              session_id: 'voz-' + sesion,
+              phone: '+51999111222',
+              clinica: 'Clinica Aurora',
+              fecha_y_hora: fechaYHora,
+            }),
+          );
+          document.getElementById('anfitrion-voz').appendChild(el);
+
+          var s = document.createElement('script');
+          s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+          s.async = true;
+          s.type = 'text/javascript';
+          document.body.appendChild(s);
+        }
+
+        /* Respaldo si el servidor no responde: se calcula en el navegador
+           FORZANDO la zona de la clínica. Es peor que el del servidor porque
+           depende del reloj del visitante, pero es mucho mejor que dejar al
+           modelo adivinando. */
+        function fechaDeRespaldo() {
+          try {
+            return new Intl.DateTimeFormat('es-PE', {
+              timeZone: 'America/Lima',
+              dateStyle: 'full',
+              timeStyle: 'short',
+            }).format(new Date());
+          } catch (e) {
+            return new Date().toISOString();
+          }
+        }
+
+        fetch('/api/estado')
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (d) {
+            montarWidget(d.fechaYHora || fechaDeRespaldo());
+          })
+          .catch(function () {
+            montarWidget(fechaDeRespaldo());
+          });
       })();
     </script>
   </body>

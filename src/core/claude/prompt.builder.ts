@@ -141,8 +141,13 @@ function sustituir(texto: string, valores: Record<string, string>): string {
  * modelo: se le da hecha.
  *
  * Cuesta unas pocas decenas de tokens y elimina toda una clase de error.
+ *
+ * Se exporta porque el modo ALOJADO la necesita igual. Alli no la tenia, y el
+ * agente hablado corria las fechas un dia entero: un martes 4 de agosto decia
+ * que "manana" era el 6 y que el viernes era el 8. No es que calculara mal:
+ * es que NO SABIA en que dia vivia y lo deducia de su entrenamiento.
  */
-function formatearFechaHora(fecha: Date, timezone: string): string {
+export function formatearFechaHora(fecha: Date, timezone: string): string {
   try {
     const fmt = new Intl.DateTimeFormat('es-PE', {
       timeZone: timezone,
