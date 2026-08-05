@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "huella": "601a944371fa5eeb",
+  "huella": "453e086eae58e884",
   "generadoPor": "kg/extraer.ts",
   "nodos": [
     {
@@ -661,7 +661,7 @@
       "ruta": "docs/CONTINUAR.md",
       "resumen": "Continuar aquí",
       "meta": {
-        "lineas": 395,
+        "lineas": 420,
         "capa": "documentacion"
       }
     },
@@ -915,6 +915,20 @@
           "node:path"
         ],
         "lineas": 318,
+        "capa": "scripts"
+      }
+    },
+    {
+      "id": "modulo:scripts/configurar-guardrails.ts",
+      "tipo": "modulo",
+      "nombre": "configurar-guardrails.ts",
+      "ruta": "scripts/configurar-guardrails.ts",
+      "resumen": "Guardrails del agente de voz: recupera en modo ALOJADO el control que hoy no",
+      "meta": {
+        "externas": [
+          "dotenv/config"
+        ],
+        "lineas": 214,
         "capa": "scripts"
       }
     },
@@ -7746,13 +7760,19 @@
       "desde": "modulo:docs/CONTINUAR.md",
       "relacion": "menciona",
       "hacia": "control:C7",
-      "origen": "docs/CONTINUAR.md:372"
+      "origen": "docs/CONTINUAR.md:397"
+    },
+    {
+      "desde": "modulo:docs/CONTINUAR.md",
+      "relacion": "menciona",
+      "hacia": "control:C9",
+      "origen": "docs/CONTINUAR.md:101"
     },
     {
       "desde": "modulo:docs/CONTINUAR.md",
       "relacion": "menciona",
       "hacia": "control:O2",
-      "origen": "docs/CONTINUAR.md:139"
+      "origen": "docs/CONTINUAR.md:164"
     },
     {
       "desde": "modulo:docs/CONTINUAR.md",
@@ -8167,6 +8187,18 @@
       "relacion": "pertenece_a",
       "hacia": "capa:scripts",
       "origen": "scripts/configurar-agente-alojado.ts"
+    },
+    {
+      "desde": "modulo:scripts/configurar-guardrails.ts",
+      "relacion": "menciona",
+      "hacia": "control:C9",
+      "origen": "scripts/configurar-guardrails.ts:160"
+    },
+    {
+      "desde": "modulo:scripts/configurar-guardrails.ts",
+      "relacion": "pertenece_a",
+      "hacia": "capa:scripts",
+      "origen": "scripts/configurar-guardrails.ts"
     },
     {
       "desde": "modulo:scripts/demo.ts",

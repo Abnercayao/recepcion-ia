@@ -78,16 +78,41 @@ seguro; `-- --tunel https://<dominio>` pone el modo rápido.
 | | Custom LLM (núcleo en el camino) | Modelo alojado (actual) |
 |---|---|---|
 | Razona | nuestro `ConversationService` | Qwen, dentro de ElevenLabs |
-| **Capa 2 sobre la salida** | ✅ | ❌ **no existe hook de salida** |
-| Capas 1 y 3 | ✅ | ❌ |
+| **Capa 2 sobre la salida** | ✅ determinista | ✅ **juez LLM** (guardrails) |
+| Capas 1 y 3 | ✅ | parcial: `focus` + `prompt_injection` |
 | Validación Zod + invariantes + `tool_calls` | ✅ | ✅ |
 | Historial autoritativo y continuidad multicanal | ✅ | ❌ |
-| Latencia | 12–14 s | **sin medir** |
+| Latencia | 12–14 s | +200–500 ms por los guardrails |
 
-**Ahora mismo está en modo alojado.** Se comprobó contra la documentación del
-proveedor que no ofrece ningún mecanismo para inspeccionar el texto antes de
-sintetizarlo, así que la capa 2 no puede existir en ese modo. Lo que queda es
-que el modelo no pueda *hacer* lo que quiera aunque pueda *decir* lo que quiera.
+⚠ **Corrección: lo que decía este documento ya no es cierto.** Afirmaba que el
+proveedor «no ofrece ningún mecanismo para inspeccionar el texto antes de
+sintetizarlo». Lo era cuando se comprobó; **Guardrails 2.0 sí lo ofrece**:
+validadores que evalúan cada respuesta del agente y la bloquean antes de
+entregarla. El sistema estuvo en modo alojado sin capa 2 **pudiendo tenerla**.
+
+```bash
+npm run agente:guardrails          # aplica
+npm run agente:guardrails -- --ver # solo muestra
+```
+
+`scripts/configurar-guardrails.ts` traduce las mismas cinco violaciones de
+`detectOutboundViolations` a reglas en lenguaje natural, más una sexta contra
+datos inventados —la línea roja que en el núcleo **no tiene** control
+automático—. Activa además `focus`, `prompt_injection` (control C9, estaba
+apagado) y la categoría `medical_and_legal_information`.
+
+**En qué NO es igual a nuestra capa 2, y hay que saberlo:**
+- Es un **juez LLM**, no una regex: probabilístico, no determinista.
+- **No sustituye texto.** Solo puede cortar la llamada o **regenerar**
+  (`retry`, hasta 3 intentos). Se eligió `retry` en modo **bloqueante**:
+  colgarle el teléfono a un paciente porque el modelo soltó un precio es peor
+  que hacerle esperar medio segundo. Cuesta 200–500 ms por turno.
+- En modo `streaming` no hay retry y se cuelan ~500 ms de audio antes del
+  bloqueo. Por eso no se usa streaming.
+
+**La temperatura estaba en 1.0** y ahora está en 0.3, la del núcleo. Una
+recepción clínica no debe ser creativa; ese 1.0 explica parte de los horarios
+inventados y las respuestas que se iban del guion.
 
 **La prueba pendiente que decide**: correr la batería adversarial contra el modo
 alojado. Está calibrada contra el prompt y los guardrails del núcleo, así que
